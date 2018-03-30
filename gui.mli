@@ -10,7 +10,8 @@ open GObj
  * Reference: https://ocaml.org/learn/tutorials/objects.html
  *)
 class gui:
-  (* [update_state] will update the GUI display with a new state.*)
+  (* [update_state] will update the GUI display with a new state.
+   * The *)
   method update_state: State.state -> unit
 
   (* [get_command] will get the user's command or action.*)
@@ -19,7 +20,7 @@ class gui:
   (* [get_dim] returns the dimensions of the GUI window to prpoerly format
    * the game board.*)
   method get_dim: int * int
-
+end
 (* [init_gui] initializes the GUI to the starting state *)
 val init_gui: gui ->unit
 
