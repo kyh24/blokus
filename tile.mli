@@ -7,7 +7,7 @@ type tile = {
   value : int
 }
 
-(*[init_tile n coords c v] is initial state of tile t*)
+(*[init_tile n coords c v] is the initial state of tile t*)
 val init_tile : string -> int*int list -> string -> int -> tile
 
 (*[tile_name t] is the name of tile t*)
@@ -19,7 +19,8 @@ val value : tile -> int
 (*[color t] is the color of tile t*)
 val color : tile -> string
 
-(*[flip_tile t] is tile t after a *)
-val flip_tile : int*int list -> int*int list
+(*[flip_tile t dir] is tile t after a reflection over axis specified by [dir]*)
+val flip_tile : int*int list -> string -> int*int list
 
+(*[turn_tile t] is tile t after a 90 degree turn clockwise*)
 val turn_tile : int*int list -> int*int list
