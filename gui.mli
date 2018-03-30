@@ -26,7 +26,7 @@ val update_state: State.state -> unit
 val build_board: State.state -> int -> int -> unit
 
 (* [get_command] will get the user's command or action.*)
-val get_command: unit
+val get_command: Command.command -> unit
 
 (* [get_dim] returns the dimensions of the GUI window to properly format
 * the game board.*)
@@ -36,6 +36,7 @@ val get_dim: int * int
  * state is specified in the State module.*)
 val end_gui: State.state -> unit
 
-(* [draw_elts] will display the shapes and other elements
+(* [draw_elts] will display the shapes and other elements such as the
+ * shapes panel, the rotations table and the buttons.
  * needed in the GUI.*)
 val draw_elts: State.state -> unit
