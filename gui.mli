@@ -8,6 +8,8 @@ open Graphics
 * The GUI will determine the right state depending on actions
 * taken by the player that are acceptable by the program.
 * Reference: https://ocaml.org/learn/tutorials/objects.html
+* We are considering to also use Lwt, GMain, GObj to improve
+* the functionality of the GUI rather than just using Graphics.
 *)
 
 (* [init_gui] initializes the GUI to the starting state.  The initial
