@@ -1,6 +1,6 @@
 Open Tile
 
-(*[player] is an abstract type representing the state of an adventure. *)*)
+(*[player] is an abstract type representing the state of an adventure. *)
 type player = {
   name : string;
   color : string;
