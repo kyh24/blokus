@@ -26,7 +26,7 @@ val build_board: State.state -> int -> int -> unit
 (* [get_command] will get the user's command or action.*)
 val get_command: unit
 
-(* [get_dim] returns the dimensions of the GUI window to prpoerly format
+(* [get_dim] returns the dimensions of the GUI window to properly format
 * the game board.*)
 val get_dim: int * int
 
