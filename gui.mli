@@ -8,6 +8,8 @@ open Graphics
 * The GUI will determine the right state depending on actions
 * taken by the player that are acceptable by the program.
 * Reference: https://ocaml.org/learn/tutorials/objects.html
+* We are considering to also use Lwt, GMain, GObj to improve
+* the functionality of the GUI rather than just using Graphics.
 *)
 
 (* [init_gui] initializes the GUI to the starting state.  The initial
@@ -26,7 +28,7 @@ val build_board: State.state -> int -> int -> unit
 (* [get_command] will get the user's command or action.*)
 val get_command: unit
 
-(* [get_dim] returns the dimensions of the GUI window to prpoerly format
+(* [get_dim] returns the dimensions of the GUI window to properly format
 * the game board.*)
 val get_dim: int * int
 
