@@ -3,6 +3,11 @@
 (* open GObj *)
 open Graphics
 
+type GUI_state_event =
+  | Init
+  | Comm of Command.command
+  | State of State.state
+  
 (* This module represents the GUI window which will display State
 * changes depending on user commands and acceptable actions.
 * The GUI will determine the right state depending on actions
