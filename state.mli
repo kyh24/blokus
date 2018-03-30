@@ -1,8 +1,11 @@
 Open Player
 Open Tile
 
-(*[state] is an abstract type representing the state of the game*)
-type state
+(*[state] represents the state of the game*)
+type state = {
+  board : int*int list;
+  players : player list
+}
 
 (*[player] is a Player representing a player's pieces in the game*)
 type player = Player
@@ -23,12 +26,10 @@ type color = string
                                                X X X
 
 *)
-type tile_id =
-  | One | Square | Xshape | Tee | Line | LilL | BigL
-  (* i love foster with all my heart <3 blokaml *)
 
-(*[init_state i] is the initial state of the game with dimensions i by i*)
-val init_state : int -> state
+
+(*[init_state] is the initial state of the game with dimensions i by i*)
+val init_state : () -> state
 
 (** [is_valid_move lst] is true if the following conditions are satisfied
  *   (1) none of the edges are touching an edge of the same color

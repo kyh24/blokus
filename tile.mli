@@ -1,7 +1,11 @@
 
+type tile_id =
+  | One | Square | Xshape | Tee | Line | LilL | BigL
+  (* i love foster with all my heart <3 blokaml *)
+
 (*[tile] is a type representing a tile in the game*)
 type tile = {
-  name : string;
+  name : tile_id;
   coordinates : int*int list;
   color: string;
   value : int
@@ -11,7 +15,7 @@ type tile = {
 val init_tile : string -> int*int list -> string -> int -> tile
 
 (*[tile_name t] is the name of tile t*)
-val tile_name : tile -> string
+val tile_name : tile -> tile_id
 
 (*[value t] is the value of tile t*)
 val value : tile -> int
