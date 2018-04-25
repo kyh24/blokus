@@ -3,9 +3,9 @@ Open Tile
 (*[player] is an abstract type representing the state of an adventure. *)
 type player = {
   name : string;
-  color : string;
+  color : color;
   score : int;
-  remaining_tiles : tile list
+  inv : tile list
 }
 
 (*[init player n c t_lst] is the state of player at the beginning of the game. *)
@@ -21,8 +21,6 @@ val color: player -> color
 (*[score p] is the player's current score.*)
 val score: player -> int
 
-(*[remaining_tiles p] is the list of tiles that the player has not yet placed
+(*[inventory p] is the list of tiles that the player has not yet placed
   onto the board*)
-val remaining_tiles : player -> tile list
-
-
+val inventory : player -> tile list
