@@ -8,7 +8,7 @@
 |          |                                |                  |                       |                     |                     |
 
 
-MARK UR TIMESSSS: http://whenisgood.net/gqgqz9p
+MARK UR TIMESSSS: https://www.when2meet.com/?6874771-ab5IV
 
 **NOTES**: 
 
