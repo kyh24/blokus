@@ -23,7 +23,7 @@ val init_state : state
         board (no part of the tile is off the board)
  *
 *)
-val is_valid_move: int*int list -> color -> bool
+val is_valid_move: state -> int -> bool
 
 
 (* [do' c st] is [st'] if doing command [c] in state [st] results

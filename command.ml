@@ -12,14 +12,17 @@ let parse_click () = failwith "Unimplemented"
 
 (*if we implement by having clickable commands on gui*)
 
-let commands (c:unit) : command = if key_pressed c then
+let commands (c:unit) (t:tile): command =
+  if key_pressed c then (
     let pos = mouse_pos c in
-    if pos > (5,4) then FLIP
-    else if pos > (0,0) then TURN
-    else if pos > (1,1) then PLACE
-    else failwith "poop"
+    if pos > (5,4) then FLIP X
+    else if pos > (0,0) then FLIP Y
+    else if pos > (0,0) then TURN t
+    else if pos > (1,1) then PLACE t
+    else failwith "poop" ) else failwith "fail"
 (*if we implement using user input from terminal*)
 
+        (*
 print_string "Enter a command (flip, turn, place): ";
 let cmd = read_line () in
 let cmd_mod = lowercase_ascii cmd in
@@ -28,3 +31,4 @@ match cmd_mod with
 |"turn" -> TURN
 |"place" -> PLACE
 | _ ->  Exception (*Printf.printf "%s%d\n" str poop*)
+*)

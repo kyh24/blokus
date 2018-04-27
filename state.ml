@@ -25,6 +25,10 @@ let get_select_site center_cell=
   let (cx,cy) = center_cell in
   List.map (fun (x,y) -> (x+cx , y+cy) ) tile_structure ;;
 
-let is_valid_move st pos center_cell = failwith "SDF"
+let is_valid_move st pos = failwith "SDF"
 (* The 3x3 select site must only have WHITE cells.
-  The *)
+   The *)
+
+let do' c st = failwith "Unimplemented"
+
+let print_state st = ()
