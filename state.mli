@@ -1,38 +1,26 @@
 Open Player
-Open Tile
+  Open Tile
+  Open Board
 
 (*[state] represents the state of the game*)
 type state = {
   board : int*int list;
-  players : player list
+  players : player list;
+  mutable canvas: (int*int* color) list
 }
+(*[tile] is a Tile representing the color of a player's pieces in the game*
 
-(*[player] is a Player representing a player's pieces in the game*)
-type player = Player
-
-(*[tile] is a Tile representing the color of a player's pieces in the game*)
-type tile = Tile
+(*[board] is the Board representing the entire 8*8 frame of the game*)
+type board= Board
 
 (*[color] is a string representing the color of a player's pieces in the game*)
 type color = string
-
-(** [tile_id] is a variant representing one of the following possible tiles
-   One: X      Square: X X       Xshape:   X         Tee:   X X X
-                       X X               X X X                X
-                                           x                  X
-
-   Line:  X X X X       LilL:  X        BigL:  X
-                               X X             X
-                                               X X X
-
-*)
-
 
 (*[init_state] is the initial state of the game with dimensions i by i*)
 val init_state : () -> state
 
 (** [is_valid_move lst] is true if the following conditions are satisfied
- *   (1) none of the edges are touching an edge of the same color
+ *  (1) none of the edges are touching an edge of the same color
  * 	(2) vertex of tile placed is touching the vertex of at least one
         previously placed tile of the same color
     (3) all coordinates of the tile placed do not already have a tile
@@ -43,13 +31,6 @@ val init_state : () -> state
 *)
 val is_valid_move: int*int list -> color -> bool
 
-(*[available_locs s] is an x*y list of the coordinates in the board where a tile
-has not been placed*)
-val available_locs: state -> int*int list
-
-(*[taken_locs s] is an int*int list of the coordinates (x,y) in the board where
-  a tile has been placed*)
-val taken_locs: state -> int*int list
 
 (* [do' c st] is [st'] if doing command [c] in state [st] results
  * in a new state [st'].
