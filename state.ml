@@ -18,13 +18,13 @@ let init_state = {
 
 let get_center_cell st pos= let (x,y)= Array.get st.board pos in (x,y)
 
-(* in 3X3 all cells must be WHITE;
-*)
-let get_select_site st center_cell=
-  let tile_structure = [| (-1,1)   ; (0,1)  ; (1,1) ;
-                          (-1,0)   ; (0,0)  ; (1,0) ;
-                          ( -1,-1) ; (0,-1) ; (1,-1)|] in
+let get_select_site center_cell=
+  let tile_structure = [(-1,-1)   ; (0,-1)  ; (1,-1) ;
+                        (-1,0)   ; (0,0)  ; (1,0) ;
+                        ( -1,1) ; (0,1) ; (1,1)] in
   let (cx,cy) = center_cell in
-  Array.iter (fun cx cy -> tile_structure
+  List.map (fun (x,y) -> (x+cx , y+cy) ) tile_structure ;;
 
-              let is_valid_move = failwith "SDF"
+let is_valid_move st pos center_cell = failwith "SDF"
+(* The 3x3 select site must only have WHITE cells.
+  The *)
