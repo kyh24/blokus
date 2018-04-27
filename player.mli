@@ -4,12 +4,12 @@ Open Tile
 type player = {
   name : string;
   color : color;
-  score : int;
-  inv : tile list
+  mutable score : int;
+  mutable remaining_tiles : tile list
 }
 
 (*[init player n c t_lst] is the state of player [p] at the beginning of the game. *)
-val init_player: string -> string -> int -> tile list -> player
+val init_player: string -> color -> int -> tile list -> player
 
 (*[name p] is the name of the player.*)
 val name: player -> name
@@ -21,6 +21,6 @@ val color: player -> color
 (*[score p] is the player's current score.*)
 val score: player -> int
 
-(*[inventory p] is the list of tiles that the player has not yet placed
+(*[remaining_tiles p] is the list of tiles that the player has not yet placed
   onto the board*)
-val inventory : player -> tile list
+val remaining_tiles : player -> tile list
