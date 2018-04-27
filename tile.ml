@@ -1,3 +1,4 @@
+
 type tile_id = One | Tee | L | X | Z | Tree | Line
 
 type color = White | Blue | Yellow
