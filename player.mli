@@ -1,9 +1,10 @@
-Open Tile
+open Tile
 
 (*[player] is an abstract type representing the state of an adventure. *)
 type player = {
   name : string;
-  color : color;
+  col : color;
+  mutable first_turn : bool;
   mutable score : int;
   mutable remaining_tiles : tile list
 }
@@ -12,7 +13,7 @@ type player = {
 val init_player: string -> color -> player
 
 (*[name p] is the name of the player.*)
-val name: player -> name
+val name: player -> string
 
 (*[color p] is the color of the player's tiles. Each player can only be represented by
   one color chosen at the start of the game.*)

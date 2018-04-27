@@ -3,18 +3,18 @@
 (* open GObj *)
 open Graphics
 
-type GUI_state_event =
+type gui_state_event =
   | Init
   | Comm of Command.command
   | State of State.state
-  
+
 (* This module represents the GUI window which will display State
-* changes depending on user commands and acceptable actions.
-* The GUI will determine the right state depending on actions
-* taken by the player that are acceptable by the program.
-* Reference: https://ocaml.org/learn/tutorials/objects.html
-* We are considering to also use Lwt, GMain, GObj to improve
-* the functionality of the GUI rather than just using Graphics.
+ * changes depending on user commands and acceptable actions.
+ * The GUI will determine the right state depending on actions
+ * taken by the player that are acceptable by the program.
+ * Reference: https://ocaml.org/learn/tutorials/objects.html
+ * We are considering to also use Lwt, GMain, GObj to improve
+ * the functionality of the GUI rather than just using Graphics.
 *)
 
 (* [init_gui] initializes the GUI to the starting state.  The initial
@@ -34,8 +34,8 @@ val build_board: State.state -> int -> int -> unit
 val get_command: Command.command -> unit
 
 (* [get_dim] returns the dimensions of the GUI window to properly format
-* the game board.*)
-val get_dim: int * int
+ * the game board.
+   val get_dim: int * int*)
 
 (* [end_gui] ends the GUI to the starting state.  The initial
  * state is specified in the State module.*)

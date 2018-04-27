@@ -1,13 +1,22 @@
 open Tile
 
-let init_player n c turnval=
+type player = {
+  name : string;
+  col : color;
+  mutable first_turn : bool;
+  mutable score : int;
+  mutable remaining_tiles : tile list
+}
+
+
+let init_player n c =
   {name = n;
-   color = c;
+   col = c;
    score = 0;
    first_turn = true;
-   remaining_tiles = [init_tile One c , init_tile Tee c,
-                      init_tile L c, init_tile X c,
-                      init_tile Z c, init_tile Tree c,
+   remaining_tiles = [init_tile One c; init_tile Tee c;
+                      init_tile L c; init_tile X c;
+                      init_tile Z c; init_tile Tree c;
                       init_tile Line c]
   }
 
@@ -15,7 +24,7 @@ let name p =
   p.name
 
 let color p =
-  p.color
+  p.col
 
 let score p =
   p.score

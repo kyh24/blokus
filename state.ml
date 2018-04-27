@@ -9,8 +9,8 @@ type state = {
 }
 
 let init_state = {
-  board = init_board;
-  players = [init_player "Player 1" Yellow, init_player "Player 2" Blue];
+  board = Board.init_board;
+  players = [Player.init_player "Player 1" Yellow; Player.init_player "Player 2" Blue];
   canvas = [(-1,1,White);  (0,1,White);  (1,1,White);
             (-1,0,White);  (0,0,White);  (1,0,White);
             (-1,-1,White); (0,-1,White); (1,-1,White);]

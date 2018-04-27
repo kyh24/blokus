@@ -1,23 +1,17 @@
-Open Player
-  Open Tile
-  Open Board
+open Player
+open Tile
+open Board
 
 (*[state] represents the state of the game*)
 type state = {
-  board : int*int list;
+  board : ((int*int) * color) array;
   players : player list;
   mutable canvas: (int*int* color) list
 }
-(*[tile] is a Tile representing the color of a player's pieces in the game*
 
-(*[board] is the Board representing the entire 8*8 frame of the game*)
-type board= Board
-
-(*[color] is a string representing the color of a player's pieces in the game*)
-type color = string
 
 (*[init_state] is the initial state of the game with dimensions i by i*)
-val init_state : () -> state
+val init_state : state
 
 (** [is_valid_move lst] is true if the following conditions are satisfied
  *  (1) none of the edges are touching an edge of the same color
