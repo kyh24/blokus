@@ -8,7 +8,7 @@ type player = {
   remaining_tiles : tile list
 }
 
-(*[init player n c t_lst] is the state of player at the beginning of the game. *)
+(*[init player n c t_lst] is the state of player [p] at the beginning of the game. *)
 val init_player: string -> string -> int -> tile list -> player
 
 (*[name p] is the name of the player.*)
