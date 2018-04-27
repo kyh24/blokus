@@ -1,44 +1,17 @@
-<<<<<<< HEAD
 open Player
 open Tile
-=======
-Open Player
-  Open Tile
-  Open Board
->>>>>>> 20675d94c376fffc9ef4ddc5f8fc1041313173be
+open Board
 
 (*[state] represents the state of the game*)
-
 type state = {
-  board : int*int list;
+  board : ((int*int) * color) array;
   players : player list;
   mutable canvas: (int*int* color) list
 }
-(*[tile] is a Tile representing the color of a player's pieces in the game*
-
-(*[board] is the Board representing the entire 8*8 frame of the game*)
-type board= Board
-
-(*[color] is a string representing the color of a player's pieces in the game*)
-type color = string
-
-<<<<<<< HEAD
-(** [tile_id] is a variant representing one of the following possible tiles
-    One: X      Square: X X       Xshape:   X         Tee:   X X X
-                       X X               X X X                X
-                                           x                  X
-
-    Line:  X X X X       LilL:  X        BigL:  X
-                               X X             X
-                                               X X X
-
-*)
 
 
-=======
->>>>>>> 20675d94c376fffc9ef4ddc5f8fc1041313173be
 (*[init_state] is the initial state of the game with dimensions i by i*)
-val init_state : unit -> state
+val init_state : state
 
 (** [is_valid_move lst] is true if the following conditions are satisfied
  *  (1) none of the edges are touching an edge of the same color
@@ -52,16 +25,6 @@ val init_state : unit -> state
 *)
 val is_valid_move: int*int list -> color -> bool
 
-<<<<<<< HEAD
-(*[available_locs s] is an x*y list of the coordinates in the board where a tile
-  has not been placed*)
-val available_locs: state -> int*int list
-
-(*[taken_locs s] is an int*int list of the coordinates (x,y) in the board where
-  a tile has been placed*)
-val taken_locs: state -> int*int list
-=======
->>>>>>> 20675d94c376fffc9ef4ddc5f8fc1041313173be
 
 (* [do' c st] is [st'] if doing command [c] in state [st] results
  * in a new state [st'].

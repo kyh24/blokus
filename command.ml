@@ -1,5 +1,5 @@
 open Tile
-Open Graphics
+open Graphics
 
 (*[direction] represents the axis the player wants flip a tile over*)
 type direction = X | Y

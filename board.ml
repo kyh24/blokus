@@ -1,5 +1,4 @@
-
-type color = White | Blue | Yellow
+open Tile
 
 module Board = struct
   type board= ((int * int) * color) array
