@@ -17,15 +17,9 @@ let commands (c:unit) (t:tile): command =
     let pos = mouse_pos c in
     if pos > (5,4) then FLIP X
     else if pos > (0,0) then FLIP Y
-<<<<<<< HEAD
     else if pos > (0,0) then TURN t
     else if pos > (1,1) then PLACE t
     else failwith "poop" ) else failwith "fail"
-=======
-    else if pos > (2,0) then TURN
-    else if pos > (1,1) then PLACE
-    else failwith "poop"
->>>>>>> 2634d042d3e9a1eb4f44bfa368dc69687e5dc20e
 (*if we implement using user input from terminal*)
 
         (*
