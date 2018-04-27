@@ -30,7 +30,7 @@ type color = string
 
 
 (*[init_state] is the initial state of the game with dimensions i by i*)
-val init_state : unit -> state
+let init_state () = failwith "Unimplemented"
 
 (** [is_valid_move lst] is true if the following conditions are satisfied
  *   (1) none of the edges are touching an edge of the same color
@@ -42,20 +42,20 @@ val init_state : unit -> state
         board (no part of the tile is off the board)
  *
 *)
-val is_valid_move: int*int list -> color -> bool
+let is_valid_move lst c = failwith "Unimplemented"
 
 (*[available_locs s] is an x*y list of the coordinates in the board where a tile
   has not been placed*)
-val available_locs: state -> int*int list
+let available_locs st = failwith "Unimplemented"
 
 (*[taken_locs s] is an int*int list of the coordinates (x,y) in the board where
   a tile has been placed*)
-val taken_locs: state -> int*int list
+let taken_locs st = failwith "Unimplemented"
 
 (* [do' c st] is [st'] if doing command [c] in state [st] results
  * in a new state [st'].
 *)
-val do' : Command.command -> state -> state
+let do' c st = failwith "Unimplemented"
 
 (*[print_state s] prints a string representation of the state of the game*)
-val print_state: state -> unit
+let print_state st = failwith "Unimplemented"
