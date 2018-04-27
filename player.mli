@@ -9,7 +9,7 @@ type player = {
 }
 
 (*[init player n c t_lst] is the state of player [p] at the beginning of the game. *)
-val init_player: string -> color -> int -> tile list -> player
+val init_player: string -> color -> player
 
 (*[name p] is the name of the player.*)
 val name: player -> name

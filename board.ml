@@ -1,4 +1,4 @@
-open Tile
+
 type color = White | Blue | Yellow
 
 module Board = struct
