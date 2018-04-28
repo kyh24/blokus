@@ -33,7 +33,7 @@ let init_tile id c =
          value = 5;
          grid = [(-1,1,c);  (0,1,White);  (1,1,White);
                   (-1,0,c);  (0,0,White);  (1,0,White);
-                  (-1,-1,c); (0,-1,White); (1,-1,c);]
+                  (-1,-1,c); (0,-1,c); (1,-1,c);]
         }
   |X -> {name = X;
          col = c;

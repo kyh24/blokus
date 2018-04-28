@@ -1,5 +1,6 @@
 open Graphics
 open Printf
+open Gui
 
 
 let rec loop () =

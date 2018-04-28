@@ -58,6 +58,8 @@ let update_state t st =
   st.canvas <- t.grid;
   st
 
+let do' c st t= failwith "sdf"
+
 (* let do' c st t =
   match c with
   | FLIP X -> update_state (flip_tile t X) st
@@ -66,3 +68,4 @@ let update_state t st =
   | PLACE t -> update_state t st
 
 let print_state st = ()
+*)
