@@ -33,9 +33,3 @@ val do' : Command.command -> state -> tile -> state
 
 (*[print_state s] prints a string representation of the state of the game*)
 val print_state: state -> unit
-
-(*[flip_tile t dir] is tile t after a reflection over axis specified by [dir]*)
-val flip_tile : tile -> Command.direction -> tile
-
-(*[turn_tile t] is tile t after a 90 degree turn clockwise*)
-val turn_tile: tile -> tile
