@@ -41,7 +41,9 @@ let flip_tile t dir =
  end in
  let new_c = match coord with (_,_,c) -> c in
  (x,y,new_c)) old_grid in
- t.grid <- new_grid
+ t.grid <- new_grid;
+ t
+
 
 let turn_tile t =
  let old_grid = grid t in
@@ -49,14 +51,18 @@ let turn_tile t =
  let coord = List.find (fun (a,b,_) -> a= (-y) && b=x) old_grid in
  let new_c = match coord with (_,_,c) -> c in
  (x,y,new_c)) old_grid in
- t.grid <- new_grid
+ t.grid <- new_grid;
+ t
+
+let update_state t st =
+  st.canvas <- t.grid;
+  st
 
 (* let do' c st t =
   match c with
-  | FLIP X -> flip_tile t X
-  | FLIP Y -> flip_tile t Y
-  | TURN t -> turn_tile t
-  | PLACE t -> () *)
-
+  | FLIP X -> update_state (flip_tile t X) st
+  | FLIP Y -> update_state (flip_tile t Y) st
+  | TURN t -> update_state (turn_tile t) st
+  | PLACE t -> update_state t st
 
 let print_state st = ()

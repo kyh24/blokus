@@ -26,10 +26,16 @@ val init_state : state
 (* val is_valid_move: state -> int -> bool *)
 
 
-(* [do' c st] is [st'] if doing command [c] in state [st] results
+(* [do' c st t] is [st'] if doing command [c] in state [st] results
  * in a new state [st'].
 *)
-(* val do' : Command.command -> state -> state *)
+val do' : Command.command -> state -> tile -> state
 
 (*[print_state s] prints a string representation of the state of the game*)
 val print_state: state -> unit
+
+(*[flip_tile t dir] is tile t after a reflection over axis specified by [dir]*)
+val flip_tile : tile -> Command.direction -> tile
+
+(*[turn_tile t] is tile t after a 90 degree turn clockwise*)
+val turn_tile: tile -> tile
