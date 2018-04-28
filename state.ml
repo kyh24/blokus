@@ -51,12 +51,12 @@ let turn_tile t =
  (x,y,new_c)) old_grid in
  t.grid <- new_grid
 
-let do' c st t =
+(* let do' c st t =
   match c with
   | FLIP X -> flip_tile t X
   | FLIP Y -> flip_tile t Y
   | TURN t -> turn_tile t
-  | PLACE t -> ()
+  | PLACE t -> () *)
 
 
 let print_state st = ()

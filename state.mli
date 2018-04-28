@@ -23,13 +23,13 @@ val init_state : state
         board (no part of the tile is off the board)
  *
 *)
-val is_valid_move: state -> int -> bool
+(* val is_valid_move: state -> int -> bool *)
 
 
 (* [do' c st] is [st'] if doing command [c] in state [st] results
  * in a new state [st'].
 *)
-val do' : Command.command -> state -> state
+(* val do' : Command.command -> state -> state *)
 
 (*[print_state s] prints a string representation of the state of the game*)
 val print_state: state -> unit
