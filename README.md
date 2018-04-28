@@ -4,7 +4,7 @@
 | **Date** | **Priority**                   | **Sahithi**      | **Srishti**           | **Devki**           | **Kati**            |
 |----------|--------------------------------|------------------|-----------------------|---------------------|---------------------|
 | 4/25/18  | small files like Tile, Command | Tile functioning | GUI in general, Board | Command functioning | Player functioning  |
-|          |                                |                  |                       |                     |                     |
+| 4/27/18  | work on state and GUI          | State            | GUI                   | State               | State               |
 |          |                                |                  |                       |                     |                     |
 
 
