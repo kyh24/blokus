@@ -1,6 +1,7 @@
 open Player
 open Board
 open Tile
+open Command
 
 type state = {
   board : ((int*int) * color) array;
@@ -29,6 +30,33 @@ let is_valid_move st pos = failwith "SDF"
 (* The 3x3 select site must only have WHITE cells.
    The *)
 
-let do' c st = failwith "Unimplemented"
+let flip_tile t dir =
+ let old_grid = grid t in
+ let new_grid = List.map (fun (x,y,_) ->
+ let coord =
+   begin
+   match dir with
+   |X -> List.find (fun (a,b,_) -> a=x && b=(-y)) old_grid
+   |Y -> List.find (fun (a,b,_) -> a=(-x) && b=y) old_grid
+ end in
+ let new_c = match coord with (_,_,c) -> c in
+ (x,y,new_c)) old_grid in
+ t.grid <- new_grid
+
+let turn_tile t =
+ let old_grid = grid t in
+ let new_grid = List.map (fun (x,y,_) ->
+ let coord = List.find (fun (a,b,_) -> a= (-y) && b=x) old_grid in
+ let new_c = match coord with (_,_,c) -> c in
+ (x,y,new_c)) old_grid in
+ t.grid <- new_grid
+
+let do' c st t =
+  match c with
+  | FLIP X -> flip_tile t X
+  | FLIP Y -> flip_tile t Y
+  | TURN t -> turn_tile t
+  | PLACE t -> ()
+
 
 let print_state st = ()
