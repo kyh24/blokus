@@ -29,3 +29,7 @@ val color : tile -> color
 
 (*[color t] is the grid of tile t*)
 val grid: tile -> ((int * int) * color) list
+
+val flip_tile: tile -> direction -> tile
+
+val turn_tile: tile -> tile

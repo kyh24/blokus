@@ -1,6 +1,8 @@
+test:
+	ocamlbuild -use-ocamlfind test.byte && ./test.byte
+
 compile:
 	ocamlbuild -use-ocamlfind state.cmo command.cmo gui.cmo tile.cmo player.cmo board.cmo
-
 clean:
 	ocamlbuild -clean
 

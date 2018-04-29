@@ -32,4 +32,4 @@ val init_state : state
 val do' : Command.command -> state -> tile -> state
 
 (*[print_state s] prints a string representation of the state of the game*)
-val print_state: state -> unit
+val print_state: ((int*int) * color) array -> unit

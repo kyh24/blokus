@@ -6,15 +6,15 @@ open Command
 type state = {
   board : ((int*int) * color) array;
   players : player list;
-  mutable canvas: (int*int*color) list
+  mutable canvas: ((int*int)*color) list
 }
 
 let init_state = {
   board = Board.init_board;
   players = [Player.init_player "Player 1" Yellow; Player.init_player "Player 2" Blue];
-  canvas = [(-1,1,White);  (0,1,White);  (1,1,White);
-            (-1,0,White);  (0,0,White);  (1,0,White);
-            (-1,-1,White); (0,-1,White); (1,-1,White);]
+  canvas = [((-1,1),White);  ((0,1),White);  ((1,1),White);
+            ((-1,0),White);  ((0,0),White);  ((1,0),White);
+            ((-1,-1),White); ((0,-1),White); ((1,-1),White);]
 }
 
 let get_center_cell st pos= fst (Array.get st.board pos)
@@ -200,18 +200,16 @@ let rec print_state brd =
 
 
 
-(*let update_state t st =
+let update_state t st =
   st.canvas <- t.grid;
-  st*)
+  st
 
-let do' c st t= failwith "sdf"
 
-(* let do' c st t =
-   match c with
-   | FLIP X -> update_state (flip_tile t X) st
-   | FLIP Y -> update_state (flip_tile t Y) st
-   | TURN t -> update_state (turn_tile t) st
-   | PLACE t -> update_state t st
+let do' c st t =
+  match c with
+  | FLIP X -> update_state (flip_tile t X) st
+  | FLIP Y -> update_state (flip_tile t Y) st
+  | TURN t -> update_state (turn_tile t) st
+  | PLACE t -> update_state t st
 
-   let print_state st = ()
-*)
+let print_state st = ()
