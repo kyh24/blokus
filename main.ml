@@ -122,24 +122,32 @@ let rec main ()=
   let yf= Graphics.size_y () in
   moveto (xf/2) (2*yf/3);
   draw_string "bLoKaML";
-  set_color red;
+  set_color green;
   draw_rect (xf/4) (yf/4) (xf/2) (yf/7);
+  set_color red;
+  draw_rect (xf/4) ((yf/4)+(yf/7)+20) (xf/2) (yf/7);
 
-  let starting = wait_next_event [Key_pressed] in
-  if starting.key == 's' then loop () else ()
+  let starting =
+    wait_next_event [Button_down] in
+  let xf= Graphics.size_x () in
+  let yf= Graphics.size_y () in
+  if (*if green*)(starting.mouse_x >= xf/4 && starting.mouse_x<= ((xf/4) + (xf/2))) && (starting.mouse_y >= yf/4 && starting.mouse_y<= ((yf/4) + (yf/7)))
+  then loop ()
+  else if (*red*)(starting.mouse_x >= xf/4 && starting.mouse_x<= ((xf/4) + (xf/2))) && (starting.mouse_y >= ((yf/4)+(yf/7)+20) && starting.mouse_y<= (((yf/4)+(yf/7)+20) + (yf/7)))
+  then ()
+  else (*no box clicked*) main()
 
-  (* let starting = wait_next_event [Button_down] in
-  if (starting.mouse_x >= (xf/4) && starting.mouse_x <= (xf/2)) &&
-     (starting.mouse_y >= (yf/4) && starting.mouse_y <= (yf/7))
-  then loop () else main () *)
+(* let starting = wait_next_event [Button_down] in
+   if (starting.mouse_x >= (xf/4) && starting.mouse_x <= (xf/2)) &&
+   (starting.mouse_y >= (yf/4) && starting.mouse_y <= (yf/7))
+   then loop () else main () *)
 
-  (* let starting = wait_next_event [Key_pressed] in
-     if starting.key == 's' then loop () else ()
+(* let starting = wait_next_event [Key_pressed] in
+   if starting.key == 's' then loop () else ()
+   if (starting.mouse_x >= (xf/4) && starting.mouse_x <= (xf/2)) &&
+   (starting.mouse_y >= (yf/4) && starting.mouse_y <= (yf/7))*)
 
-     if (starting.mouse_x >= (xf/4) && starting.mouse_x <= (xf/2)) &&
-     (starting.mouse_y >= (yf/4) && starting.mouse_y <= (yf/7))*)
-
-  (* moveto 200 200; Graphics.set_text_size 54; let (x,y)= Graphics.text_size "sdfsdfs" in draw_string (string_of_int x) *)
+(* moveto 200 200; Graphics.set_text_size 54; let (x,y)= Graphics.text_size "sdfsdfs" in draw_string (string_of_int x) *)
 
 
 
@@ -150,5 +158,5 @@ let () =
   (* loop (); *)
   close_graph ();
 
-(* brew install Caskroom/cask/xquartz
-brew reinstall ocaml --with-x11 *)
+  (* brew install Caskroom/cask/xquartz
+     brew reinstall ocaml --with-x11 *)
