@@ -10,9 +10,14 @@
 
 MARK UR TIMESSSS: https://www.when2meet.com/?6874771-ab5IV
 
-**NOTES**: 
+**NOTES**:
 
 Structure of GUI (MVC form)
 Model: board, state
-Controller: event listener, command 
+Controller: event listener, command
 View: GUI
+
+
+Player must install Graphics: opam install Graphics
+opam list (chekc your library of opam stuff for ocaml)
+install xquartz (using )

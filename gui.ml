@@ -2,6 +2,16 @@
   See gui.mli for signatures
   Maintains the GUI frame which includes what elements must be a part of
   the application at all times. *)
+open Tile
+open Player
+open State
+open Command
+open Graphics
+
+
+(* let start_game_page =
+  clear_graph ();
+  draw_rect 200 200 200 200; *)
 
 (* type gui_state_event =
   | Init
