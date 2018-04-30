@@ -9,8 +9,8 @@ type state = {
   mutable canvas: ((int*int)*color) list
 }
 
-let init_state = {
-  board = Board.init_board;
+let init_state s = {
+  board = (init_board s);
   players = [Player.init_player "Player 1" Yellow; Player.init_player "Player 2" Blue];
   canvas = [((-1,1),White);  ((0,1),White);  ((1,1),White);
             ((-1,0),White);  ((0,0),White);  ((1,0),White);
@@ -44,22 +44,9 @@ let rec get_tile_colors tl coords acc =
     end
 
 
-(*let valid_first_move p select_space =
-  if (p.name = "Player 1" && match select_space.get (0,0) with (_,_,c) -> c = Yellow)) ||*)
-
-(*[is_valid_select space t select_space] is true if none of the coordinates in
-  [select_space] are negative, unless it is the player's first move. false
-  otherwise.*)
-(*let is_valid_select_space p select_space =
-  if p.first_turn = true then (
-    let lst = List.map (fun (x,y,c) -> if ((x < 0 || x> 7) || (y<0 || y > 7))
-                         then (if c <> White then false else true) else true) select_space in
-    (not (List.mem false lst)) &&  else (
-    true)*)
-
 
 (* List.fold_right (fun (x,y,_) acc-> if x < 0 || y < 0 then false::acc else false::acc) select_space [] *)
-let check_sides tile_colors brd_array =
+let check_sides tile_colors brd_array highest_i =
   let tile_colors_ref = ref tile_colors in
   let valid_sides_ref = ref true in
   while (!tile_colors_ref <> [] || !valid_sides_ref) do (
@@ -72,17 +59,17 @@ let check_sides tile_colors brd_array =
           let bottom = List.assoc (x, y+1) board_list in
           valid_sides_ref := ((right <> col) && (bottom <> col))
         )(*check right and bottom) *)
-        else if (x=0 && y=7) then (
+        else if (x=0 && y=highest_i) then (
           let top = List.assoc (x, y-1) board_list in
           let right = List.assoc (x+1, y) board_list in
           valid_sides_ref := ((top <> col) && (right <> col))
         )(*check top and right*)
-        else if (x=7 && y=0) then (
+        else if (x=highest_i && y=0) then (
           let left = List.assoc (x-1,y) board_list in
           let bottom = List.assoc (x, y+1) board_list in
           valid_sides_ref := ((left <> col) && (bottom <> col))
         ) (*check left and bottom*)
-        else if (x=7 && y=7) then (
+        else if (x=highest_i && y=highest_i) then (
           let top = List.assoc (x, y-1) board_list in
           let left = List.assoc (x-1,y) board_list in
           valid_sides_ref := ((left <> col) && (top <> col))
@@ -94,7 +81,7 @@ let check_sides tile_colors brd_array =
             let bottom = List.assoc (x, y+1) board_list in
             valid_sides_ref := ((top <> col) && (right <> col) && (bottom <> col))
           ) (*don't check the left*)
-          else if (x=7) then (
+          else if (x=highest_i) then (
             let top = List.assoc (x, y-1) board_list in
             let left = List.assoc (x-1, y) board_list in
             let bottom = List.assoc (x, y+1) board_list in
@@ -106,7 +93,7 @@ let check_sides tile_colors brd_array =
             let bottom = List.assoc (x, y+1) board_list in
             valid_sides_ref := ((left <> col) && (right <> col) && (bottom <> col))
           ) (*dont check top*)
-          else if (y=7) then (
+          else if (y=highest_i) then (
             let top = List.assoc (x, y-1) board_list in
             let right = List.assoc (x+1, y) board_list in
             let left = List.assoc (x-1, y) board_list in
@@ -143,39 +130,36 @@ let check_corners t brd =
   )
   done; !valid_corners_ref
 
-let valid_first_move p tile_colors brd =
+let valid_first_move p tile_colors brd highest_i=
   let brd_lst = Array.to_list brd in
   let valid_brd_coord =  List.filter (fun ((x, y), col) -> List.mem_assoc (x,y) brd_lst) tile_colors in
   let invalid_brd_coord = ref (List.fold_left (fun acc ((x,y),col) ->
       if List.mem_assoc (x,y) valid_brd_coord then acc else ((x,y),col)::acc) [] tile_colors) in
   if (p.first_turn) then (
-    if (List.mem_assoc (0,0) tile_colors) then
-      begin
-        let invalid_coord_no_color = ref true in
-        while (!invalid_brd_coord <> [] && !invalid_coord_no_color) do(
-          match !invalid_brd_coord with
-          |[] -> ()
-          |((x,y), col)::t -> if col = White then invalid_coord_no_color:= true
-            else invalid_coord_no_color := false
-        )
-        done;
-        if (p.name = "Player 1") then
-          (List.assoc (0,0) tile_colors = Yellow) && !invalid_coord_no_color
-        else (List.assoc (0,0) tile_colors = Blue) && !invalid_coord_no_color
-      end
-    else false
+      let invalid_coord_no_color = ref true in
+      while (!invalid_brd_coord <> [] && !invalid_coord_no_color) do(
+        match !invalid_brd_coord with
+        |[] -> ()
+        |((x,y), col)::t -> if col = White then invalid_coord_no_color:= true
+          else invalid_coord_no_color := false
+      )
+      done;
+      if (p.name = "Player 1") then
+        (List.mem_assoc (0,0) tile_colors && List.assoc (0,0) tile_colors = Yellow) && !invalid_coord_no_color
+      else (List.mem_assoc (highest_i, highest_i) tile_colors && List.assoc (highest_i,highest_i) tile_colors = Blue) && !invalid_coord_no_color
   )
   else (List.length !invalid_brd_coord) <> 0
 
 
 let is_valid_move p st pos tl =
+  let highest_i = brd_size st.board in
   let dot = get_center_cell st pos in
   let coordinates = get_selection_space_coords dot in
   let colors_on_board = get_board_colors st.board coordinates [] in
   let colors_of_tile = get_tile_colors tl coordinates [] in
-  if (valid_first_move p colors_of_tile st.board) then (
+  if (valid_first_move p colors_of_tile st.board highest_i) then (
     let valid_cells = List.map2 (fun ((bx,by),b_col) ((tx,ty), t_col) ->
-        if (b_col = White && t_col <> White) then (check_sides colors_of_tile st.board) && (check_corners tl st.board)
+        if (b_col = White && t_col <> White) then (check_sides colors_of_tile st.board highest_i) && (check_corners tl st.board)
         else t_col = White) colors_on_board colors_of_tile in
     not(List.mem false valid_cells)
   )
@@ -189,27 +173,23 @@ let col_to_name col =
   |Yellow -> "Y"
   |White -> "W"
 
-let rec print_state brd =
-  let brd_lst = Array.to_list brd in
-  let str =
-    match brd_lst with
-    |[] -> ""
-    |((x,_),col)::t -> if x <> 7 then col_to_name col ^ " " else col_to_name col ^ " NEXT ROW:"
-  in print_string str
-
-
-
 
 let update_state t st =
   st.canvas <- t.grid;
   st
 
 
-let do' c st t =
+let do' c st t = 
   match c with
   | FLIP X -> update_state (flip_tile t X) st
   | FLIP Y -> update_state (flip_tile t Y) st
   | TURN t -> update_state (turn_tile t) st
   | PLACE t -> update_state t st
 
-let print_state st = ()
+let rec print_state brd =
+let brd_lst = Array.to_list brd in
+let str =
+ match brd_lst with
+ |[] -> ""
+ |((x,_),col)::t -> if x <> 7 then col_to_name col ^ " " else col_to_name col ^ " NEXT ROW:"
+in print_string str

@@ -76,9 +76,14 @@ let tile_name t = t.name
 
 let value t = t.value
 
-let color t = t.col
+let col t = t.col
 
 let grid t = t.grid
+
+let rec compare_lsts lst1 lst2 =
+    match lst1 with
+    | [] -> true
+    | h::t -> List.mem h lst2 && compare_lsts t lst2 
 
 let flip_tile t dir =
   let new_grid = List.map (fun ((x,y),_) ->

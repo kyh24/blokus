@@ -1,17 +1,17 @@
 open Tile
 
-module Board = struct
-  type board= ((int * int) * color) array
-  type gridonboard = ((int * int) * color) list
 
-  let init_board =
-    [|((0,0),White) ; ((1,0),White); ((2,0),White); ((3,0),White); ((4,0),White); ((5,0),White); ((6,0),White); ((7,0),White);
-      ((0,1),White); ((1,1),White); ((2,1),White); ((3,1),White); ((4,1),White); ((5,1),White); ((6,1),White); ((7,1),White);
-      ((0,2),White); ((1,2),White); ((2,2),White); ((3,2),White); ((4,2),White); ((5,2),White); ((6,2),White); ((7,2),White);
-      ((0,3),White); ((1,3),White); ((2,3),White); ((3,3),White); ((4,3),White); ((5,3),White); ((6,3),White); ((7,3),White);
-      ((0,4),White); ((1,4),White); ((2,4),White); ((3,4),White); ((4,4),White); ((5,4),White); ((6,4),White); ((7,4),White);
-      ((0,5),White); ((1,5),White); ((2,5),White); ((3,5),White); ((4,5),White); ((5,5),White); ((6,5),White); ((7,5),White);
-      ((0,6),White); ((1,6),White); ((2,6),White); ((3,6),White); ((4,6),White); ((5,6),White); ((6,6),White); ((7,6),White);
-      ((0,7),White); ((1,7),White); ((2,7),White); ((3,7),White); ((4,7),White); ((5,7),White); ((6,7),White); ((7,7),White);
-    |]
-end
+type board= ((int * int) * color) array
+
+let rec init_row brd_size x (y:int) =
+  if brd_size = 0 then []
+  else ((x,y), White)::(init_row (brd_size - 1) (x+1) y)
+
+let rec init_board_lst brd_size iterx itery =
+  if  itery = brd_size then [] else (init_row (brd_size) 0 itery)@ (init_board_lst brd_size (itery+1) (iterx +1))
+
+let init_board brd_size : ((int * int) * color) array =
+  Array.of_list (init_board_lst brd_size 0 0)
+
+
+let brd_size brd = int_of_float (float_of_int(Array.length brd) ** (1./.2.))
