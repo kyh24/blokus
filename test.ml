@@ -17,11 +17,15 @@ let tests = [
   "tile_name"  >:: (fun _ -> assert_equal One (tile_name t1));
   (* "tile_col"  >:: (fun _ -> assert_equal Blue (col t)); *)
   "tile_grid"  >:: (fun _ -> assert_equal grid_t1 (grid t1));
-  "tile_corners" >:: (fun _ -> assert_equal corners_t (t1.corners));
 
-  "t_flipped_cornersX" >:: (fun _ -> assert_equal true (compare_lsts t1.corners ((flip_tile t1 X).corners)));
+  "tile_corners" >:: (fun _ -> assert_equal corners_t (t1.corners));
+  "tile_corners2" >:: (fun _ -> assert_equal true (compare_lsts t1.corners (flip_tile t1 X).corners));
+  "tile_corners3" >:: (fun _ -> assert_equal corners_t (t1.corners));
+
+  (* "t_flipped_cornersX" >:: (fun _ -> assert_equal true (compare_lsts t4.corners t4.corners));
+  "t_flipped_cornersX1" >:: (fun _ -> assert_equal true (compare_lsts t4.corners ((flip_tile t4 X).corners)));
   "t_flipped_cornersY" >:: (fun _ -> assert_equal true (compare_lsts t2.corners ((flip_tile t2 Y).corners)));
-  "t_turn1_corners" >:: (fun _ -> assert_equal true (compare_lsts corners_t ((turn_tile t3 ).corners)));
+  "t_turn1_corners" >:: (fun _ -> assert_equal true (compare_lsts corners_t ((turn_tile t3 ).corners))); *)
 
 
 
