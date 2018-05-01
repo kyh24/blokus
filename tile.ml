@@ -29,7 +29,7 @@ let init_tile id c =
            grid = [((-1,1),c);      ((0,1),c);  ((1,1),c);
                    ((-1,0),White);  ((0,0),c);  ((1,0),White);
                    ((-1,-1),White); ((0,-1),c); ((1,-1),White)];
-           corners = [(-2,2);(2,2);(-1,-2);(1,-2)]
+           corners = [(-2,2);(2,2);(-1,-2);(1,-2);(2,0);(-2,0)]
           }
   |L -> {name = L;
          col = c;
@@ -53,7 +53,7 @@ let init_tile id c =
          grid = [((-1,1),c);  ((0,1),c);  ((1,1),White);
                  ((-1,0),White);  ((0,0),c);      ((1,0),White);
                  ((-1,-1),White); ((0,-1),c); ((1,-1),c)];
-         corners = [(-2,2);(-2,0);(1,1);(-1,-2);(2,0);(2,-2)]
+         corners = [(-2,2);(-2,0);(1,2);(-1,-2);(2,0);(2,-2)]
         }
   |Tree -> {name = Tree;
             col = c;
@@ -69,7 +69,7 @@ let init_tile id c =
             grid = [((-1,1),White);  ((0,1),c);  ((1,1),White);
                     ((-1,0),White);  ((0,0),c);      ((1,0),White);
                     ((-1,-1),White); ((0,-1),c); ((1,-1),White)];
-            corners = [(-1,2);(1,1);(1,-1);(-1,-1)]
+            corners = [(-1,2);(1,2);(1,-2);(-1,-2)]
            }
 
 let tile_name t = t.name
@@ -81,9 +81,9 @@ let col t = t.col
 let grid t = t.grid
 
 let rec compare_lsts lst1 lst2 =
-    match lst1 with
-    | [] -> true
-    | h::t -> List.mem h lst2 && compare_lsts t lst2 
+  match lst1 with
+  | [] -> true
+  | h::t -> List.mem h lst2 && compare_lsts t lst2
 
 let flip_tile t dir =
   let new_grid = List.map (fun ((x,y),_) ->
@@ -110,5 +110,5 @@ let turn_tile t =
       let new_c = match coord with ((_,_),c) -> c in
       ((x,y),new_c)) t.grid in
   t.grid <- new_grid;
-  t.corners <- List.map(fun (x,y) -> (-y,x)) t.corners;
+  t.corners <- List.map(fun (x,y) -> (y,-x)) t.corners;
   t
