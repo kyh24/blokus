@@ -112,3 +112,4 @@ let turn_tile t =
   t.grid <- new_grid;
   t.corners <- List.map(fun (x,y) -> (y,-x)) t.corners;
   t
+    (*fixed rotations*)
