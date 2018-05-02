@@ -1,8 +1,7 @@
-(* open Lwt *)
-(* open GMain *)
-(* open GObj *)
-(* open Graphics
 
+val main: unit -> unit
+
+(*
 type gui_state_event =
   | Init
   | Comm of Command.command
