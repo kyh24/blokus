@@ -13,5 +13,11 @@ let rec init_board_lst brd_size iterx itery =
 let init_board brd_size : ((int * int) * color) array =
   Array.of_list (init_board_lst brd_size 0 0)
 
-
 let brd_size brd = int_of_float (float_of_int(Array.length brd) ** (1./.2.))
+
+let get_index (x,y) size = y*size + x
+
+let rec place_tile_on_brd tile_colors brd =
+  match tile_colors with
+  |[] -> ()
+  |((x,y), c)::t -> Array.set brd (get_index (x,y) (brd_size brd)) ((x,y), c); place_tile_on_brd t brd

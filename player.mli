@@ -25,3 +25,6 @@ val score: player -> int
 (*[remaining_tiles p] is the list of tiles that the player has not yet placed
   onto the board*)
 val remaining_tiles : player -> tile list
+
+(*[player_place_tile p t] removes tile [t] from player [p]'s list of remaining tiles*)
+val player_place_tile: player -> tile -> unit
