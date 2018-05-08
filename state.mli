@@ -29,6 +29,9 @@ val init_state : int -> state
 val is_valid_move: player -> state -> int -> tile -> bool
 
 
+val place_tile: state -> player-> tile -> int -> unit
+
+
 (* [do' c st t] is [st'] if doing command [c] in state [st] results
  * in a new state [st'].
 *)

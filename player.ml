@@ -31,3 +31,7 @@ let score p =
 
 let remaining_tiles p =
   p.remaining_tiles
+
+let player_place_tile p t =
+  p.score <- p.score + t.value;
+  p.remaining_tiles <- List.filter (fun elt -> tile_name elt != tile_name t) p.remaining_tiles

@@ -167,6 +167,14 @@ let is_valid_move p st pos tl =
 (* The 3x3 select site must only have WHITE cells.
    The *)
 
+ let place_tile st p t pos=
+   if is_valid_move p st pos t then
+   let dot = get_center_cell st pos in
+   let coordinates = get_selection_space_coords dot in
+   let colors_of_tile = get_tile_colors t coordinates [] in
+   place_tile_on_brd colors_of_tile st.board;
+   player_place_tile p t
+
 let col_to_name col =
   match col with
   |Blue -> "B"
@@ -179,7 +187,7 @@ let update_state t st =
   st
 
 
-let do' c st t = 
+let do' c st t =
   match c with
   | FLIP X -> update_state (flip_tile t X) st
   | FLIP Y -> update_state (flip_tile t Y) st
