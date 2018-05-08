@@ -1,5 +1,5 @@
 
-val main: unit -> unit
+val opening: unit -> unit
 
 (*
 type gui_state_event =

@@ -6,16 +6,16 @@ open Board
 open Tile
 
 (* type gamescreen = {
-  (* mutable gamestate: state;
-     mutable current_player: player; *)
+  mutable gamestate: state;
+  mutable current_player: player;
   board_size : int;
   board_dim: int;
   board_gui_dim: int * int;
   canvas_dim: int;
   canvas_gui_dim: int * int;
-  (* mutable p1messages: string list;
+  mutable p1messages: string list;
   mutable p2messages: string list;
-  mutable mainmessages: string list; *)
+  mutable mainmessages: string list;
 } *)
 
 (*
@@ -29,18 +29,17 @@ let openning_board ={
   (* mutable p1messages: string list;
      mutable p2messages: string list;
      mutable mainmessages: string list; *)
-} *)
+}
+*)
 
-open State
-open Graphics
-open Printf
-(* open Camlimages
-   open Png *)
+
+
+
+
 
 let rec loop () =
   clear_graph ();
   set_color black;
-
   (*Board setup*)
   let xf= Graphics.size_x () in
   let yf= Graphics.size_y () in
@@ -145,7 +144,7 @@ let rec loop () =
    if e.key <> 'q' then loop () else () *)
 
 
-let rec main ()=
+let rec opening ()=
   clear_graph ();
   (* Png.load ("blokaml.png"); *)
   let xf= Graphics.size_x () in
@@ -170,7 +169,7 @@ let rec main ()=
   then loop ()
   else if (*red*)(starting.mouse_x >= xf/4 && starting.mouse_x<= ((xf/4) + (xf/2))) && (starting.mouse_y >= ((yf/4)+(yf/7)+20) && starting.mouse_y<= (((yf/4)+(yf/7)+20) + (yf/7)))
   then ()
-  else (*no box clicked*) main ()
+  else (*no box clicked*) opening ()
 
 
 
