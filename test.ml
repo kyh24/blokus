@@ -74,12 +74,12 @@ let tests = [
   (* L Tile Tests *)
   "L_tile"        >:: (fun _ -> assert_equal L (tile_name t1_L));
   "flip L"        >:: (fun _ -> assert_equal true (compare_lsts flip_X_corners (flip_tile t1_L X).corners));
-  (* "turn_from_flip">:: (fun _ -> assert_equal true
+  "turn_from_flip">:: (fun _ -> assert_equal true
                           (((t1_L |> turn_tile).corners) |>
-                           compare_lsts turn_flip_X)); *)
-  (* "turn_2"        >:: (fun _ -> assert_equal true (compare_lsts turn_2 (turn_tile t1_L).corners)); *)
-  (* "turn_to_norm"  >:: (fun _ -> assert_equal true (compare_lsts corners_of_t1_L (turn_tile t1_L).corners)); *)
-  (* "flip_Y"        >:: (fun _ -> assert_equal true (compare_lsts flip_Y_corners (flip_tile t1_L Y).corners)); *)
+                           compare_lsts turn_flip_X));
+  "turn_2"        >:: (fun _ -> assert_equal true (compare_lsts turn_2 (turn_tile t1_L).corners));
+  "turn_to_norm"  >:: (fun _ -> assert_equal true (compare_lsts corners_of_t1_L (turn_tile t1_L).corners));
+  "flip_Y"        >:: (fun _ -> assert_equal true (compare_lsts flip_Y_corners (flip_tile t1_L Y).corners));
 
   (* X Tile Tests *)
   (* "X_tile"        >:: (fun _ -> assert_equal X (tile_name t1_x)); *)
@@ -87,9 +87,9 @@ let tests = [
   "turn_frm_flip" >:: (fun _ -> assert_equal true
                           (((t1_x |> turn_tile).corners) |>
                            compare_lsts x_Corners));
-  (* "turn_2'"        >:: (fun _ -> assert_equal true (compare_lsts x_Corners (turn_tile t1_x).corners)); *)
-  (* "turn_to_norm'"  >:: (fun _ -> assert_equal true (compare_lsts x_Corners (turn_tile t1_x).corners)); *)
-  (* "flip_Y'"        >:: (fun _ -> assert_equal true (compare_lsts x_Corners (flip_tile t1_x Y).corners)); *)
+  "turn_2'"        >:: (fun _ -> assert_equal true (compare_lsts x_Corners (turn_tile t1_x).corners));
+  "turn_to_norm'"  >:: (fun _ -> assert_equal true (compare_lsts x_Corners (turn_tile t1_x).corners));
+  "flip_Y'"        >:: (fun _ -> assert_equal true (compare_lsts x_Corners (flip_tile t1_x Y).corners));
 
   (* Line Tile Tests *)
   "flip line"     >:: (fun _ -> assert_equal true (compare_lsts line_corns (flip_tile t1_line X).corners));
