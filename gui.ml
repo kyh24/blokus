@@ -12,12 +12,11 @@ type gamescreen = {
   mutable p1messages: string list;
   mutable p2messages: string list;
   mutable mainmessages: string list; *)
-  gboard: int*int*int*int (*200, 175 ,400, 400*)
+  guiboard_dim: int*int*int*int (*200, 175 ,400, 400*)
 }
 
-let game = {
-  gboard = (200, 175, 400, 400)
-  gcell = (40,40)
+let current_gamescreen = {
+  guiboard_dim = (200, 175, 400, 400)
 }
 
 
@@ -33,33 +32,31 @@ let draw_text x y color str=
   moveto x y;
   draw_string (str)
 
-let get_x figure =
-  match figure with
-  | (x,_,_, _) -> x
+(*Changes Canvas: depends on what option is selected by *)
+(* let update_canvas x r we =
+  let statecanvas= State.state.canvas *)
 
-let get_y figure=
-  match figure with
-  |(_,y,_,_) -> y
 
-let get_w figure=
-  match figure with
-  |(_,_,w,_)-> w
-
-let get_h figure =
-  match figure with
-  |(_,_,_,h)-> h
 
 
 let rec loop () =
   clear_graph ();
   set_color black;
   (*Board setup*)
+  let xf= Graphics.size_x () in
+  let yf= Graphics.size_y () in
+  let xboard = 400 in
+  let yboard = 400 in
+  let xboardleftcorner= (xf-xboard)/2 in
+  let yboardleftcorner= (yf-yboard)/2 in
+  draw_rect xboardleftcorner yboardleftcorner xboard yboard;
+
   (*Board cell set up*)
   for x = 0 to 9
   do
     for y = 0 to 9 do
-      let pt1 = (get_x game.gboard) + (get_w game.gboard/10 * (x)) in
-      let pt2 = (get_y game.gboard + get_h game.gboard) - (get_w game.gboard/10 * (y+1)) in
+      let pt1 = (xboardleftcorner) + (yboard/10 * (x)) in
+      let pt2 = (yboardleftcorner +400) - (xboard/10 * (y+1)) in
       draw_rect pt1 pt2 (xboard/10) (yboard/10);
       moveto pt1 pt2; draw_string ("("^(string_of_int x)^", "^(string_of_int y)^")");
     done;
