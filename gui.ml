@@ -5,56 +5,61 @@ open Player
 open Board
 open Tile
 
-(* type gamescreen = {
-  mutable gamestate: state;
-  mutable current_player: player;
-  board_size : int;
-  board_dim: int;
-  board_gui_dim: int * int;
-  canvas_dim: int;
-  canvas_gui_dim: int * int;
+type gamescreen = {
+  (* mutable gamestate: state; (*state.init_state 10*)
+  mutable current_player: player; (*gamestate.current_player*)
+  mutable board: board; (*gamestate.board*)
   mutable p1messages: string list;
   mutable p2messages: string list;
-  mutable mainmessages: string list;
-} *)
-
-(*
-let openning_board ={
-  (* mutable gamestate: state;
-     mutable current_player: player; *)
-  board_dim = 10;
-  board_gui_dim = 400 , 400;
-  canvas_dim: int;
-  canvas_gui_dim: int;
-  (* mutable p1messages: string list;
-     mutable p2messages: string list;
-     mutable mainmessages: string list; *)
+  mutable mainmessages: string list; *)
+  gboard: int*int*int*int (*200, 175 ,400, 400*)
 }
-*)
+
+let game = {
+  gboard = (200, 175, 400, 400)
+  gcell = (40,40)
+}
 
 
 
+(*Draws solid rectangles*)
+let draw_gui_rect x y w h color =
+  set_color color;
+  fill_rect x y w h
 
+(*Writes Text *)
+let draw_text x y color str=
+  set_color color;
+  moveto x y;
+  draw_string (str)
+
+let get_x figure =
+  match figure with
+  | (x,_,_, _) -> x
+
+let get_y figure=
+  match figure with
+  |(_,y,_,_) -> y
+
+let get_w figure=
+  match figure with
+  |(_,_,w,_)-> w
+
+let get_h figure =
+  match figure with
+  |(_,_,_,h)-> h
 
 
 let rec loop () =
   clear_graph ();
   set_color black;
   (*Board setup*)
-  let xf= Graphics.size_x () in
-  let yf= Graphics.size_y () in
-  let xboard = 400 in
-  let yboard = 400 in
-  let xboardleftcorner= (xf-xboard)/2 in
-  let yboardleftcorner= (yf-yboard)/2 in
-  draw_rect xboardleftcorner yboardleftcorner xboard yboard;
-
   (*Board cell set up*)
   for x = 0 to 9
   do
     for y = 0 to 9 do
-      let pt1 = (xboardleftcorner) + (yboard/10 * (x)) in
-      let pt2 = (yboardleftcorner +400) - (xboard/10 * (y+1)) in
+      let pt1 = (get_x game.gboard) + (get_w game.gboard/10 * (x)) in
+      let pt2 = (get_y game.gboard + get_h game.gboard) - (get_w game.gboard/10 * (y+1)) in
       draw_rect pt1 pt2 (xboard/10) (yboard/10);
       moveto pt1 pt2; draw_string ("("^(string_of_int x)^", "^(string_of_int y)^")");
     done;
@@ -87,10 +92,12 @@ let rec loop () =
   moveto (((xf-xboard)/4)+43) (yf- 476 +30); draw_string ("Return to Inventory");
 
   (* set_color red; fill_rect ((xf-xboard)/4) (yf- 542) (((xf-xboard)/4) -10) 66; *)
-  draw_rect ((xf-xboard)/4) (yf- 542) (((xf-xboard)/4) -10) 66;
+  draw_rect ((xf-xboard)/4) (yf- 542) ((((xf-xboard)/4) -10)/2 ) 66;
   set_color black;
-  moveto (((xf-xboard)/4)+83) (yf- 542 +30 ); draw_string ("Flip");
+  moveto (((xf-xboard)/4)+83) (yf- 542 +30 ); draw_string ("Flip X");
 
+  draw_rect (((xf-xboard)/4)+(((((xf-xboard)/4) -10)/2))) (yf- 542) ((((xf-xboard)/4) -10)/2 ) 66;
+  (* moveto (((xf-xboard)/4)+3) (yf- 542 +30 ); draw_string ("Flip Y"); *)
 
   (* set_color yellow; fill_rect ((xf-xboard)/4) (yf- 608) (((xf-xboard)/4) -10) 66; *)
   draw_rect ((xf-xboard)/4) (yf- 608) (((xf-xboard)/4) -10) 66;
