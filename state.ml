@@ -6,17 +6,22 @@ open Command
 type state = {
   board : ((int*int) * color) array;
   players : player list;
-  mutable canvas: ((int*int)*color) list
+  mutable canvas: ((int*int)*color) list;
+  curr_player: player;
 (*NEED CURRENT PLAYER FIELD*)
 
 }
 
-let init_state s = {
+let init_state s =
+  let player_1 = Player.init_player "Player 1" Yellow in
+  let player_2 = Player.init_player "Player 2" Blue in
+  {
   board = (init_board s);
-  players = [Player.init_player "Player 1" Yellow; Player.init_player "Player 2" Blue];
+  players = [player_1; player_2];
   canvas = [((-1,1),White);  ((0,1),White);  ((1,1),White);
             ((-1,0),White);  ((0,0),White);  ((1,0),White);
-            ((-1,-1),White); ((0,-1),White); ((1,-1),White);]
+            ((-1,-1),White); ((0,-1),White); ((1,-1),White)];
+  curr_player = player_1
 }
 
 let get_center_cell st pos= fst (Array.get st.board pos)
@@ -184,17 +189,20 @@ let col_to_name col =
   |White -> "W"
 
 
-let update_state t st =
-  st.canvas <- t.grid;
-  st
+let update_state c t st = failwith "incomplete"
+  (*  match c with
+  | PLACE t -> begin
+    place_tile st p t pos
+  end
+  | _ -> st.canvas <- t.grid; st *)
 
 
 let do' c st t =
   match c with
-  | FLIP X -> update_state (flip_tile t X) st
-  | FLIP Y -> update_state (flip_tile t Y) st
-  | TURN t -> update_state (turn_tile t) st
-  | PLACE t -> update_state t st
+  | FLIP X -> update_state c (flip_tile t X) st
+  | FLIP Y -> update_state c (flip_tile t Y) st
+  | TURN t -> update_state c (turn_tile t) st
+  | PLACE t -> update_state c t st
 
 let rec print_state brd =
 let brd_lst = Array.to_list brd in

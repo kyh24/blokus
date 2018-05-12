@@ -44,7 +44,7 @@ let grid_of_tee = [((-1,1),Yellow);      ((0,1),Yellow);  ((1,1),Yellow);
                    ((-1,-1),White); ((0,-1),Yellow); ((1,-1),White)]
 let tee_corns = [(-2,2);(2,2);(-1,-2);(1,-2);(2,0);(-2,0)]
 let turn1_tee_corns = [(-2,1);(-2,-1);(0,2);(0,-2);(2,2);(2,-2)]
-let flip_X_tee_corns = [(-1,2);(1,2);(2,0);(2,-2);(-2,-2);(2,0)]
+let flip_X_tee_corns = [(-1,2);(1,2);(2,0);(2,-2);(-2,-2);(-2,0)]
 let turn3_tee_corns = [(2,1);(2,-1);(0,-2);(-2,-2);(-2,-2);(0,2)]
 
 (* Z Tile Tests *)
@@ -62,6 +62,11 @@ let tree_corns = [(-2,2);(-2,0);(1,2);(2,1);(2,-1);(1,-2);(-1,-2)]
 let turn1_tree = [(0,2);(2,2);(2,-1);(1,-2);(-1,-2);(-2,-1);(-2,1)]
 let turnflip_tree = [(-1,2);(1,2);(2,-2);(0,-2);(-2,-1);(-2,1);(2,1)]
 
+(*State Tests*)
+let init = init_state 8
+let player_1 = Player.init_player "Player 1" Yellow
+let player_2 = Player.init_player "Player 2" Blue
+
 let tests = [
 
   (* One Tile Tests  *)
@@ -69,64 +74,92 @@ let tests = [
   "tile_col"      >:: (fun _ -> assert_equal Blue (col t1));
   "tile_grid"     >:: (fun _ -> assert_equal grid_t1 (grid t1));
   "tile_corners"  >:: (fun _ -> assert_equal corners_t (t1.corners));
+  (*obviously true*)
   "tile_corners2" >:: (fun _ -> assert_equal true (compare_lsts t1.corners (flip_tile t1 X).corners));
 
   (* L Tile Tests *)
   "L_tile"        >:: (fun _ -> assert_equal L (tile_name t1_L));
   "flip L"        >:: (fun _ -> assert_equal true (compare_lsts flip_X_corners (flip_tile t1_L X).corners));
   "turn_from_flip">:: (fun _ -> assert_equal true
-                          (((t1_L |> turn_tile).corners) |>
-                           compare_lsts turn_flip_X));
-  "turn_2"        >:: (fun _ -> assert_equal true (compare_lsts turn_2 (turn_tile t1_L).corners));
-  "turn_to_norm"  >:: (fun _ -> assert_equal true (compare_lsts corners_of_t1_L (turn_tile t1_L).corners));
-  "flip_Y"        >:: (fun _ -> assert_equal true (compare_lsts flip_Y_corners (flip_tile t1_L Y).corners));
+                        (compare_lsts ((turn_tile (flip_tile (init_tile L Blue) X)).corners)
+                        turn_flip_X));
+  "turn_2"        >:: (fun _ -> assert_equal true (compare_lsts turn_2
+                        (turn_tile (turn_tile (flip_tile (init_tile L Blue) X))).corners));
+  "turn_to_norm"  >:: (fun _ -> assert_equal true (compare_lsts corners_of_t1_L
+                        (turn_tile (turn_tile (turn_tile (flip_tile (init_tile L Blue) X)))).corners));
+  "flip_Y"        >:: (fun _ -> assert_equal true (compare_lsts flip_Y_corners
+                        (flip_tile (turn_tile (turn_tile (turn_tile (flip_tile (init_tile L Blue) X)))) Y).corners));
 
   (* X Tile Tests *)
   (* "X_tile"        >:: (fun _ -> assert_equal X (tile_name t1_x)); *)
-  "flip X"        >:: (fun _ -> assert_equal true (compare_lsts x_Corners (flip_tile t1_x X).corners));
-  "turn_frm_flip" >:: (fun _ -> assert_equal true
-                          (((t1_x |> turn_tile).corners) |>
-                           compare_lsts x_Corners));
-  "turn_2'"        >:: (fun _ -> assert_equal true (compare_lsts x_Corners (turn_tile t1_x).corners));
-  "turn_to_norm'"  >:: (fun _ -> assert_equal true (compare_lsts x_Corners (turn_tile t1_x).corners));
-  "flip_Y'"        >:: (fun _ -> assert_equal true (compare_lsts x_Corners (flip_tile t1_x Y).corners));
+  "flip X"         >:: (fun _ -> assert_equal true (compare_lsts x_Corners (flip_tile t1_x X).corners));
+  "turn_frm_flip"  >:: (fun _ -> assert_equal true (compare_lsts x_Corners
+                          (turn_tile (flip_tile (init_tile X Blue) X)).corners));
+  "turn_2'"        >:: (fun _ -> assert_equal true (compare_lsts x_Corners
+                                                      (turn_tile (turn_tile (flip_tile (init_tile X Blue) X))).corners));
+  "turn_to_norm'"  >:: (fun _ -> assert_equal true (compare_lsts x_Corners
+                                                      (turn_tile (turn_tile (turn_tile (flip_tile (init_tile X Blue) X)))).corners));
+  "flip_Y'"        >:: (fun _ -> assert_equal true (compare_lsts x_Corners
+                                                      (flip_tile (turn_tile (turn_tile (turn_tile (flip_tile (init_tile X Blue) X)))) Y).corners));
 
   (* Line Tile Tests *)
-  "flip line"     >:: (fun _ -> assert_equal true (compare_lsts line_corns (flip_tile t1_line X).corners));
-  "flip line norm">:: (fun _ -> assert_equal true (compare_lsts line_corns (flip_tile t1_line X).corners));
-  "flip over Y"   >:: (fun _ -> assert_equal true (compare_lsts line_corns (flip_tile t1_line Y).corners));
-  "turn line"     >:: (fun _ -> assert_equal true
-                          (((t1_line |> turn_tile).corners) |>
-                           compare_lsts turn1_corns));
-  "turn_2_line"   >:: (fun _ -> assert_equal true (compare_lsts line_corns (turn_tile t1_line).corners));
-  (* "turn_to_norm'" >:: (fun _ -> assert_equal true (compare_lsts turn1_corns (turn_tile t1_line).corners)); *)
+  "flip line"      >:: (fun _ -> assert_equal true (compare_lsts line_corns (flip_tile t1_line X).corners));
+  "flip line norm" >:: (fun _ -> assert_equal true (compare_lsts line_corns
+                                                      (flip_tile (flip_tile (init_tile Line Blue) X) X).corners));
+  "flip over Y"    >:: (fun _ -> assert_equal true (compare_lsts line_corns
+                                                      (flip_tile (init_tile Line Blue) Y).corners));
+  "turn line"      >:: (fun _ -> assert_equal true
+                          (compare_lsts turn1_corns (turn_tile (init_tile Line Blue)).corners));
+  "turn_2_line"    >:: (fun _ -> assert_equal true (compare_lsts line_corns
+                                                     (turn_tile (turn_tile (init_tile Line Blue))).corners));
+  "turn_3_line"    >:: (fun _ -> assert_equal true (compare_lsts turn1_corns
+                                                      (turn_tile (turn_tile (turn_tile (init_tile Line Blue)))).corners));
 
   (* Tee Tile Tests *)
-  "flip Tee"      >:: (fun _ -> assert_equal true (compare_lsts turn1_tee_corns (turn_tile t1_tee).corners));
-  (* "flip_to_norm"  >:: (fun _ -> assert_equal true (compare_lsts flip_X_tee_corns (turn_tile t1_tee).corners)); *)
-  (* "flip Y"        >:: (fun _ -> assert_equal true (compare_lsts flip_X_tee_corns (flip_tile t1_tee Y).corners)); *)
-  (* "turn_from_flip">:: (fun _ -> assert_equal true
-                          (((X |> flip_tile t1_tee).corners) |>
-                           compare_lsts tee_corns)); *)
-  (* "turn_again"    >:: (fun _ -> assert_equal true (compare_lsts turn3_tee_corns (X |> flip_tile t1_tee |> turn_tile).corners)); *)
-  (* "turn_back"     >:: (fun _ -> assert_equal true (compare_lsts tee_corns (turn_tile t1_tee).corners)); *)
+  "turn_1_Tee"       >:: (fun _ -> assert_equal true (compare_lsts turn1_tee_corns (turn_tile t1_tee).corners));
+  "turn_2_Tee"       >:: (fun _ -> assert_equal true (compare_lsts flip_X_tee_corns
+                            (turn_tile (turn_tile (init_tile Tee Blue))).corners));
+  "flip Y"           >:: (fun _ -> assert_equal true (compare_lsts flip_X_tee_corns
+                            (flip_tile (turn_tile (turn_tile (init_tile Tee Blue))) Y).corners));
+  "turn_from_flip">:: (fun _ -> assert_equal true (compare_lsts tee_corns
+                                                     (flip_tile (flip_tile (turn_tile (turn_tile (init_tile Tee Blue))) Y) X).corners));
+  "turn_again"    >:: (fun _ -> assert_equal true (compare_lsts turn3_tee_corns
+                          (turn_tile (flip_tile (turn_tile (turn_tile (init_tile Tee Blue))) Y)).corners));
+  "turn_back"     >:: (fun _ -> assert_equal true (compare_lsts tee_corns
+                                                     (turn_tile (turn_tile (flip_tile (turn_tile (turn_tile (init_tile Tee Blue))) Y))).corners));
 
   (* Z Tile Tests *)
   "z_grid"        >:: (fun _ -> assert_equal grid_of_z (grid t1_z));
   "flip_Z_over_Y" >:: (fun _ -> assert_equal true (compare_lsts flip_Y_z_corns (flip_tile t1_z Y).corners));
-  (* "flip_to_turn"  >:: (fun _ -> assert_equal true (compare_lsts flipturn_z_corns (turn_tile t1_z).corners)); *)
-  (* "turn again"    >:: (fun _ -> assert_equal true (compare_lsts flip_Y_z_corns (turn_tile t1_z).corners)); *)
-  (* "flip over X"   >:: (fun _ -> assert_equal true (compare_lsts z_corns (flip_tile t1_z X).corners)); *)
+  "flip_to_turn"  >:: (fun _ -> assert_equal true (compare_lsts flipturn_z_corns
+                                                    (turn_tile (flip_tile (init_tile Z Blue) Y)).corners));
+  "turn again"    >:: (fun _ -> assert_equal true (compare_lsts flip_Y_z_corns
+                                                     (turn_tile (turn_tile (flip_tile (init_tile Z Blue) Y))).corners));
+  "flip over X"   >:: (fun _ -> assert_equal true (compare_lsts z_corns
+                                                     (flip_tile (turn_tile (turn_tile (flip_tile (init_tile Z Blue) Y))) X).corners));
 
   (* Tree Tile Tests *)
   "turn_tree"     >:: (fun _ -> assert_equal true (compare_lsts turn1_tree (turn_tile t_tree).corners));
-  (* "turnflip_tree" >:: (fun _ -> assert_equal true (compare_lsts turnflip_tree (flip_tile t_tree X).corners)); *)
-
-
-
-
+  "turnflip_tree" >:: (fun _ -> assert_equal true (compare_lsts turnflip_tree (flip_tile (turn_tile (init_tile Tree Blue)) X).corners));
 
 ]
 
-let suite = "State Test Suite" >::: tests
+let state_tests = [
+  "init_st" >:: (fun _ -> assert_equal
+                    {board = [|((0,0),White);((1,0),White);((2,0),White);((3,0),White);((4,0),White);((5,0),White);((6,0),White);((7,0),White);
+                               ((0,1),White);((1,1),White);((2,1),White);((3,1),White);((4,1),White);((5,1),White);((6,1),White);((7,1),White);
+                               ((0,2),White);((1,2),White);((2,2),White);((3,2),White);((4,2),White);((5,2),White);((6,2),White);((7,2),White);
+                               ((0,3),White);((1,3),White);((2,3),White);((3,3),White);((4,3),White);((5,3),White);((6,3),White);((7,3),White);
+                               ((0,4),White);((1,4),White);((2,4),White);((3,4),White);((4,4),White);((5,4),White);((6,4),White);((7,4),White);
+                               ((0,5),White);((1,5),White);((2,5),White);((3,5),White);((4,5),White);((5,5),White);((6,5),White);((7,5),White);
+                               ((0,6),White);((1,6),White);((2,6),White);((3,6),White);((4,6),White);((5,6),White);((6,6),White);((7,6),White);
+                               ((0,7),White);((1,7),White);((2,7),White);((3,7),White);((4,7),White);((5,7),White);((6,7),White);((7,7),White)|];
+                    players = [player_1; player_2];
+                    canvas = [((-1,1),White);  ((0,1),White);  ((1,1),White);
+                             ((-1,0),White);  ((0,0),White);  ((1,0),White);
+                             ((-1,-1),White); ((0,-1),White); ((1,-1),White)];
+                    curr_player = player_1} init);
+]
+
+let suite = "State Test Suite" >::: List.flatten [tests;state_tests]
 let _ = run_test_tt_main suite
