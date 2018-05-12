@@ -8,7 +8,7 @@ type state = {
   board : ((int*int) * color) array;
   players : player list;
   mutable canvas: ((int*int)* color) list;
-  curr_player: player;
+  mutable curr_player: player;
 }
 
 
@@ -27,16 +27,18 @@ val init_state : int -> state
     corners : top-left corner for player 1 and bottom right corner for player 2
  *
 *)
-val is_valid_move: player -> state -> int -> tile -> bool
+val is_valid_move: player -> state -> (float * float) -> tile -> bool
 
 
-val place_tile: state -> player-> tile -> int -> unit
+val place_tile: state -> player-> tile -> (float * float) -> unit
+
+val p2_placed_tiles: tile list ref
 
 
 (* [do' c st t] is [st'] if doing command [c] in state [st] results
  * in a new state [st'].
 *)
-val do' : command -> state -> tile -> state
+val do' : command -> (float*float) -> player -> state -> tile -> state
 
 
 (*[print_state s] prints a string representation of the state of the game*)
