@@ -146,7 +146,7 @@ let valid_first_move p tile_colors brd highest_i=
           else invalid_coord_no_color := false
       )
       done;
-      if (p.name = "Player 1") then
+      if (p.player_name = "Player 1") then
         (List.mem_assoc (0,0) tile_colors && List.assoc (0,0) tile_colors = Yellow) && !invalid_coord_no_color
       else (List.mem_assoc (highest_i, highest_i) tile_colors && List.assoc (highest_i,highest_i) tile_colors = Blue) && !invalid_coord_no_color
   )

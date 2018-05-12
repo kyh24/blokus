@@ -2,11 +2,12 @@ open Tile
 
 (*[player] is an abstract type representing the state of an adventure. *)
 type player = {
-  name : string;
+  player_name : string;
   col : color;
   mutable first_turn : bool;
   mutable score : int;
-  mutable remaining_tiles : tile list
+  mutable remaining_tiles : tile list;
+  mutable max_val: int
 }
 
 (*[init player n c t_lst] is the state of player [p] at the beginning of the game. *)
