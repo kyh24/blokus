@@ -124,63 +124,60 @@ let rec loop () =
     done;
   done;
 
-  (*Player 1 Shapes*)
+   (*Player 1 Shapes*)
 
 
   (*ONE*)
   let one_1 (var, x_val, y_val) = set_color yellow; fill_rect (x_val) (y_val) var var in
   (*TEE*)
-  let two_1 (var, x_val, y_val) = set_color yellow; fill_rect (4*x_val) (y_val) var var; fill_rect (5*x_val) (y_val) var var; fill_rect (6*x_val) (y_val) var var; fill_rect (5*x_val) (y_val-var) var var; fill_rect (5*x_val) (y_val-2*var) var var in
+  let tee_1 (var, x_val, y_val) = set_color yellow; fill_rect (x_val) (y_val) var var; fill_rect (x_val+var) (y_val) var var; fill_rect (x_val+2*var) (y_val) var var; fill_rect (x_val+var) (y_val-var) var var; fill_rect (x_val+var) (y_val-2*var) var var in
   (*L*)
-  let l_1 (var, x_val, y_val) = set_color yellow; fill_rect (9*x_val) (y_val) var var; fill_rect (9*x_val) (y_val-var) var var; fill_rect (9*x_val) (y_val-2*var) var var; fill_rect (10*x_val) (y_val-2*var) var var; fill_rect (11*x_val) (y_val-2*var) var var in
+  let l_1 (var, x_val, y_val) = set_color yellow; fill_rect (x_val) (y_val) var var; fill_rect (x_val) (y_val-var) var var; fill_rect (x_val) (y_val-2*var) var var; fill_rect (x_val+var) (y_val-2*var) var var; fill_rect (x_val+2*var) (y_val-2*var) var var in
   (*X*)
-  let x_1 (var, x_val, y_val) = set_color yellow; fill_rect (2*x_val) (y_val-4*var) var var; fill_rect (2*x_val) (y_val-5*var) var var; fill_rect (2*x_val) (y_val-6*var) var var; fill_rect (x_val) (y_val-5*var) var var; fill_rect (3*x_val) (y_val-5*var) var var in
+  let x_1 (var, x_val, y_val) = set_color yellow; fill_rect (x_val) (y_val) var var; fill_rect (x_val) (y_val-var) var var; fill_rect (x_val) (y_val-2*var) var var; fill_rect (x_val-var) (y_val-var) var var; fill_rect (x_val+var) (y_val-var) var var in
   (*Z*)
-  let z_1 (var, x_val, y_val) = set_color yellow; fill_rect (5*x_val) (y_val-4*var) var var; fill_rect (6*x_val) (y_val-4*var) var var; fill_rect (6*x_val) (y_val-5*var) var var; fill_rect (6*x_val) (y_val-6*var) var var; fill_rect (7*x_val) (y_val-6*var) var var in
+  let z_1 (var, x_val, y_val) = set_color yellow; fill_rect (x_val) (y_val) var var; fill_rect (x_val+var) (y_val) var var; fill_rect (x_val+var) (y_val-var) var var; fill_rect (x_val+var) (y_val-2*var) var var; fill_rect (x_val+2*var) (y_val-2*var) var var in
   (*TREE*)
-  let tree_1 (var, x_val, y_val) = set_color yellow; fill_rect (9*x_val) (y_val-4*var) var var; fill_rect (10*x_val) (y_val-4*var) var var; fill_rect (10*x_val) (y_val-5*var) var var; fill_rect (10*x_val) (y_val-6*var) var var; fill_rect (11*x_val) (y_val-5*var) var var in
+  let tree_1 (var, x_val, y_val) = set_color yellow; fill_rect (x_val) (y_val) var var; fill_rect (x_val+var) (y_val) var var; fill_rect (x_val+var) (y_val-var) var var; fill_rect (x_val+var) (y_val-2*var) var var; fill_rect (x_val+2*var) (y_val-var) var var in
   (*LINE*)
-  let line_1 (var, x_val, y_val) = set_color yellow; fill_rect (5*x_val) (y_val-9*var) var var; fill_rect (6*x_val) (y_val-9*var) var var; fill_rect (7*x_val) (y_val-9*var) var var in
+  let line_1 (var, x_val, y_val) = set_color yellow; fill_rect (x_val) (y_val) var var; fill_rect (x_val+var) (y_val) var var; fill_rect (x_val+2*var) (y_val) var var in
 
   (*Player 2 Calling*)
   set_color yellow;
   one_1 (30, 30, yf-70);
-  two_1 (30, 30, yf-70);
-  l_1 (30, 30, yf-70);
-  x_1 (30, 30, yf-70);
-  z_1 (30, 30, yf-70);
-  tree_1 (30, 30, yf-70);
-  line_1 (30, 30, yf-70);
+  tee_1 (30, 120, yf-70);
+  l_1 (30, 270, yf-70);
+  x_1 (30, 60, yf-70-120);
+  z_1 (30, 150, yf-70-120);
+  tree_1 (30, 270, yf-70-120);
+  line_1 (30, 150, yf-70-270);
 
 
-<<<<<<< HEAD
-=======
   (*Player 2 Shapes*)
   (*ONE*)
   let one_2 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var in
   (*TEE*)
-  let tee_2 (var, x_val, y_val)= fill_rect (x_val+3*var) (y_val) var var; fill_rect (x_val+4*var) (y_val) var var; fill_rect (x_val+5*var) (y_val) var var; fill_rect (x_val+4*var) (y_val-var) var var; fill_rect (x_val+4*var) (y_val-2*var) var var in
+  let tee_2 (var, x_val, y_val)= fill_rect (x_val) (y_val) var var; fill_rect (x_val+var) (y_val) var var; fill_rect (x_val+2*var) (y_val) var var; fill_rect (x_val+var) (y_val-var) var var; fill_rect (x_val+var) (y_val-2*var) var var in
   (*L*)
-  let l_2 (var, x_val, y_val) = fill_rect (x_val+8*var) (y_val) var var; fill_rect (x_val+8*var) (y_val-var) var var; fill_rect (x_val+8*var) (y_val-2*var) var var; fill_rect (x_val+9*var) (y_val-2*var) var var; fill_rect (x_val+10*var) (y_val-2*var) var var in
+  let l_2 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var; fill_rect (x_val) (y_val-var) var var; fill_rect (x_val) (y_val-2*var) var var; fill_rect (x_val+var) (y_val-2*var) var var; fill_rect (x_val+2*var) (y_val-2*var) var var in
   (*X*)
-  let x_2 (var, x_val, y_val) = fill_rect (x_val+2*var-15) (y_val-4*var) var var; fill_rect (x_val+2*var-15) (y_val-5*var) var var; fill_rect (x_val+2*var-15) (y_val-6*var) var var; fill_rect (x_val+var-15) (y_val-5*var) var var; fill_rect (x_val+3*var-15) (y_val-5*var) var var in
+  let x_2 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var; fill_rect (x_val) (y_val-var) var var; fill_rect (x_val) (y_val-2*var) var var; fill_rect (x_val-var) (y_val-var) var var; fill_rect (x_val+var) (y_val-var) var var in
   (*Z*)
-  let z_2 (var, x_val, y_val) = fill_rect (x_val+5*var) (y_val-4*var) var var; fill_rect (x_val+6*var) (y_val-4*var) var var; fill_rect (x_val+6*var) (y_val-5*var) var var; fill_rect (x_val+6*var) (y_val-6*var) var var; fill_rect (x_val+7*var) (y_val-6*var) var var in
+  let z_2 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var; fill_rect (x_val+var) (y_val) var var; fill_rect (x_val+var) (y_val-var) var var; fill_rect (x_val+var) (y_val-2*var) var var; fill_rect (x_val+2*var) (y_val-2*var) var var in
   (*TREE*)
-  let tree_2 (var, x_val, y_val) = fill_rect (x_val+9*var) (y_val-4*var) var var; fill_rect (x_val+10*var) (y_val-4*var) var var; fill_rect (x_val+10*var) (y_val-5*var) var var; fill_rect (x_val+10*var) (y_val-6*var) var var; fill_rect (x_val+11*var) (y_val-5*var) var var in
+  let tree_2 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var; fill_rect (x_val+var) (y_val) var var; fill_rect (x_val+var) (y_val-var) var var; fill_rect (x_val+var) (y_val-2*var) var var; fill_rect (x_val+2*var) (y_val-var) var var in
   (*LINE*)
-  let line_2 (var, x_val, y_val) = fill_rect (x_val+5*var) (y_val-9*var) var var; fill_rect (x_val+6*var) (y_val-9*var) var var; fill_rect (x_val+7*var) (y_val-9*var) var var in
+  let line_2 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var; fill_rect (x_val+var) (y_val) var var; fill_rect (x_val+2*var) (y_val) var var in
 
   (*Player 2 Calling*)
   set_color blue;
   one_2 (30, xf-370, yf-70);
-  tee_2 (30, xf-370, yf-70);
-  l_2 (30, xf-370, yf-70);
-  x_2 (30, xf-370, yf-70);
-  z_2 (30, xf-370, yf-70);
-  tree_2 (30, xf-370, yf-70);
-  line_2 (30, xf-370, yf-70);
->>>>>>> f2d79984810da090450bad467bdbc09708e3bc85
+  tee_2 (30, xf-370+90, yf-70);
+  l_2 (30, xf-370+240, yf-70);
+  x_2 (30, xf-370+60-15, yf-70-120);
+  z_2 (30, xf-370+150, yf-70-120);
+  tree_2 (30, xf-370+240, yf-70-120);
+  line_2 (30, xf-370+150, yf-70-270);
 
   (*Player 1 Buttons*)
   set_color black;
@@ -210,25 +207,6 @@ let rec loop () =
     done;
   done;
 
-  (*Player 2 Shapes*)
-  set_color blue;
-  let var = 30 in
-  let x_val = (xf-370) in
-  let y_val = yf-70 in
-  (*ONE*)
-  fill_rect (x_val) (y_val) var var ;
-  (*TEE*)
-  fill_rect (x_val+3*var) (y_val) var var; fill_rect (x_val+4*var) (y_val) var var; fill_rect (x_val+5*var) (y_val) var var; fill_rect (x_val+4*var) (y_val-var) var var; fill_rect (x_val+4*var) (y_val-2*var) var var;
-  (*L*)
-  fill_rect (x_val+8*var) (y_val) var var; fill_rect (x_val+8*var) (y_val-var) var var; fill_rect (x_val+8*var) (y_val-2*var) var var; fill_rect (x_val+9*var) (y_val-2*var) var var; fill_rect (x_val+10*var) (y_val-2*var) var var;
-  (*X*)
-  fill_rect (x_val+2*var-15) (y_val-4*var) var var; fill_rect (x_val+2*var-15) (y_val-5*var) var var; fill_rect (x_val+2*var-15) (y_val-6*var) var var; fill_rect (x_val+var-15) (y_val-5*var) var var; fill_rect (x_val+3*var-15) (y_val-5*var) var var;
-  (*Z*)
-  fill_rect (x_val+5*var) (y_val-4*var) var var; fill_rect (x_val+6*var) (y_val-4*var) var var; fill_rect (x_val+6*var) (y_val-5*var) var var; fill_rect (x_val+6*var) (y_val-6*var) var var; fill_rect (x_val+7*var) (y_val-6*var) var var;
-  (*TREE*)
-  fill_rect (x_val+9*var) (y_val-4*var) var var; fill_rect (x_val+10*var) (y_val-4*var) var var; fill_rect (x_val+10*var) (y_val-5*var) var var; fill_rect (x_val+10*var) (y_val-6*var) var var; fill_rect (x_val+11*var) (y_val-5*var) var var;
-  (*LINE*)
-  fill_rect (x_val+5*var) (y_val-9*var) var var; fill_rect (x_val+6*var) (y_val-9*var) var var; fill_rect (x_val+7*var) (y_val-9*var) var var;
 
 
   (*Player 2 Buttons*)
