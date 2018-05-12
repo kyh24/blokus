@@ -82,6 +82,45 @@ let rec loop () =
     done;
   done;
 
+  (*Player 1 Shapes*)
+  set_color yellow;
+  let var = 30 in
+  let y_val = yf-70 in
+  (*ONE*)
+  fill_rect (var) (y_val) var var ;
+  (*TEE*)
+  fill_rect (4*var) (y_val) var var; fill_rect (5*var) (y_val) var var; fill_rect (6*var) (y_val) var var; fill_rect (5*var) (y_val-var) var var; fill_rect (5*var) (y_val-2*var) var var;
+  (*L*)
+  fill_rect (270) (y_val) var var; fill_rect (270) (y_val-var) var var; fill_rect (270) (y_val-2*var) var var; fill_rect (270+var) (y_val-2*var) var var; fill_rect (270+2*var) (y_val-2*var) var var;
+  (*X*)
+  fill_rect (2*var) (y_val-4*var) var var; fill_rect (2*var) (y_val-5*var) var var; fill_rect (2*var) (y_val-6*var) var var; fill_rect (var) (y_val-5*var) var var; fill_rect (3*var) (y_val-5*var) var var;
+  (*Z*)
+  fill_rect (5*var) (y_val-4*var) var var; fill_rect (6*var) (y_val-4*var) var var; fill_rect (6*var) (y_val-5*var) var var; fill_rect (6*var) (y_val-6*var) var var; fill_rect (7*var) (y_val-6*var) var var;
+  (*TREE*)
+  fill_rect (9*var) (y_val-4*var) var var; fill_rect (10*var) (y_val-4*var) var var; fill_rect (10*var) (y_val-5*var) var var; fill_rect (10*var) (y_val-6*var) var var; fill_rect (11*var) (y_val-5*var) var var;
+  (*LINE*)
+  fill_rect (5*var) (y_val-9*var) var var; fill_rect (6*var) (y_val-9*var) var var; fill_rect (7*var) (y_val-9*var) var var;
+
+  (*Player 2 Shapes*)
+  set_color blue;
+  let var = 30 in
+  let x_val = (xf-370) in
+  let y_val = yf-70 in
+  (*ONE*)
+  fill_rect (x_val) (y_val) var var ;
+  (*TEE*)
+  fill_rect (x_val+3*var) (y_val) var var; fill_rect (x_val+4*var) (y_val) var var; fill_rect (x_val+5*var) (y_val) var var; fill_rect (x_val+4*var) (y_val-var) var var; fill_rect (x_val+4*var) (y_val-2*var) var var;
+  (*L*)
+  fill_rect (x_val+8*var) (y_val) var var; fill_rect (x_val+8*var) (y_val-var) var var; fill_rect (x_val+8*var) (y_val-2*var) var var; fill_rect (x_val+9*var) (y_val-2*var) var var; fill_rect (x_val+10*var) (y_val-2*var) var var;
+  (*X*)
+  fill_rect (x_val+2*var-15) (y_val-4*var) var var; fill_rect (x_val+2*var-15) (y_val-5*var) var var; fill_rect (x_val+2*var-15) (y_val-6*var) var var; fill_rect (x_val+var-15) (y_val-5*var) var var; fill_rect (x_val+3*var-15) (y_val-5*var) var var;
+  (*Z*)
+  fill_rect (x_val+5*var) (y_val-4*var) var var; fill_rect (x_val+6*var) (y_val-4*var) var var; fill_rect (x_val+6*var) (y_val-5*var) var var; fill_rect (x_val+6*var) (y_val-6*var) var var; fill_rect (x_val+7*var) (y_val-6*var) var var;
+  (*TREE*)
+  fill_rect (x_val+9*var) (y_val-4*var) var var; fill_rect (x_val+10*var) (y_val-4*var) var var; fill_rect (x_val+10*var) (y_val-5*var) var var; fill_rect (x_val+10*var) (y_val-6*var) var var; fill_rect (x_val+11*var) (y_val-5*var) var var;
+  (*LINE*)
+  fill_rect (x_val+5*var) (y_val-9*var) var var; fill_rect (x_val+6*var) (y_val-9*var) var var; fill_rect (x_val+7*var) (y_val-9*var) var var;
+
   (*Player 1 Buttons*)
   (* set_color blue; fill_rect ((xf-xboard)/4) (yf- 476) (((xf-xboard)/4) -10) 66; *)
   draw_rect ((xf-xboard)/4) (yf- 476) (((xf-xboard)/4) -10) 66;
@@ -134,10 +173,24 @@ let rec loop () =
 
   (*Messaage Board*)
   draw_rect xboardleftcorner 10 xboard ((yf-yboard)/2 -20);
+(* returns the relative (x, y) of the next mouse click within the
+ * grect defined by (x, y, w, h), doesn't terminate until the mouse is clicked
+ * within the bounds of the window. *)
 
 
-  let starting = wait_next_event [Key_pressed] in
-  if starting.key == 's' then loop () else ()
+
+
+
+
+(* returns the relative (x, y) of the next mouse click within the
+ * grect defined by (x, y, w, h), doesn't terminate until the mouse is clicked
+ * within the bounds of the window. *)
+
+
+
+
+let starting = wait_next_event [Key_pressed] in
+if starting.key == 's' then loop () else ()
 
 
 
@@ -154,7 +207,24 @@ let rec opening ()=
   let xf= Graphics.size_x () in
   let yf= Graphics.size_y () in
   moveto (xf/2) (2*yf/3);
-  draw_string "bLoKaML";
+  set_color black; moveto ((xf/4)+((xf/2)/2)-20) ((yf/4)+(yf/7)/2); draw_string "Play Now!";
+  moveto (xf/4) (2*yf/3);
+  draw_string "  _  _  _  _    _  _                   _           _                 _           _  _";
+  moveto (xf/4) ((2*yf/3)-10);
+  draw_string "(_)(_)(_)(_) _(_)(_)                 (_)       _ (_)               (_) _     _ (_)(_)";
+  moveto (xf/4) ((2*yf/3)-20);
+  draw_string "(_)        (_)  (_)      _  _  _    (_)    _ (_)     _  _  _      (_)(_)   (_)(_)(_)";
+  moveto (xf/4) ((2*yf/3)-30);
+  draw_string "(_) _  _  _(_)  (_)   _ (_)(_)(_) _ (_) _ (_)       (_)(_)(_) _   (_) (_)_(_) (_)(_)";
+  moveto (xf/4) ((2*yf/3)-40);
+  draw_string "(_)(_)(_)(_)_   (_)  (_)         (_)(_)(_) _         _  _  _ (_)  (_)   (_)   (_)(_)";
+  moveto (xf/4) ((2*yf/3)-50);
+  draw_string "(_)        (_)  (_)  (_)         (_)(_)   (_) _    _(_)(_)(_)(_)  (_)         (_)(_)";
+  moveto (xf/4) ((2*yf/3)-60);
+  draw_string "(_)_  _  _ (_)_ (_) _(_) _  _  _ (_)(_)      (_) _(_)_  _  _ (_)_ (_)         (_)(_) _ _  _  _";
+  moveto (xf/4) ((2*yf/3)-70);
+  draw_string "(_)(_)(_)(_)  (_)(_)(_)  (_)(_)(_)   (_)         (_) (_)(_)(_)  (_)(_)         (_)(_)(_)(_)(_)(_)";
+
   set_color green;
   draw_rect (xf/4) (yf/4) (xf/2) (yf/7);
   fill_rect (xf/4) (yf/4) (xf/2) (yf/7);
