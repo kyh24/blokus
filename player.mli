@@ -1,10 +1,12 @@
 open Tile
 
+type status = Start | Play | Stop
+
 (*[player] is an abstract type representing the state of an adventure. *)
 type player = {
   player_name : string;
   col : color;
-  mutable first_turn : bool;
+  mutable status : status;
   mutable score : int;
   mutable remaining_tiles : tile list;
   mutable max_val: int
@@ -22,6 +24,8 @@ val color: player -> color
 
 (*[score p] is the player's current score.*)
 val score: player -> int
+
+val status: player -> status
 
 (*[remaining_tiles p] is the list of tiles that the player has not yet placed
   onto the board*)
