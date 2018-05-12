@@ -1,9 +1,11 @@
 open Tile
 
+type status = Start | Play | Stop
+
 type player = {
   player_name : string;
   col : color;
-  mutable first_turn : bool;
+  mutable status : status;
   mutable score : int;
   mutable remaining_tiles : tile list;
   mutable max_val: int
@@ -14,7 +16,7 @@ let init_player n c =
   {player_name = n;
    col = c;
    score = 0;
-   first_turn = true;
+   status = Start;
    remaining_tiles = [init_tile One c; init_tile Tee c;
                       init_tile L c; init_tile X c;
                       init_tile Z c; init_tile Tree c;
@@ -31,6 +33,9 @@ let color p =
 let score p =
   p.score
 
+let status p =
+  p.status
+
 let remaining_tiles p =
   p.remaining_tiles
 
@@ -45,4 +50,3 @@ let player_place_tile p t =
   else if List.length val_5_lst = 0 && List.exists (fun elt -> elt.name = One) p.remaining_tiles
   then p.max_val <- 1
   else p.max_val <- 5
-   

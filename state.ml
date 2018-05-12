@@ -142,7 +142,7 @@ let valid_first_move p tile_colors brd highest_i=
   let valid_brd_coord =  List.filter (fun ((x, y), col) -> List.mem_assoc (x,y) brd_lst) tile_colors in
   let invalid_brd_coord = ref (List.fold_left (fun acc ((x,y),col) ->
       if List.mem_assoc (x,y) valid_brd_coord then acc else ((x,y),col)::acc) [] tile_colors) in
-  if (p.first_turn) then (
+  if (p.status = Start) then (
       let invalid_coord_no_color = ref true in
       while (!invalid_brd_coord <> [] && !invalid_coord_no_color) do(
         match !invalid_brd_coord with
