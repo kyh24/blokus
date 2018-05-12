@@ -4,28 +4,40 @@ open State
 open Player
 open Board
 open Tile
-(*
+
 type gamescreen = {
-  (* mutable gamestate: state; (*state.init_state 10*)
-  mutable current_player: player; (*gamestate.current_player*)
-  mutable board: board; (*gamestate.board*)
-  mutable p1messages: string list;
-  mutable p2messages: string list;
-     mutable mainmessages: string list; *)
+  (* mutable gamestate: state; (*state.init_state 10*) *)
+  (* mutable current_player: player; (*gamestate.current_player*) *)
+  (* mutable board: board; (*gamestate.board*) *)
+  mutable p1messages: string;
+  mutable p2messages: string;
+  mutable p1inventory: tile list;
+  (* mutable mainmessages: string list; *)
   gwindow: int*int;
   gboard: int*int*int*int; (*200, 175 ,400, 400*)
-  gbcell: int*int
+  gp1rti: int *int *int *int;
+  gp1fx: int* int* int* int;
+  gp1fy: int*int*int*int;
+  gp1rot: int*int*int*int;
+  gp1can: (int * (int*int*int*int)) list
+
 }
 
 let game = {
   gwindow = (1200, 750);
   gboard = (200, 175, 400, 400);
-  gbcell = (40,40)
+  p1messages = "";
+  p2messages = "";
+  p1inventory= (init_player "Player1" Yellow).remaining_tiles;
+  gp1rti= 0,0,0,0;
+  gp1fx= 0,0,0,0;
+  gp1fy= 0,0,0,0;
+  gp1rot= 0,0,0,0;
+  gp1can= [(0, (0,0,0,0))]
 }
 
 
-
-(*Draws solid rectangles*)
+(*Draws Rectangles*)
 let draw_gui_rect x y w h color =
   set_color color;
   fill_rect x y w h
@@ -58,32 +70,22 @@ let get_w figure=
 
 let get_h figure=
   match figure with
-  |(_,_,_,h) -> h *)
-
-
-
-
-(*Draws solid rectangles*)
-let draw_gui_rect x y w h color =
-  set_color color;
-  fill_rect x y w h
-
-(*Writes Text *)
-let draw_text x y color str=
-  set_color color;
-  moveto x y;
-  draw_string (str)
-
-(*Changes Canvas: depends on what option is selected by *)
-(* let update_canvas x r we =
-  let statecanvas= State.state.canvas *)
-
-
-
+  |(_,_,_,h) -> h
 
 let rec loop () =
   clear_graph ();
   set_color black;
+(*
+  let fill_canvas tile =
+    match tile with
+    | One -> fill_rect
+    | Tee ->
+    | L ->
+    | X ->
+    | Z ->
+    | Tree ->
+    | Line -> *)
+
   (*Board setup*)
   let xf= Graphics.size_x () in
   let yf= Graphics.size_y () in
@@ -113,7 +115,6 @@ let rec loop () =
 
   (*Player Canvas set up*)
   (*Player 1 Canvas*)
-  (* draw_rect 10 (yf- 610) ((xf-xboard)/4 - 20) 200; *)
   for x = 1 to 3 do
     for y = 1 to 3 do
       let pt1 = 10 + ((((xf-xboard)/4 - 20)/3) * (x-1)) in
@@ -142,6 +143,35 @@ let rec loop () =
   (*LINE*)
   fill_rect (5*var) (y_val-9*var) var var; fill_rect (6*var) (y_val-9*var) var var; fill_rect (7*var) (y_val-9*var) var var;
 
+
+  (*Player 1 Buttons*)
+  set_color black;
+  draw_rect ((xf-xboard)/4) (yf- 476) (((xf-xboard)/4) -10) 66;
+  moveto (((xf-xboard)/4)+43) (yf- 476 +30); draw_string ("Return to Inventory");
+
+  draw_rect ((xf-xboard)/4) (yf- 542) ((((xf-xboard)/4) -10)/2 ) 66;
+  moveto (((xf-xboard)/4)+ 30) (yf- 542 +30 ); draw_string ("Flip X");
+
+  draw_rect (((xf-xboard)/4)+(((((xf-xboard)/4) -10)/2))) (yf- 542) ((((xf-xboard)/4) -10)/2 ) 66;
+  moveto (((xf-xboard)/4)+125) (yf- 542 +30 ); draw_string ("Flip Y");
+
+  draw_rect ((xf-xboard)/4) (yf- 608) (((xf-xboard)/4) -10) 66;
+  set_color black;
+  moveto (((xf-xboard)/4)+48) (yf- 608 +30); draw_string ("Rotate Clockwise");
+
+  draw_rect 10 10 ((xf-xboard)/2 - 20) 120;
+
+  (*Player 2 Canvas *)
+  (* draw_rect (xboard + (xf/3)+10 ) (yf- 610) ((xf-xboard)/4 - 20) 200; *)
+  for x = 1 to 3 do
+    for y = 1 to 3 do
+      let pt1 = ((xboard + (xf/3)+10)) + ((((xf-xboard)/4 - 20)/3)*(x-1)) in
+      let pt2 = (yf- 610) + ((200/3) * (y-1)) +2 in
+      draw_rect pt1 pt2 (((xf-xboard)/4 - 20)/3) (200/3);
+      moveto pt1 pt2; draw_string ("P2("^(string_of_int x)^", "^(string_of_int y)^")");
+    done;
+  done;
+
   (*Player 2 Shapes*)
   set_color blue;
   let var = 30 in
@@ -162,37 +192,6 @@ let rec loop () =
   (*LINE*)
   fill_rect (x_val+5*var) (y_val-9*var) var var; fill_rect (x_val+6*var) (y_val-9*var) var var; fill_rect (x_val+7*var) (y_val-9*var) var var;
 
-  (*Player 1 Buttons*)
-  (* set_color blue; fill_rect ((xf-xboard)/4) (yf- 476) (((xf-xboard)/4) -10) 66; *)
-  draw_rect ((xf-xboard)/4) (yf- 476) (((xf-xboard)/4) -10) 66;
-  set_color black;
-  moveto (((xf-xboard)/4)+43) (yf- 476 +30); draw_string ("Return to Inventory");
-
-  (* set_color red; fill_rect ((xf-xboard)/4) (yf- 542) (((xf-xboard)/4) -10) 66; *)
-  draw_rect ((xf-xboard)/4) (yf- 542) ((((xf-xboard)/4) -10)/2 ) 66;
-  set_color black;
-  moveto (((xf-xboard)/4)+83) (yf- 542 +30 ); draw_string ("Flip X");
-
-  draw_rect (((xf-xboard)/4)+(((((xf-xboard)/4) -10)/2))) (yf- 542) ((((xf-xboard)/4) -10)/2 ) 66;
-  (* moveto (((xf-xboard)/4)+3) (yf- 542 +30 ); draw_string ("Flip Y"); *)
-
-  (* set_color yellow; fill_rect ((xf-xboard)/4) (yf- 608) (((xf-xboard)/4) -10) 66; *)
-  draw_rect ((xf-xboard)/4) (yf- 608) (((xf-xboard)/4) -10) 66;
-  set_color black;
-  moveto (((xf-xboard)/4)+48) (yf- 608 +30); draw_string ("Rotate Clockwise");
-
-  draw_rect 10 10 ((xf-xboard)/2 - 20) 120;
-
-  (*Player 2 Canvas *)
-  (* draw_rect (xboard + (xf/3)+10 ) (yf- 610) ((xf-xboard)/4 - 20) 200; *)
-  for x = 1 to 3 do
-    for y = 1 to 3 do
-      let pt1 = ((xboard + (xf/3)+10)) + ((((xf-xboard)/4 - 20)/3)*(x-1)) in
-      let pt2 = (yf- 610) + ((200/3) * (y-1)) +2 in
-      draw_rect pt1 pt2 (((xf-xboard)/4 - 20)/3) (200/3);
-      moveto pt1 pt2; draw_string ("P2("^(string_of_int x)^", "^(string_of_int y)^")");
-    done;
-  done;
 
   (*Player 2 Buttons*)
   (* set_color blue; fill_rect (xboard + (xf/3)+((xf-xboard)/4)) (yf- 476) (((xf-xboard)/4) -10) 66; *)
@@ -200,10 +199,11 @@ let rec loop () =
   set_color black;
   moveto ((xboard + (xf/3)+((xf-xboard)/4))+43) (yf- 476 +30); draw_string ("Return to Inventory");
 
-  (* set_color yellow; fill_rect (xboard + (xf/3)+((xf-xboard)/4)) (yf- 542) (((xf-xboard)/4) -10) 66; *)
-  draw_rect (xboard + (xf/3)+((xf-xboard)/4)) (yf- 542) (((xf-xboard)/4) -10) 66;
-  set_color black;
-  moveto ((xboard + (xf/3)+((xf-xboard)/4))+83) (yf- 542 +30 ); draw_string ("Flip");
+  draw_rect (xboard + (xf/3)+(xf-xboard)/4) (yf- 542) ((((xf-xboard)/4) -10)/2 ) 66;
+  moveto (xboard + (xf/3)+((xf-xboard)/4)+ 30) (yf- 542 +30 ); draw_string ("Flip X");
+
+  draw_rect (xboard + (xf/3)+((xf-xboard)/4)+(((((xf-xboard)/4) -10)/2))) (yf- 542) ((((xf-xboard)/4) -10)/2 ) 66;
+  moveto (xboard + (xf/3)+((xf-xboard)/4)+125) (yf- 542 +30 ); draw_string ("Flip Y");
 
   (* set_color red; fill_rect (xboard + (xf/3)+((xf-xboard)/4)) (yf- 608) (((xf-xboard)/4) -10) 66; *)
   draw_rect (xboard + (xf/3)+((xf-xboard)/4)) (yf- 608) (((xf-xboard)/4) -10) 66;
