@@ -6,44 +6,48 @@ open Board
 open Tile
 
 type gamescreen = {
-  (* mutable gamestate: state; (*state.init_state 10*) *)
-  (* mutable current_player: player; (*gamestate.current_player*) *)
-  (* mutable board: board; (*gamestate.board*) *)
+  mutable state: state; (*state.init_state 10*)
   mutable p1messages: string;
   mutable p2messages: string;
   mutable p1inventory: tile list;
-  (* mutable mainmessages: string list; *)
   gwindow: int*int;
   gboard: int*int*int*int; (*200, 175 ,400, 400*)
   gp1rti: int *int *int *int;
   gp1fx: int* int* int* int;
   gp1fy: int*int*int*int;
   gp1rot: int*int*int*int;
-  gp1can: (int * (int*int*int*int)) list
+  gp1canvas: (int * (int*int*int*int)) list
 
 }
 
 let game = {
+  state = State.init_state 10;
   gwindow = (1200, 750);
   gboard = (200, 175, 400, 400);
   p1messages = "";
   p2messages = "";
   p1inventory= (init_player "Player1" Yellow).remaining_tiles;
-  gp1rti= 0,0,0,0;
-  gp1fx= 0,0,0,0;
-  gp1fy= 0,0,0,0;
-  gp1rot= 0,0,0,0;
-  gp1can= [(0, (0,0,0,0))]
+  gp1rti= 200,274,190,66;
+  gp1fx= 200,208,95,66;
+  gp1fy= 295,208,95,66;
+  gp1rot= 200,142,190,66;
+  gp1canvas= [(0, (0,0,0,0))]
 }
 
+(*Player 1 Buttons*)
+(*
+draw_rect 10 10 ((xf-xboard)/2 - 20) 120; *)
 
 (*Draws Rectangles*)
 let draw_gui_rect x y w h color =
   set_color color;
   fill_rect x y w h
 
-(*Writes Text *)
-let draw_text x y color str=
+let draw_gui_button figure color=
+  match figure with
+  |(x,y,w,h) -> set_color color; draw_rect x y w h
+
+let draw_gui_text x y str color =
   set_color color;
   moveto x y;
   draw_string (str)
@@ -72,6 +76,10 @@ let get_h figure=
   match figure with
   |(_,_,_,h) -> h
 
+
+
+
+                  (*******************************)
 let rec loop () =
   clear_graph ();
   set_color black;
@@ -113,6 +121,38 @@ let rec loop () =
   draw_rect (xboardleftcorner + xboard + 10) (yf- 400) ((xf-xboard)/2 - 20) 390;
   moveto (xf-250) (yf-30); draw_string ("Player 2 Inventory");
 
+  (* let rec draw_inv =
+    let name= List.hd game.state.players in
+    match name with
+    | One -> failwith "SDf"
+    | Tee -> failwith "SDf"
+    | L -> failwith "SDf"
+    | X -> failwith "SDf"
+    | Z -> failwith "SDf"
+    | Tree -> failwith "SDf"
+    | Line -> failwith "SDf" *)
+
+  (* let rec draw_inv playerlst =
+    match playerlst with
+    | [] -> set_color black;
+    | h::t ->
+      begin
+        let inv= h.remaining_tiles in
+        match inv with
+        |[] -> set_color black;
+        |h::t ->
+          begin
+            match h.name with
+            | One -> fill_rect (300) 680 30 30
+            | Tee -> failwith "SDf"
+            | L -> failwith "SDf"
+            | X -> failwith "SDf"
+            | Z -> failwith "SDf"
+            | Tree -> failwith "SDf"
+            | Line -> failwith "SDf"
+          end
+      end *)
+
   (*Player Canvas set up*)
   (*Player 1 Canvas*)
   for x = 1 to 3 do
@@ -124,78 +164,53 @@ let rec loop () =
     done;
   done;
 
-  (*Player 1 Shapes*)
-
-
   (*ONE*)
-  let one_1 (var, x_val, y_val) = set_color yellow; fill_rect (x_val) (y_val) var var in
+  let one_1 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var in
   (*TEE*)
-  let two_1 (var, x_val, y_val) = set_color yellow; fill_rect (4*x_val) (y_val) var var; fill_rect (5*x_val) (y_val) var var; fill_rect (6*x_val) (y_val) var var; fill_rect (5*x_val) (y_val-var) var var; fill_rect (5*x_val) (y_val-2*var) var var in
+  let tee_1 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var; fill_rect (x_val+var) (y_val) var var; fill_rect (x_val+2*var) (y_val) var var; fill_rect (x_val+var) (y_val-var) var var; fill_rect (x_val+var) (y_val-2*var) var var in
   (*L*)
-  let l_1 (var, x_val, y_val) = set_color yellow; fill_rect (9*x_val) (y_val) var var; fill_rect (9*x_val) (y_val-var) var var; fill_rect (9*x_val) (y_val-2*var) var var; fill_rect (10*x_val) (y_val-2*var) var var; fill_rect (11*x_val) (y_val-2*var) var var in
+  let l_1 (var, x_val, y_val) =  fill_rect (x_val) (y_val) var var; fill_rect (x_val) (y_val-var) var var; fill_rect (x_val) (y_val-2*var) var var; fill_rect (x_val+var) (y_val-2*var) var var; fill_rect (x_val+2*var) (y_val-2*var) var var in
   (*X*)
-  let x_1 (var, x_val, y_val) = set_color yellow; fill_rect (2*x_val) (y_val-4*var) var var; fill_rect (2*x_val) (y_val-5*var) var var; fill_rect (2*x_val) (y_val-6*var) var var; fill_rect (x_val) (y_val-5*var) var var; fill_rect (3*x_val) (y_val-5*var) var var in
+  let x_1 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var; fill_rect (x_val) (y_val-var) var var; fill_rect (x_val) (y_val-2*var) var var; fill_rect (x_val-var) (y_val-var) var var; fill_rect (x_val+var) (y_val-var) var var in
   (*Z*)
-  let z_1 (var, x_val, y_val) = set_color yellow; fill_rect (5*x_val) (y_val-4*var) var var; fill_rect (6*x_val) (y_val-4*var) var var; fill_rect (6*x_val) (y_val-5*var) var var; fill_rect (6*x_val) (y_val-6*var) var var; fill_rect (7*x_val) (y_val-6*var) var var in
+  let z_1 (var, x_val, y_val) =  fill_rect (x_val) (y_val) var var; fill_rect (x_val+var) (y_val) var var; fill_rect (x_val+var) (y_val-var) var var; fill_rect (x_val+var) (y_val-2*var) var var; fill_rect (x_val+2*var) (y_val-2*var) var var in
   (*TREE*)
-  let tree_1 (var, x_val, y_val) = set_color yellow; fill_rect (9*x_val) (y_val-4*var) var var; fill_rect (10*x_val) (y_val-4*var) var var; fill_rect (10*x_val) (y_val-5*var) var var; fill_rect (10*x_val) (y_val-6*var) var var; fill_rect (11*x_val) (y_val-5*var) var var in
+  let tree_1 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var; fill_rect (x_val+var) (y_val) var var; fill_rect (x_val+var) (y_val-var) var var; fill_rect (x_val+var) (y_val-2*var) var var; fill_rect (x_val+2*var) (y_val-var) var var in
   (*LINE*)
-  let line_1 (var, x_val, y_val) = set_color yellow; fill_rect (5*x_val) (y_val-9*var) var var; fill_rect (6*x_val) (y_val-9*var) var var; fill_rect (7*x_val) (y_val-9*var) var var in
+  let line_1 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var; fill_rect (x_val+var) (y_val) var var; fill_rect (x_val+2*var) (y_val) var var in
 
-  (*Player 2 Calling*)
+  (*Player 1 Calling*)
   set_color yellow;
-  one_1 (30, 30, yf-70);
-  two_1 (30, 30, yf-70);
-  l_1 (30, 30, yf-70);
-  x_1 (30, 30, yf-70);
-  z_1 (30, 30, yf-70);
-  tree_1 (30, 30, yf-70);
-  line_1 (30, 30, yf-70);
-
-
-<<<<<<< HEAD
-=======
-  (*Player 2 Shapes*)
-  (*ONE*)
-  let one_2 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var in
-  (*TEE*)
-  let tee_2 (var, x_val, y_val)= fill_rect (x_val+3*var) (y_val) var var; fill_rect (x_val+4*var) (y_val) var var; fill_rect (x_val+5*var) (y_val) var var; fill_rect (x_val+4*var) (y_val-var) var var; fill_rect (x_val+4*var) (y_val-2*var) var var in
-  (*L*)
-  let l_2 (var, x_val, y_val) = fill_rect (x_val+8*var) (y_val) var var; fill_rect (x_val+8*var) (y_val-var) var var; fill_rect (x_val+8*var) (y_val-2*var) var var; fill_rect (x_val+9*var) (y_val-2*var) var var; fill_rect (x_val+10*var) (y_val-2*var) var var in
-  (*X*)
-  let x_2 (var, x_val, y_val) = fill_rect (x_val+2*var-15) (y_val-4*var) var var; fill_rect (x_val+2*var-15) (y_val-5*var) var var; fill_rect (x_val+2*var-15) (y_val-6*var) var var; fill_rect (x_val+var-15) (y_val-5*var) var var; fill_rect (x_val+3*var-15) (y_val-5*var) var var in
-  (*Z*)
-  let z_2 (var, x_val, y_val) = fill_rect (x_val+5*var) (y_val-4*var) var var; fill_rect (x_val+6*var) (y_val-4*var) var var; fill_rect (x_val+6*var) (y_val-5*var) var var; fill_rect (x_val+6*var) (y_val-6*var) var var; fill_rect (x_val+7*var) (y_val-6*var) var var in
-  (*TREE*)
-  let tree_2 (var, x_val, y_val) = fill_rect (x_val+9*var) (y_val-4*var) var var; fill_rect (x_val+10*var) (y_val-4*var) var var; fill_rect (x_val+10*var) (y_val-5*var) var var; fill_rect (x_val+10*var) (y_val-6*var) var var; fill_rect (x_val+11*var) (y_val-5*var) var var in
-  (*LINE*)
-  let line_2 (var, x_val, y_val) = fill_rect (x_val+5*var) (y_val-9*var) var var; fill_rect (x_val+6*var) (y_val-9*var) var var; fill_rect (x_val+7*var) (y_val-9*var) var var in
+  one_1 (30, 30, 680);
+  tee_1 (30, 120, 680);
+  l_1 (30, 270, 680);
+  x_1 (30, 60, 560);
+  z_1 (30, 150, 560);
+  tree_1 (30, 270, 560);
+  line_1 (30, 150, 410);
 
   (*Player 2 Calling*)
   set_color blue;
-  one_2 (30, xf-370, yf-70);
-  tee_2 (30, xf-370, yf-70);
-  l_2 (30, xf-370, yf-70);
-  x_2 (30, xf-370, yf-70);
-  z_2 (30, xf-370, yf-70);
-  tree_2 (30, xf-370, yf-70);
-  line_2 (30, xf-370, yf-70);
->>>>>>> f2d79984810da090450bad467bdbc09708e3bc85
+  one_1 (30, 830, 680);
+  tee_1 (30, 920, 680);
+  l_1 (30, 1070, 680);
+  x_1 (30, 860, 560);
+  z_1 (30, 950, 560);
+  tree_1 (30, 1070, 560);
+  line_1 (30, 950, 410);
 
   (*Player 1 Buttons*)
-  set_color black;
-  draw_rect ((xf-xboard)/4) (yf- 476) (((xf-xboard)/4) -10) 66;
-  moveto (((xf-xboard)/4)+43) (yf- 476 +30); draw_string ("Return to Inventory");
+  draw_gui_button game.gp1rti black;
+  draw_gui_text 243 304 "Return to Inventory" black;
 
-  draw_rect ((xf-xboard)/4) (yf- 542) ((((xf-xboard)/4) -10)/2 ) 66;
-  moveto (((xf-xboard)/4)+ 30) (yf- 542 +30 ); draw_string ("Flip X");
+  draw_gui_button game.gp1fx black;
+  draw_gui_text 230 238 "Flip X" black;
 
-  draw_rect (((xf-xboard)/4)+(((((xf-xboard)/4) -10)/2))) (yf- 542) ((((xf-xboard)/4) -10)/2 ) 66;
-  moveto (((xf-xboard)/4)+125) (yf- 542 +30 ); draw_string ("Flip Y");
+  draw_gui_button game.gp1fy black;
+  draw_gui_text 325 238 "Flip Y" black;
 
-  draw_rect ((xf-xboard)/4) (yf- 608) (((xf-xboard)/4) -10) 66;
-  set_color black;
-  moveto (((xf-xboard)/4)+48) (yf- 608 +30); draw_string ("Rotate Clockwise");
+  draw_gui_button game.gp1rot black;
+  draw_gui_text 248 172 "Rotate Clockwise" black;
 
   draw_rect 10 10 ((xf-xboard)/2 - 20) 120;
 
@@ -209,26 +224,6 @@ let rec loop () =
       moveto pt1 pt2; draw_string ("P2("^(string_of_int x)^", "^(string_of_int y)^")");
     done;
   done;
-
-  (*Player 2 Shapes*)
-  set_color blue;
-  let var = 30 in
-  let x_val = (xf-370) in
-  let y_val = yf-70 in
-  (*ONE*)
-  fill_rect (x_val) (y_val) var var ;
-  (*TEE*)
-  fill_rect (x_val+3*var) (y_val) var var; fill_rect (x_val+4*var) (y_val) var var; fill_rect (x_val+5*var) (y_val) var var; fill_rect (x_val+4*var) (y_val-var) var var; fill_rect (x_val+4*var) (y_val-2*var) var var;
-  (*L*)
-  fill_rect (x_val+8*var) (y_val) var var; fill_rect (x_val+8*var) (y_val-var) var var; fill_rect (x_val+8*var) (y_val-2*var) var var; fill_rect (x_val+9*var) (y_val-2*var) var var; fill_rect (x_val+10*var) (y_val-2*var) var var;
-  (*X*)
-  fill_rect (x_val+2*var-15) (y_val-4*var) var var; fill_rect (x_val+2*var-15) (y_val-5*var) var var; fill_rect (x_val+2*var-15) (y_val-6*var) var var; fill_rect (x_val+var-15) (y_val-5*var) var var; fill_rect (x_val+3*var-15) (y_val-5*var) var var;
-  (*Z*)
-  fill_rect (x_val+5*var) (y_val-4*var) var var; fill_rect (x_val+6*var) (y_val-4*var) var var; fill_rect (x_val+6*var) (y_val-5*var) var var; fill_rect (x_val+6*var) (y_val-6*var) var var; fill_rect (x_val+7*var) (y_val-6*var) var var;
-  (*TREE*)
-  fill_rect (x_val+9*var) (y_val-4*var) var var; fill_rect (x_val+10*var) (y_val-4*var) var var; fill_rect (x_val+10*var) (y_val-5*var) var var; fill_rect (x_val+10*var) (y_val-6*var) var var; fill_rect (x_val+11*var) (y_val-5*var) var var;
-  (*LINE*)
-  fill_rect (x_val+5*var) (y_val-9*var) var var; fill_rect (x_val+6*var) (y_val-9*var) var var; fill_rect (x_val+7*var) (y_val-9*var) var var;
 
 
   (*Player 2 Buttons*)
