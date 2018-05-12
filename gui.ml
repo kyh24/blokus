@@ -4,20 +4,62 @@ open State
 open Player
 open Board
 open Tile
-
+(*
 type gamescreen = {
   (* mutable gamestate: state; (*state.init_state 10*)
   mutable current_player: player; (*gamestate.current_player*)
   mutable board: board; (*gamestate.board*)
   mutable p1messages: string list;
   mutable p2messages: string list;
-  mutable mainmessages: string list; *)
-  guiboard_dim: int*int*int*int (*200, 175 ,400, 400*)
+     mutable mainmessages: string list; *)
+  gwindow: int*int;
+  gboard: int*int*int*int; (*200, 175 ,400, 400*)
+  gbcell: int*int
 }
 
-let current_gamescreen = {
-  guiboard_dim = (200, 175, 400, 400)
+let game = {
+  gwindow = (1200, 750);
+  gboard = (200, 175, 400, 400);
+  gbcell = (40,40)
 }
+
+
+
+(*Draws solid rectangles*)
+let draw_gui_rect x y w h color =
+  set_color color;
+  fill_rect x y w h
+
+(*Writes Text *)
+let draw_text x y color str=
+  set_color color;
+  moveto x y;
+  draw_string (str)
+
+let get_x fig =
+  match fig with
+  |(x,_) ->x
+
+let get_x figure=
+  match figure with
+  |(x,_,_,_) -> x
+
+let get_y fig=
+  match fig with
+  |(_,y) ->y
+
+let get_y figure=
+  match figure with
+  |(_,y,_,_) -> y
+
+let get_w figure=
+  match figure with
+  |(_,_,w,_) -> w
+
+let get_h figure=
+  match figure with
+  |(_,_,_,h) -> h *)
+
 
 
 
@@ -49,7 +91,6 @@ let rec loop () =
   let yboard = 400 in
   let xboardleftcorner= (xf-xboard)/2 in
   let yboardleftcorner= (yf-yboard)/2 in
-  draw_rect xboardleftcorner yboardleftcorner xboard yboard;
 
   (*Board cell set up*)
   for x = 0 to 9
@@ -138,7 +179,6 @@ let rec loop () =
 
   let starting = wait_next_event [Key_pressed] in
   if starting.key == 's' then loop () else ()
-
 
 
 (* let e = wait_next_event [Mouse_motion] in
