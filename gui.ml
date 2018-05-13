@@ -158,7 +158,7 @@ let rec click_p1_inventory lst pt =
     if (px>=x && px<=(x+w)) && (py>=y && py<=(y+h))
       then
         begin
-           failwith "Sdf";
+           failwith "Ssff";
         end
       else
         click_p1_inventory t pt
