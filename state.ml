@@ -7,11 +7,15 @@ open Command
 type state = {
   board : ((int*int) * color) array;
   players : player list;
-  mutable canvas: ((int*int)*color) list;
+  mutable canvas1: ((int*int)*color) list;
+  mutable canvas2: ((int*int)*color) list;
   mutable curr_player: player;
   mutable game_over : bool;
-
 }
+
+let empty_grid = [((-1,1),White);  ((0,1),White);  ((1,1),White);
+                  ((-1,0),White);  ((0,0),White);  ((1,0),White);
+                  ((-1,-1),White); ((0,-1),White); ((1,-1),White)]
 
 let init_state s =
   let player_1 = Player.init_player "Player 1" Yellow in
@@ -19,9 +23,8 @@ let init_state s =
   {
   board = (init_board s);
   players = [player_1; player_2];
-  canvas = [((-1,1),White);  ((0,1),White);  ((1,1),White);
-            ((-1,0),White);  ((0,0),White);  ((1,0),White);
-            ((-1,-1),White); ((0,-1),White); ((1,-1),White)];
+  canvas1 = empty_grid;
+  canvas2 = empty_grid;
   curr_player = player_1;
   game_over = false
 }
@@ -30,8 +33,6 @@ let get_center_cell st (x,y) =
     let brd_coord = ((int_of_float(x -. 200.)) mod 40 , (int_of_float(y -. 175.)) mod 40) in
     let index = get_index brd_coord (brd_size st.board) in
     fst (Array.get st.board index)
-
-
 
 let get_selection_space_coords center_cell=
   let cx = fst center_cell in
@@ -191,33 +192,44 @@ let col_to_name col =
   |Yellow -> "Y"
   |White -> "W"
 
-let p2_placed_tiles = ref []
+(* let p2_placed_tiles = ref []
+if (st.curr_player).player_name = "Player 2" then p2_placed_tiles := t::(!p2_placed_tiles); *)
 
 
 let update_state c pos p t st =
    match c with
   | PLACE t -> begin
-    if is_valid_move p st pos t then
-      place_tile st p t pos;
-    if (st.curr_player).player_name = "Player 2" then p2_placed_tiles := t::(!p2_placed_tiles);
-    st.curr_player <- if (st.curr_player).player_name = "Player 1" then List.nth st.players 1 else List.nth st.players 0;
-          st
+      if is_valid_move p st pos t then
+        begin
+          place_tile st p t pos;
+          if (st.curr_player).player_name = "Player 1" then (st.curr_player <- List.nth st.players 1; st.canvas1 <- empty_grid;)
+          else  (st.curr_player <- List.nth st.players 0; st.canvas2 <- empty_grid;)
+        end; st
   end
-  | _ -> st.canvas <- t.grid; st
+  | _ -> if (st.curr_player).player_name = "Player 2"  then st.canvas2 <- t.grid else st.canvas1 <- t.grid; st
 
 
 
 let do' c pos p st t =
+  let p1 = List.nth st.players 0 in
+  let p2 = List.nth st.players 0 in
   match c with
   | FLIP X -> update_state c pos p (flip_tile t X) st
   | FLIP Y -> update_state c pos p (flip_tile t Y) st
   | TURN t -> update_state c pos p (turn_tile t) st
   | PLACE t -> update_state c pos p t st
+  | END -> if (st.curr_player).player_name = "Player 1" then p1.status <- Stop
+    else p2.status <- Stop; if p1.status = Stop && p2.status = Stop then st.game_over <- true; st
+
+let print_winner st =
+  if st.game_over then
+    if (List.nth st.players 0).score > (List.nth st.players 1).score then print_string "The Winner is Player 1!"
+    else print_string "The Winner is Player 2!"
 
 let rec print_state brd =
 let brd_lst = Array.to_list brd in
 let str =
  match brd_lst with
  |[] -> ""
- |((x,_),col)::t -> if x <> 7 then col_to_name col ^ " " else col_to_name col ^ " NEXT ROW:"
+ |((x,_),col)::t -> if x <> 7 then col_to_name col ^ " " else col_to_name col ^ "\n"
 in print_string str
