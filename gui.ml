@@ -11,12 +11,14 @@ type gamescreen = {
   mutable p2messages: string;
   gwindow: int*int;
   gboard: int*int*int*int; (*200, 175 ,400, 400*)
+
   gp1buttons: (int*int*int*int) list;
   gp1rti: int *int *int *int;
   gp1fx: int* int* int* int;
   gp1fy: int*int*int*int;
   gp1rot: int*int*int*int;
   mutable gp1inv: (Tile.tile_id * (int*int*int*int)) list;
+  mutable canvas1: ((int*int)*color) list;
 
   gp2buttons: (int*int*int*int) list;
   gp2rti: int *int *int *int;
@@ -41,7 +43,9 @@ let game = {
             (Tee, (120, 680, 30, 60)); (L, (270, 680, 30, 60));
             (X, (30, 500, 60, 60)); (Z, (150, 500, 60, 60));
             (Tree, (120, 680, 60, 60)); (Line, (150, 410, 60, 30))];
-
+  canvas1 = [((-1,1),White);  ((0,1),White);  ((1,1),White);
+                ((-1,0),White);  ((0,0),White);  ((1,0),White);
+                ((-1,-1),White); ((0,-1),White); ((1,-1),White)];
   gp2buttons = [(1000,274,190,66); (1000,208,95,66); (1095,208,95,66); (1000,142,190,66)];
   gp2rti= 1000,274,190,66;
   gp2fx= 1000,208,95,66;
@@ -137,31 +141,50 @@ let get_h figure=
       draw_tiles_helper tilelist i
     done
 
-(* let rec click_p1_buttons lst pt =
-  let px,py = pt in
-  match lst with
-  | [] -> ()
-  | (x,y,w,h)::t ->
-    if (px>=x && px<=(x+w)) && (py>=y && py<=(y+h))
-      then
-        begin
-           failwith "Sdf";
-        end
-      else
-        click_p1_buttons t pt *)
+let rec tiles_searcher inv name player_id=
+  match inv with
+  | [] -> None
+  | h::t -> if h.name = name
+    then Some h
+    else tiles_searcher t name player_id
 
-let rec click_p1_inventory lst pt =
+let draw_onto_canvas_helper canvas player_id=
+  match canvas with
+  | [] -> set_color black;
+  | ((x,y), color)::t ->
+    begin
+      let draw_color =
+      (match color with
+        | White -> white
+        | Blue -> blue
+        | Yellow -> yellow) in
+      let pt1= 10 + (60* (x+1)) + (810*(player_id + 1)) in
+      let pt2= 142 + ((200/3) * (y+1)) in
+      draw_gui_rect pt1 pt2 60 (200/3) draw_color;
+    end
+
+let draw_onto_canvas tile_name player_id=
+  let inv= ((Array.of_list(game.state.players)).(player_id)).remaining_tiles in
+  let tile= tiles_searcher inv tile_name player_id in
+  match tile with
+  | None -> set_color black;
+  | Some x ->
+    let tilecells= x.grid in
+    (* if player_id=0 then (game.state.canvas1 <- State.place_on_canvas)
+       else (game.state.canvas2 <- State.place_on_canvas); *)
+
+    draw_onto_canvas_helper tilecells player_id
+
+let rec click_p1_inventory lst pt player_id=
   let px,py = pt in
   match lst with
-  | [] -> failwith "SDf"
+  | [] -> set_color black
   | (n, (x,y,w,h))::t ->
     if (px>=x && px<=(x+w)) && (py>=y && py<=(y+h))
       then
-        begin
-           failwith "Ssff";
-        end
+        draw_onto_canvas n 0
       else
-        click_p1_inventory t pt
+        click_p1_inventory t pt player_id
 
 let clicker () =
   let cl= Graphics.wait_next_event [Button_down] in
@@ -172,18 +195,26 @@ let click_mapper pt =
   if (px>=10 && px<=380) && (py>=350 && py<=390)
   then
     let lst= game.gp1inv in
-    click_p1_inventory lst pt
+    click_p1_inventory lst pt 0
   (* else if (px>=10 && px<=380) && (py>=350 && py<=390)
   then
     let lst= game.gp1buttons in
     click_p1_buttons lst pt *)
   else ()
 
+type storage= {
+  mutable message: string;
+}
+
+let stor = {
+  message = ""
+}
+
                   (*******************************)
 let rec loop () =
   clear_graph ();
+  draw_tiles game.state.players;
   set_color black;
-
 
   (*Board setup*)
   let xf= Graphics.size_x () in
@@ -248,7 +279,7 @@ let rec loop () =
     done;
   done;
 
-  draw_tiles game.state.players;
+
 
   (*Player 2 Buttons*)
   draw_gui_button game.gp2rti black;
@@ -271,6 +302,54 @@ let rec loop () =
  * grect defined by (x, y, w, h), doesn't terminate until the mouse is clicked
  * within the bounds of the window. *)
 
+  (***********)
+
+  click_mapper (clicker ());
+  (* draw_string stor.message;
+  set_color black;
+  (* let e = wait_next_event [Mouse_motion; Key_pressed] in
+
+     let mouse_description = sprintf "Mouse position: %d,%d" e.mouse_x e.mouse_y in
+     let key_description = if e.keypressed then sprintf "Key %c was pressed" e.key else "" in
+
+
+     clear_graph ();
+     moveto 0 100; draw_string key_description;
+     moveto 0 0; draw_string mouse_description; *)
+
+  let draw_button fig =
+    match fig with
+    | (s,c, (x,y,w,h)) -> set_color c; fill_rect x y w h; set_color black
+
+  in
+
+  (*Making a button*)
+  let lst= [("REDS", red, (200,200,150,150)); ("BLUES", blue, (400,200,150,150))] in
+  for x= 0 to 1 do
+    draw_button (List.nth lst x)
+  done;
+
+  let click () =
+    let clicker = Graphics.wait_next_event [Button_down] in
+    (clicker.mouse_x, clicker.mouse_y) in
+  let (px,py)= click () in
+  let rec which_button lst=
+    match lst with
+    | [] -> stor.message <- stor.message;
+    | (s,c,(x,y,w,h))::t -> if (px>=x && px<=(x+w)) && (py>=y && py<=(y+h))
+      then
+        begin
+          stor.message <- "You Clicked on "^s^"!";
+        end
+      else
+        which_button t;
+
+  in
+  begin
+    moveto 0 200; which_button lst; clear_graph(); loop ();
+  end; *)
+
+  (***********)
 
 
 

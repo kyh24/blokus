@@ -34,7 +34,7 @@ val is_valid_move: player -> state -> (float * float) -> tile -> bool
 
 val place_tile: state -> player-> tile -> (float * float) -> unit
 
-val p2_placed_tiles: tile list ref
+(* val p2_placed_tiles: tile list ref *)
 
 
 (* [do' c st t] is [st'] if doing command [c] in state [st] results

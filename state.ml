@@ -186,6 +186,7 @@ let place_tile st p t (x,y) =
     place_tile_on_brd colors_of_tile st.board;
     player_place_tile p t
 
+
 let col_to_name col =
   match col with
   |Blue -> "B"
