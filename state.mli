@@ -7,7 +7,8 @@ open Command
 type state = {
   board : ((int*int) * color) array;
   players : player list;
-  mutable canvas: ((int*int)* color) list;
+  mutable canvas1: ((int*int)* color) list;
+  mutable canvas2: ((int*int)* color) list;
   mutable curr_player: player;
 }
 

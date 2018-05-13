@@ -44,7 +44,7 @@ let player_place_tile p t =
   p.remaining_tiles <- List.filter (fun elt -> tile_name elt != tile_name t) p.remaining_tiles;
   let val_5_lst = List.filter (fun elt -> elt.value = 5) p.remaining_tiles in
   if List.length p.remaining_tiles = 0
-  then p.max_val <- 0
+  then (p.max_val <- 0; p.status <- Stop)
   else if List.length val_5_lst = 0 && List.exists (fun elt -> elt.name = Line) p.remaining_tiles
   then p.max_val <- 3
   else if List.length val_5_lst = 0 && List.exists (fun elt -> elt.name = One) p.remaining_tiles
