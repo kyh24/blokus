@@ -9,6 +9,7 @@ type state = {
   players : player list;
   mutable canvas: ((int*int)* color) list;
   mutable curr_player: player;
+    mutable game_over : bool
 }
 
 

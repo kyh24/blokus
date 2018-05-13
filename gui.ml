@@ -9,16 +9,20 @@ type gamescreen = {
   mutable state: state; (*state.init_state 10*)
   mutable p1messages: string;
   mutable p2messages: string;
-  mutable p1inventory: tile list;
   gwindow: int*int;
   gboard: int*int*int*int; (*200, 175 ,400, 400*)
-  
+  gp1buttons: (int*int*int*int) list;
   gp1rti: int *int *int *int;
   gp1fx: int* int* int* int;
   gp1fy: int*int*int*int;
   gp1rot: int*int*int*int;
-  gp1canvas: (int * (int*int*int*int)) list;
-  mutable gp1inv: (int*int*int*int) list
+  mutable gp1inv: (Tile.tile_id * (int*int*int*int)) list;
+
+  gp2buttons: (int*int*int*int) list;
+  gp2rti: int *int *int *int;
+  gp2fx: int* int* int* int;
+  gp2fy: int*int*int*int;
+  gp2rot: int*int*int*int;
 
 }
 
@@ -28,13 +32,21 @@ let game = {
   gboard = (200, 175, 400, 400);
   p1messages = "";
   p2messages = "";
-  p1inventory= (init_player "Player1" Yellow).remaining_tiles;
+  gp1buttons = [(200,274,190,66); (200,208,95,66); (295,208,95,66); (200,142,190,66)];
   gp1rti= 200,274,190,66;
   gp1fx= 200,208,95,66;
   gp1fy= 295,208,95,66;
-  gp1rot= 200,142,190,66;
-  gp1canvas= [(0, (0,0,0,0))];
-  gp1inv = []
+  gp1rot = 200,142,190,66;
+  gp1inv = [(One, (30, 680, 30, 60)); (Tee, (120, 680, 30, 60));
+            (Tee, (120, 680, 30, 60)); (L, (270, 680, 30, 60));
+            (X, (30, 500, 60, 60)); (Z, (150, 500, 60, 60));
+            (Tree, (120, 680, 60, 60)); (Line, (150, 410, 60, 30))];
+
+  gp2buttons = [(1000,274,190,66); (1000,208,95,66); (1095,208,95,66); (1000,142,190,66)];
+  gp2rti= 1000,274,190,66;
+  gp2fx= 1000,208,95,66;
+  gp2fy= 1095,208,95,66;
+  gp2rot= 1000,142,190,66
 }
 
 (*Player 1 Buttons*)
@@ -125,27 +137,53 @@ let get_h figure=
       draw_tiles_helper tilelist i
     done
 
-let clicker =
-  let cl= Graphics.wait_next_event [Button_down] in
-  (cl.mouse_x, cl.mouse_y)
-
-(* let inv_click () =
-  let (px,py)= clicker () in
-  let rec which_button lst=
-    match lst with
-    | [] -> stor.message <- stor.message;
-    | (s,c,(x,y,w,h))::t -> if (px>=x && px<=(x+w)) && (py>=y && py<=(y+h))
+(* let rec click_p1_buttons lst pt =
+  let px,py = pt in
+  match lst with
+  | [] -> ()
+  | (x,y,w,h)::t ->
+    if (px>=x && px<=(x+w)) && (py>=y && py<=(y+h))
       then
         begin
-           stor.message <- "You Clicked on "^s^"!";
+           failwith "Sdf";
         end
       else
-        which_button t; *)
+        click_p1_buttons t pt *)
+
+let rec click_p1_inventory lst pt =
+  let px,py = pt in
+  match lst with
+  | [] -> failwith "SDf"
+  | (n, (x,y,w,h))::t ->
+    if (px>=x && px<=(x+w)) && (py>=y && py<=(y+h))
+      then
+        begin
+           failwith "Sdf";
+        end
+      else
+        click_p1_inventory t pt
+
+let clicker () =
+  let cl= Graphics.wait_next_event [Button_down] in
+    cl.mouse_x , cl.mouse_y
+
+let click_mapper pt =
+  let (px,py)= clicker () in
+  if (px>=10 && px<=380) && (py>=350 && py<=390)
+  then
+    let lst= game.gp1inv in
+    click_p1_inventory lst pt
+  (* else if (px>=10 && px<=380) && (py>=350 && py<=390)
+  then
+    let lst= game.gp1buttons in
+    click_p1_buttons lst pt *)
+  else ()
 
                   (*******************************)
 let rec loop () =
   clear_graph ();
   set_color black;
+
 
   (*Board setup*)
   let xf= Graphics.size_x () in
@@ -180,49 +218,9 @@ let rec loop () =
       let pt1 = 10 + ((((xf-xboard)/4 - 20)/3) * (x-1)) in
       let pt2 = (yf- 610) + ((200/3) * (y-1)) +2 in
       draw_rect pt1 pt2 (((xf-xboard)/4 - 20)/3) (200/3);
-      moveto pt1 pt2; draw_string ("P1("^(string_of_int x)^", "^(string_of_int y)^")");
+      moveto pt1 pt2; draw_string ("("^(string_of_int (x-2))^", "^(string_of_int (y-2))^")");
     done;
   done;
-
-
-
-  (*ONE*)
-  (* let one_1 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var in
-  (*TEE*)
-  let tee_1 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var; fill_rect (x_val+var) (y_val) var var; fill_rect (x_val+2*var) (y_val) var var; fill_rect (x_val+var) (y_val-var) var var; fill_rect (x_val+var) (y_val-2*var) var var in
-  (*L*)
-  let l_1 (var, x_val, y_val) =  fill_rect (x_val) (y_val) var var; fill_rect (x_val) (y_val-var) var var; fill_rect (x_val) (y_val-2*var) var var; fill_rect (x_val+var) (y_val-2*var) var var; fill_rect (x_val+2*var) (y_val-2*var) var var in
-  (*X*)
-  let x_1 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var; fill_rect (x_val) (y_val-var) var var; fill_rect (x_val) (y_val-2*var) var var; fill_rect (x_val-var) (y_val-var) var var; fill_rect (x_val+var) (y_val-var) var var in
-  (*Z*)
-  let z_1 (var, x_val, y_val) =  fill_rect (x_val) (y_val) var var; fill_rect (x_val+var) (y_val) var var; fill_rect (x_val+var) (y_val-var) var var; fill_rect (x_val+var) (y_val-2*var) var var; fill_rect (x_val+2*var) (y_val-2*var) var var in
-  (*TREE*)
-  let tree_1 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var; fill_rect (x_val+var) (y_val) var var; fill_rect (x_val+var) (y_val-var) var var; fill_rect (x_val+var) (y_val-2*var) var var; fill_rect (x_val+2*var) (y_val-var) var var in
-  (*LINE*)
-  let line_1 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var; fill_rect (x_val+var) (y_val) var var; fill_rect (x_val+2*var) (y_val) var var in
-
-
-
-
-  (*Player 1 Calling*)
-  set_color yellow;
-  one_1 (30, 30, 680);
-  tee_1 (30, 120, 680);
-  l_1 (30, 270, 680);
-  x_1 (30, 60, 560);
-  z_1 (30, 150, 560);
-  tree_1 (30, 270, 560);
-  line_1 (30, 150, 410);
-
-  (*Player 2 Calling*)
-  set_color blue;
-  one_1 (30, 830, 680);
-  tee_1 (30, 920, 680);
-  l_1 (30, 1070, 680);
-  x_1 (30, 860, 560);
-  z_1 (30, 950, 560);
-  tree_1 (30, 1070, 560);
-  line_1 (30, 950, 410); *)
 
   (*Player 1 Buttons*)
   draw_gui_button game.gp1rti black;
@@ -246,28 +244,24 @@ let rec loop () =
       let pt1 = ((xboard + (xf/3)+10)) + ((((xf-xboard)/4 - 20)/3)*(x-1)) in
       let pt2 = (yf- 610) + ((200/3) * (y-1)) +2 in
       draw_rect pt1 pt2 (((xf-xboard)/4 - 20)/3) (200/3);
-      moveto pt1 pt2; draw_string ("P2("^(string_of_int x)^", "^(string_of_int y)^")");
+      moveto pt1 pt2; draw_string ("("^(string_of_int (x-2))^", "^(string_of_int (y-2))^")");
     done;
   done;
 
   draw_tiles game.state.players;
 
   (*Player 2 Buttons*)
-  (* set_color blue; fill_rect (xboard + (xf/3)+((xf-xboard)/4)) (yf- 476) (((xf-xboard)/4) -10) 66; *)
-  draw_rect (xboard + (xf/3)+((xf-xboard)/4)) (yf- 476) (((xf-xboard)/4) -10) 66;
-  set_color black;
-  moveto ((xboard + (xf/3)+((xf-xboard)/4))+43) (yf- 476 +30); draw_string ("Return to Inventory");
+  draw_gui_button game.gp2rti black;
+  draw_gui_text 1043 304 "Return to Inventory" black;
 
-  draw_rect (xboard + (xf/3)+(xf-xboard)/4) (yf- 542) ((((xf-xboard)/4) -10)/2 ) 66;
-  moveto (xboard + (xf/3)+((xf-xboard)/4)+ 30) (yf- 542 +30 ); draw_string ("Flip X");
+  draw_gui_button game.gp2fx black;
+  draw_gui_text 1030 238 "Flip X" black;
 
-  draw_rect (xboard + (xf/3)+((xf-xboard)/4)+(((((xf-xboard)/4) -10)/2))) (yf- 542) ((((xf-xboard)/4) -10)/2 ) 66;
-  moveto (xboard + (xf/3)+((xf-xboard)/4)+125) (yf- 542 +30 ); draw_string ("Flip Y");
+  draw_gui_button game.gp2fy black;
+  draw_gui_text 1125 238 "Flip Y" black;
 
-  (* set_color red; fill_rect (xboard + (xf/3)+((xf-xboard)/4)) (yf- 608) (((xf-xboard)/4) -10) 66; *)
-  draw_rect (xboard + (xf/3)+((xf-xboard)/4)) (yf- 608) (((xf-xboard)/4) -10) 66;
-  set_color black;
-  moveto ((xboard + (xf/3)+((xf-xboard)/4))+48) (yf- 608 +30); draw_string ("Rotate Clockwise");
+  draw_gui_button game.gp2rot black;
+  draw_gui_text 1048 172 "Rotate Clockwise" black;
 
   draw_rect (xboard + (xf/3)+10 ) 10 ((xf-xboard)/2 - 20) 120;
 
