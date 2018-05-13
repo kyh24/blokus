@@ -221,6 +221,11 @@ let do' c pos p st t =
   | END -> if (st.curr_player).player_name = "Player 1" then p1.status <- Stop
     else p2.status <- Stop; if p1.status = Stop && p2.status = Stop then st.game_over <- true; st
 
+let print_winner st =
+  if st.game_over then
+    if (List.nth st.players 0).score > (List.nth st.players 1).score then print_string "The Winner is Player 1!"
+    else print_string "The Winner is Player 2!"
+
 let rec print_state brd =
 let brd_lst = Array.to_list brd in
 let str =
