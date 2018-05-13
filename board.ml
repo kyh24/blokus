@@ -20,4 +20,7 @@ let get_index (x,y) size = y*size + x
 let rec place_tile_on_brd tile_colors brd =
   match tile_colors with
   |[] -> ()
-  |((x,y), c)::t -> Array.set brd (get_index (x,y) (brd_size brd)) ((x,y), c); place_tile_on_brd t brd
+  |((x,y), c)::t -> if x < 0 || x > brd_size brd - 1|| y > brd_size brd -1 || y < 0 then place_tile_on_brd t brd
+    else Array.set brd (get_index (x,y) (brd_size brd)) ((x,y), c); place_tile_on_brd t brd
+
+  

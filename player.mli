@@ -9,7 +9,6 @@ type player = {
   mutable status : status;
   mutable score : int;
   mutable remaining_tiles : tile list;
-  mutable max_val: int
 }
 
 (*[init player n c t_lst] is the state of player [p] at the beginning of the game. *)
