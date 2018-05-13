@@ -11,7 +11,7 @@ type command = FLIPX of tile_id | FLIPY of tile_id| TURN of tile_id | PLACE of (
 (* let parse_click () = failwith "Unimplemented"
 
 (*if we implement by having clickable commands on gui*)
-
+(*
 let commands (c:unit) (t:tile): command =
   if key_pressed c then (
     let pos = mouse_pos c in
