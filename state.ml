@@ -3,12 +3,13 @@ open Board
 open Tile
 open Command
 
+
 type state = {
   board : ((int*int) * color) array;
   players : player list;
   mutable canvas: ((int*int)*color) list;
-  curr_player: player;
-(*NEED CURRENT PLAYER FIELD*)
+  mutable curr_player: player;
+  mutable game_over : bool;
 
 }
 
@@ -21,10 +22,16 @@ let init_state s =
   canvas = [((-1,1),White);  ((0,1),White);  ((1,1),White);
             ((-1,0),White);  ((0,0),White);  ((1,0),White);
             ((-1,-1),White); ((0,-1),White); ((1,-1),White)];
-  curr_player = player_1
+  curr_player = player_1;
+  game_over = false
 }
 
-let get_center_cell st pos= fst (Array.get st.board pos)
+let get_center_cell st (x,y) =
+    let brd_coord = ((int_of_float(x -. 200.)) mod 40 , (int_of_float(y -. 175.)) mod 40) in
+    let index = get_index brd_coord (brd_size st.board) in
+    fst (Array.get st.board index)
+
+
 
 let get_selection_space_coords center_cell=
   let cx = fst center_cell in
@@ -49,8 +56,6 @@ let rec get_tile_colors tl coords acc =
       let colors = List.assoc h tl.grid in
       get_tile_colors tl t ((h,colors)::acc)
     end
-
-
 
 (* List.fold_right (fun (x,y,_) acc-> if x < 0 || y < 0 then false::acc else false::acc) select_space [] *)
 let check_sides tile_colors brd_array highest_i =
@@ -119,8 +124,6 @@ let check_sides tile_colors brd_array highest_i =
   done; !valid_sides_ref
 
 
-
-
 let check_corners t brd =
   let brd_lst = Array.to_list brd in
   let brd_coordinates = List.map (fun ((x,y), col) -> (x,y)) brd_lst in
@@ -174,13 +177,13 @@ let is_valid_move p st pos tl =
 (* The 3x3 select site must only have WHITE cells.
    The *)
 
- let place_tile st p t pos=
-   if is_valid_move p st pos t then
-   let dot = get_center_cell st pos in
-   let coordinates = get_selection_space_coords dot in
-   let colors_of_tile = get_tile_colors t coordinates [] in
-   place_tile_on_brd colors_of_tile st.board;
-   player_place_tile p t
+let place_tile st p t (x,y) =
+  if x > 200. && x < 599. && y > 175. && y < 574. then
+    let dot = get_center_cell st (x,y) in
+    let coordinates = get_selection_space_coords dot in
+    let colors_of_tile = get_tile_colors t coordinates [] in
+    place_tile_on_brd colors_of_tile st.board;
+    player_place_tile p t
 
 let col_to_name col =
   match col with
@@ -188,21 +191,28 @@ let col_to_name col =
   |Yellow -> "Y"
   |White -> "W"
 
+let p2_placed_tiles = ref []
 
-let update_state c t st = failwith "incomplete"
-  (*  match c with
+
+let update_state c pos p t st =
+   match c with
   | PLACE t -> begin
-    place_tile st p t pos
+    if is_valid_move p st pos t then
+      place_tile st p t pos;
+    if (st.curr_player).player_name = "Player 2" then p2_placed_tiles := t::(!p2_placed_tiles);
+    st.curr_player <- if (st.curr_player).player_name = "Player 1" then List.nth st.players 1 else List.nth st.players 0;
+          st
   end
-  | _ -> st.canvas <- t.grid; st *)
+  | _ -> st.canvas <- t.grid; st
 
 
-let do' c st t =
+
+let do' c pos p st t =
   match c with
-  | FLIP X -> update_state c (flip_tile t X) st
-  | FLIP Y -> update_state c (flip_tile t Y) st
-  | TURN t -> update_state c (turn_tile t) st
-  | PLACE t -> update_state c t st
+  | FLIP X -> update_state c pos p (flip_tile t X) st
+  | FLIP Y -> update_state c pos p (flip_tile t Y) st
+  | TURN t -> update_state c pos p (turn_tile t) st
+  | PLACE t -> update_state c pos p t st
 
 let rec print_state brd =
 let brd_lst = Array.to_list brd in
