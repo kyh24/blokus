@@ -227,7 +227,7 @@ let update_state c st =
 
 
 
-let do' c st =
+let do_command c st =
   let p1 = List.nth st.players 0 in
   let p2 = List.nth st.players 1 in
   match c with

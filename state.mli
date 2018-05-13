@@ -40,7 +40,7 @@ val place_tile: state -> player-> tile -> (int * int) -> unit
 (* [do' c st t] is [st'] if doing command [c] in state [st] results
  * in a new state [st'].
 *)
-val do' : command -> state -> state
+val do_command : command -> state -> state
 
 
 
