@@ -12,11 +12,13 @@ type gamescreen = {
   mutable p1inventory: tile list;
   gwindow: int*int;
   gboard: int*int*int*int; (*200, 175 ,400, 400*)
+  
   gp1rti: int *int *int *int;
   gp1fx: int* int* int* int;
   gp1fy: int*int*int*int;
   gp1rot: int*int*int*int;
-  gp1canvas: (int * (int*int*int*int)) list
+  gp1canvas: (int * (int*int*int*int)) list;
+  mutable gp1inv: (int*int*int*int) list
 
 }
 
@@ -31,7 +33,8 @@ let game = {
   gp1fx= 200,208,95,66;
   gp1fy= 295,208,95,66;
   gp1rot= 200,142,190,66;
-  gp1canvas= [(0, (0,0,0,0))]
+  gp1canvas= [(0, (0,0,0,0))];
+  gp1inv = []
 }
 
 (*Player 1 Buttons*)
@@ -76,23 +79,73 @@ let get_h figure=
   match figure with
   |(_,_,_,h) -> h
 
+  let rec draw_tiles_helper tilelist i=
+    match tilelist with
+    | [] -> set_color black;
+    | h::t ->
+      if i=0 then set_color yellow else set_color cyan;
+      begin
+          match h.name with
+          | One ->  fill_rect (30 +(800*i)) 680 30 30; draw_tiles_helper t i;
+          | Tee ->  fill_rect (120+(800*i)) 680 30 30;
+                    fill_rect (150+(800*i)) 680 30 30;
+                    fill_rect (180+(800*i)) 680 30 30;
+                    fill_rect (150+(800*i)) 650 30 30;
+                    fill_rect (150+(800*i)) 620 30 30; draw_tiles_helper t i;
+          | L ->    fill_rect (270 +(800*i)) 680 30 30;
+                    fill_rect (270 +(800*i)) 650 30 30;
+                    fill_rect (270 +(800*i)) 620 30 30;
+                    fill_rect (300 +(800*i)) 620 30 30;
+                    fill_rect (330 +(800*i)) 620 30 30; draw_tiles_helper t i;
+          | X ->    fill_rect (60 +(800*i)) 560 30 30;
+                    fill_rect (60 +(800*i)) 530 30 30;
+                    fill_rect (60 +(800*i)) 500 30 30;
+                    fill_rect (30 +(800*i)) 530 30 30;
+                    fill_rect (90 +(800*i)) 530 30 30; draw_tiles_helper t i;
+          | Z ->    fill_rect (150+(800*i)) 560 30 30;
+                    fill_rect (180+(800*i)) 560 30 30;
+                    fill_rect (180+(800*i)) 530 30 30;
+                    fill_rect (180+(800*i)) 500 30 30;
+                    fill_rect (210+(800*i)) 500 30 30; draw_tiles_helper t i;
+          | Tree -> fill_rect (270+(800*i)) 560 30 30;
+                    fill_rect (300+(800*i)) 560 30 30;
+                    fill_rect (300+(800*i)) 530 30 30;
+                    fill_rect (300+(800*i)) 500 30 30;
+                    fill_rect (330+(800*i)) 530 30 30; draw_tiles_helper t i;
+          | Line -> fill_rect (150+(800*i)) 410 30 30;
+                    fill_rect (180+(800*i)) 410 30 30;
+                    fill_rect (210+(800*i)) 410 30 30; draw_tiles_helper t i;
+        end
 
+  let rec draw_tiles playerlist=
+    let playerarray= Array.of_list playerlist in
+    for i=0 to 1
+    do
+      let tilelist= (playerarray.(i)).remaining_tiles in
+      draw_tiles_helper tilelist i
+    done
 
+let clicker =
+  let cl= Graphics.wait_next_event [Button_down] in
+  (cl.mouse_x, cl.mouse_y)
+
+(* let inv_click () =
+  let (px,py)= clicker () in
+  let rec which_button lst=
+    match lst with
+    | [] -> stor.message <- stor.message;
+    | (s,c,(x,y,w,h))::t -> if (px>=x && px<=(x+w)) && (py>=y && py<=(y+h))
+      then
+        begin
+           stor.message <- "You Clicked on "^s^"!";
+        end
+      else
+        which_button t; *)
 
                   (*******************************)
 let rec loop () =
   clear_graph ();
   set_color black;
-(*
-  let fill_canvas tile =
-    match tile with
-    | One -> fill_rect
-    | Tee ->
-    | L ->
-    | X ->
-    | Z ->
-    | Tree ->
-    | Line -> *)
 
   (*Board setup*)
   let xf= Graphics.size_x () in
@@ -120,39 +173,6 @@ let rec loop () =
   (*Player 2 Inventory*)
   draw_rect (xboardleftcorner + xboard + 10) (yf- 400) ((xf-xboard)/2 - 20) 390;
   moveto (xf-250) (yf-30); draw_string ("Player 2 Inventory");
-
-  (* let rec draw_inv =
-    let name= List.hd game.state.players in
-    match name with
-    | One -> failwith "SDf"
-    | Tee -> failwith "SDf"
-    | L -> failwith "SDf"
-    | X -> failwith "SDf"
-    | Z -> failwith "SDf"
-    | Tree -> failwith "SDf"
-    | Line -> failwith "SDf" *)
-
-  (* let rec draw_inv playerlst =
-    match playerlst with
-    | [] -> set_color black;
-    | h::t ->
-      begin
-        let inv= h.remaining_tiles in
-        match inv with
-        |[] -> set_color black;
-        |h::t ->
-          begin
-            match h.name with
-            | One -> fill_rect (300) 680 30 30
-            | Tee -> failwith "SDf"
-            | L -> failwith "SDf"
-            | X -> failwith "SDf"
-            | Z -> failwith "SDf"
-            | Tree -> failwith "SDf"
-            | Line -> failwith "SDf"
-          end
-      end *)
-
   (*Player Canvas set up*)
   (*Player 1 Canvas*)
   for x = 1 to 3 do
@@ -164,16 +184,11 @@ let rec loop () =
     done;
   done;
 
-<<<<<<< HEAD
-=======
-   (*Player 1 Shapes*)
 
 
->>>>>>> 0c3dcacc0e6282cd78b0a19346777f9b09f9ec20
   (*ONE*)
-  let one_1 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var in
+  (* let one_1 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var in
   (*TEE*)
-<<<<<<< HEAD
   let tee_1 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var; fill_rect (x_val+var) (y_val) var var; fill_rect (x_val+2*var) (y_val) var var; fill_rect (x_val+var) (y_val-var) var var; fill_rect (x_val+var) (y_val-2*var) var var in
   (*L*)
   let l_1 (var, x_val, y_val) =  fill_rect (x_val) (y_val) var var; fill_rect (x_val) (y_val-var) var var; fill_rect (x_val) (y_val-2*var) var var; fill_rect (x_val+var) (y_val-2*var) var var; fill_rect (x_val+2*var) (y_val-2*var) var var in
@@ -185,23 +200,12 @@ let rec loop () =
   let tree_1 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var; fill_rect (x_val+var) (y_val) var var; fill_rect (x_val+var) (y_val-var) var var; fill_rect (x_val+var) (y_val-2*var) var var; fill_rect (x_val+2*var) (y_val-var) var var in
   (*LINE*)
   let line_1 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var; fill_rect (x_val+var) (y_val) var var; fill_rect (x_val+2*var) (y_val) var var in
-=======
-  let tee_1 (var, x_val, y_val) = set_color yellow; fill_rect (x_val) (y_val) var var; fill_rect (x_val+var) (y_val) var var; fill_rect (x_val+2*var) (y_val) var var; fill_rect (x_val+var) (y_val-var) var var; fill_rect (x_val+var) (y_val-2*var) var var in
-  (*L*)
-  let l_1 (var, x_val, y_val) = set_color yellow; fill_rect (x_val) (y_val) var var; fill_rect (x_val) (y_val-var) var var; fill_rect (x_val) (y_val-2*var) var var; fill_rect (x_val+var) (y_val-2*var) var var; fill_rect (x_val+2*var) (y_val-2*var) var var in
-  (*X*)
-  let x_1 (var, x_val, y_val) = set_color yellow; fill_rect (x_val) (y_val) var var; fill_rect (x_val) (y_val-var) var var; fill_rect (x_val) (y_val-2*var) var var; fill_rect (x_val-var) (y_val-var) var var; fill_rect (x_val+var) (y_val-var) var var in
-  (*Z*)
-  let z_1 (var, x_val, y_val) = set_color yellow; fill_rect (x_val) (y_val) var var; fill_rect (x_val+var) (y_val) var var; fill_rect (x_val+var) (y_val-var) var var; fill_rect (x_val+var) (y_val-2*var) var var; fill_rect (x_val+2*var) (y_val-2*var) var var in
-  (*TREE*)
-  let tree_1 (var, x_val, y_val) = set_color yellow; fill_rect (x_val) (y_val) var var; fill_rect (x_val+var) (y_val) var var; fill_rect (x_val+var) (y_val-var) var var; fill_rect (x_val+var) (y_val-2*var) var var; fill_rect (x_val+2*var) (y_val-var) var var in
-  (*LINE*)
-  let line_1 (var, x_val, y_val) = set_color yellow; fill_rect (x_val) (y_val) var var; fill_rect (x_val+var) (y_val) var var; fill_rect (x_val+2*var) (y_val) var var in
->>>>>>> 0c3dcacc0e6282cd78b0a19346777f9b09f9ec20
+
+
+
 
   (*Player 1 Calling*)
   set_color yellow;
-<<<<<<< HEAD
   one_1 (30, 30, 680);
   tee_1 (30, 120, 680);
   l_1 (30, 270, 680);
@@ -218,43 +222,7 @@ let rec loop () =
   x_1 (30, 860, 560);
   z_1 (30, 950, 560);
   tree_1 (30, 1070, 560);
-  line_1 (30, 950, 410);
-=======
-  one_1 (30, 30, yf-70);
-  tee_1 (30, 120, yf-70);
-  l_1 (30, 270, yf-70);
-  x_1 (30, 60, yf-70-120);
-  z_1 (30, 150, yf-70-120);
-  tree_1 (30, 270, yf-70-120);
-  line_1 (30, 150, yf-70-270);
-
-
-  (*Player 2 Shapes*)
-  (*ONE*)
-  let one_2 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var in
-  (*TEE*)
-  let tee_2 (var, x_val, y_val)= fill_rect (x_val) (y_val) var var; fill_rect (x_val+var) (y_val) var var; fill_rect (x_val+2*var) (y_val) var var; fill_rect (x_val+var) (y_val-var) var var; fill_rect (x_val+var) (y_val-2*var) var var in
-  (*L*)
-  let l_2 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var; fill_rect (x_val) (y_val-var) var var; fill_rect (x_val) (y_val-2*var) var var; fill_rect (x_val+var) (y_val-2*var) var var; fill_rect (x_val+2*var) (y_val-2*var) var var in
-  (*X*)
-  let x_2 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var; fill_rect (x_val) (y_val-var) var var; fill_rect (x_val) (y_val-2*var) var var; fill_rect (x_val-var) (y_val-var) var var; fill_rect (x_val+var) (y_val-var) var var in
-  (*Z*)
-  let z_2 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var; fill_rect (x_val+var) (y_val) var var; fill_rect (x_val+var) (y_val-var) var var; fill_rect (x_val+var) (y_val-2*var) var var; fill_rect (x_val+2*var) (y_val-2*var) var var in
-  (*TREE*)
-  let tree_2 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var; fill_rect (x_val+var) (y_val) var var; fill_rect (x_val+var) (y_val-var) var var; fill_rect (x_val+var) (y_val-2*var) var var; fill_rect (x_val+2*var) (y_val-var) var var in
-  (*LINE*)
-  let line_2 (var, x_val, y_val) = fill_rect (x_val) (y_val) var var; fill_rect (x_val+var) (y_val) var var; fill_rect (x_val+2*var) (y_val) var var in
-
-  (*Player 2 Calling*)
-  set_color blue;
-  one_2 (30, xf-370, yf-70);
-  tee_2 (30, xf-370+90, yf-70);
-  l_2 (30, xf-370+240, yf-70);
-  x_2 (30, xf-370+60-15, yf-70-120);
-  z_2 (30, xf-370+150, yf-70-120);
-  tree_2 (30, xf-370+240, yf-70-120);
-  line_2 (30, xf-370+150, yf-70-270);
->>>>>>> 0c3dcacc0e6282cd78b0a19346777f9b09f9ec20
+  line_1 (30, 950, 410); *)
 
   (*Player 1 Buttons*)
   draw_gui_button game.gp1rti black;
@@ -282,10 +250,7 @@ let rec loop () =
     done;
   done;
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 0c3dcacc0e6282cd78b0a19346777f9b09f9ec20
+  draw_tiles game.state.players;
 
   (*Player 2 Buttons*)
   (* set_color blue; fill_rect (xboard + (xf/3)+((xf-xboard)/4)) (yf- 476) (((xf-xboard)/4) -10) 66; *)
