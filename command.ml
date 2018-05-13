@@ -8,7 +8,7 @@ type direction = X | Y
 type command = FLIPX of tile_id | FLIPY of tile_id| TURN of tile_id | PLACE of (int * int) * tile_id | FORFEIT
 
 (*[parse_click ()] is the command selected by a mouse event*)
-(* let parse_click () = failwith "Unimplemented"
+(* let parse_click () = failwith "Unimplemented" *)
 
 (*if we implement by having clickable commands on gui*)
 (*
