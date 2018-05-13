@@ -28,7 +28,7 @@ type gamescreen = {
   gp1fy: int*int*int*int;
   gp1rot: int*int*int*int;
   mutable gp1inv: (Tile.tile_id * (int*int*int*int)) list;
-  mutable canvas1: ((int*int)*color) list;
+  (* mutable canvas1: ((int*int)*color) list; *)
   mutable canvas1tile: Tile.tile_id option;
 
   gp2buttons: (int*int*int*int) list;
@@ -37,7 +37,7 @@ type gamescreen = {
   gp2fy: int*int*int*int;
   gp2rot: int*int*int*int;
   mutable gp2inv: (Tile.tile_id * (int*int*int*int)) list;
-  mutable canvas2: ((int*int)*color) list;
+  (* mutable canvas2: ((int*int)*color) list; *)
 
   gregions: (int*int*int*int) list
 }
@@ -48,7 +48,7 @@ let game = {
   gboard = (200, 175, 400, 400);
   p1messages = "";
   p2messages = "";
-  gp1buttons = [(200,274,190,66); (200,208,95,66); (295,208,95,66); (200,142,190,66)];
+  gp1buttons = [(200,274,390,340); (200,208,295,274); (295,208,390,274); (200,142,390,208)];
   gp1rti= 200,274,190,66;
   gp1fx= 200,208,95,66;
   gp1fy= 295,208,95,66;
@@ -56,9 +56,9 @@ let game = {
   gp1inv = [(One, (30, 680, 30, 30)); (Tee, (120, 620, 90, 90));
             (L, (270, 620, 90, 90)); (X, (30, 500, 90, 90));
             (Z, (150, 500, 90, 90)); (Tree, (270, 500, 90, 90)); (Line, (150, 410, 60, 30))];
-  canvas1 = [((-1,1),White);  ((0,1),White);  ((1,1),White);
+  (* canvas1 = [((-1,1),White);  ((0,1),White);  ((1,1),White);
                 ((-1,0),White);  ((0,0),White);  ((1,0),White);
-             ((-1,-1),White); ((0,-1),White); ((1,-1),White)];
+             ((-1,-1),White); ((0,-1),White); ((1,-1),White)]; *)
   canvas1tile= None;
 
   gp2buttons = [(1000,274,190,66); (1000,208,95,66); (1095,208,95,66); (1000,142,190,66)];
@@ -69,11 +69,11 @@ let game = {
   gp2inv = [(One, (830, 680, 30, 30)); (Tee, (920, 680, 90, 90));
             (L, (1070, 680, 90, 90)); (X, (830, 500, 90, 90));
             (Z, (950, 500, 90, 90)); (Tree, (1070, 500, 90, 90)); (Line, (950, 410, 60, 30))];
-  canvas2 = [((-1,1),Blue);  ((0,1),Blue);  ((1,1),Blue);
+  (* canvas2 = [((-1,1),Blue);  ((0,1),Blue);  ((1,1),Blue);
                ((-1,0),Blue);  ((0,0),Blue);  ((1,0),Blue);
-             ((-1,-1),Blue); ((0,-1),Blue); ((1,-1),Blue)];
+             ((-1,-1),Blue); ((0,-1),Blue); ((1,-1),Blue)]; *)
 
-  gregions = [(10,390,350,740); (200,390,142,400); ]
+  gregions = [(10,390,350,740); (200,390,142,400); (400, 760, 175, 575)]
 }
 
 (*Draws Rectangles*)
@@ -121,6 +121,7 @@ let rec draw_tiles_helper tilelist i=
     if i=0 then set_color yellow else set_color cyan;
     begin
         match h.name with
+        | Empty -> draw_tiles_helper t i;
         | One ->  fill_rect (30 +(800*i)) 680 30 30; draw_tiles_helper t i;
         | Tee ->  fill_rect (120+(800*i)) 680 30 30;
                   fill_rect (150+(800*i)) 680 30 30;
@@ -190,11 +191,11 @@ let draw_onto_canvas tile_name player_id=
   | None -> set_color black;
   | Some x ->
     let tilecells= x.grid in
-    if player_id=0
+    (* if player_id=0
     then (game.canvas1 <- tilecells; game.canvas1tile <- Some tile_name)
-    else game.canvas2 <- tilecells;
-    (* if player_id=0 then (game.state.canvas1 <- State.place_on_canvas)
-       else (game.state.canvas2 <- State.place_on_canvas); *)
+    else game.canvas2 <- tilecells; *)
+    if player_id=0 then (game.state.canvas1 <- tilecells; game.canvas1tile <- Some tile_name )
+       else (game.state.canvas2 <- tilecells ; game.canvas1tile <- Some tile_name);
     draw_onto_canvas_helper tilecells player_id
 
 
@@ -204,30 +205,34 @@ let rec click_inventory lst px py player_id=
   | [] -> set_color black
   | (n, (x,y,w,h))::t ->
     if (px>=x && px<=(x+w)) && (py>=y && py<=(y+h))
-      then
-        draw_onto_canvas n player_id
+    then
+      (
+        (* stor.message <- "LOOKS GOOD!!!"; *)
+       draw_onto_canvas n player_id)
       else
         click_inventory t px py player_id
 
-let rec click_buttons lst px py player_id=
-  match lst with
+let rec click_buttons px py player_id=
+  (* match lst with
   | [] -> set_color black;
-  | (x,y,w,h)::t ->
-    match game.canvas1tile with
+  | (x,y,w,h)::t -> *)
+    (match game.canvas1tile with
     | None -> set_color black;
-    |Some x -> set_color black;
+    | Some x ->
       if (px>=200 && px<=390) && (py>=274 && py<=340) then
-        game.canvas1 <- State.do' (TURN x) game.state;
-      else if (px>=200 && px<=295) && (py>=208 && py<=274) then
-        game.canvas1 <- State.do' (FLIPX x) game.state;
-      else if (px>=295 && px<=390) && (py>=208 && py<=274) then
-        game.canvas1 <- State.do' (FLIPY x) game.state;
-      else if (px>=200 && px<=390) && (py>=142 && py<=208) then
-        game.canvas1 <- State.do' (TURN x) game.state;
-              (* draw_onto_canvas n player_id *)
+        game.state <- (do_command (TURN x) game.state)
+        (* stor.message <- "You Clicked Turn.!" *)
+      else if (px>200 && px<=295) && (py>208 && py<274) then
+  game.state <- (do_command (FLIPX x) game.state)
+  (* stor.message <- "You Clicked FLIP X.!" *)
+      else if (px>=295 && px<390) && (py>208 && py<274) then
+  game.state <- (do_command (FLIPY x) game.state)
+  (* stor.message <- "You Clicked FLIPY.!" *)
+      else if (px>200 && px<390) && (py>=142 && py<208) then
+  game.state <- (do_command (FORFEIT) game.state)
+  (* stor.message <- "You Clicked FORFEIT.!" *)
       else
-         click_buttons t px py player_id
-    end
+        click_buttons px py player_id)
 
 
                   (*******************************)
@@ -276,7 +281,7 @@ let rec loop () =
 
   (*Player 1 Buttons*)
   draw_gui_button game.gp1rti black;
-  draw_gui_text 243 304 "Return to Inventory" black;
+  draw_gui_text 243 304 "Rotate Tile" black;
 
   draw_gui_button game.gp1fx black;
   draw_gui_text 230 238 "Flip X" black;
@@ -285,21 +290,10 @@ let rec loop () =
   draw_gui_text 325 238 "Flip Y" black;
 
   draw_gui_button game.gp1rot black;
-  draw_gui_text 248 172 "Rotate Clockwise" black;
+  draw_gui_text 248 172 "Forfeit" black;
 
+  (*Player 1 Message Board*)
   draw_rect 10 10 380 120;
-
-  (*Player 2 Canvas *)
-  (* for x = 1 to 3 do
-    for y = 1 to 3 do
-      let pt1 = ((xboard + (xf/3)+10)) + ((((xf-xboard)/4 - 20)/3)*(x-1)) in
-      let pt2 = (yf- 610) + ((200/3) * (y-1)) +2 in
-      draw_rect pt1 pt2 (((xf-xboard)/4 - 20)/3) (200/3);
-      moveto pt1 pt2; draw_string ("("^(string_of_int (x-2))^", "^(string_of_int (y-2))^")");
-    done;
-  done; *)
-
-
 
   (*Player 2 Buttons*)
   draw_gui_button game.gp2rti black;
@@ -314,18 +308,16 @@ let rec loop () =
   draw_gui_button game.gp2rot black;
   draw_gui_text 1048 172 "Rotate Clockwise" black;
 
+  (*Player 2 Message Board*)
   draw_rect (xboard + (xf/3)+10 ) 10 ((xf-xboard)/2 - 20) 120;
 
   (*Messaage Board*)
   draw_rect xboardleftcorner 10 xboard ((yf-yboard)/2 -20);
-(* returns the relative (x, y) of the next mouse click within the
- * grect defined by (x, y, w, h), doesn't terminate until the mouse is clicked
- * within the bounds of the window. *)
 
   (***********)
 
-  draw_onto_canvas_helper game.canvas1 0;
-  draw_onto_canvas_helper game.canvas2 1;
+  draw_onto_canvas_helper game.state.canvas1 0;
+  draw_onto_canvas_helper game.state.canvas2 1;
   set_color black;
 
 
@@ -358,19 +350,27 @@ let rec loop () =
         end
       else if ((px>=200 && px<=390) && (py>= 142 && py<=406))
       then
-      (* stor.message <- "You Clicked P1 Buttons Reg.!" *)
-          let lst = game.gp1buttons in
-          (click_buttons lst px py 0)
+        begin
+          (* stor.message <- "You Clicked P1 Buttons Reg.!"; *)
+          (* let lst = game.gp1buttons in *)
+          (click_buttons px py 0) end
 
       (* else if ((px>=10 && px<=390) && (py>=350 && py<=740))
       then stor.message <- "You Clicked P2 Inv Reg.!"
 
       else if ((px>=10 && px<=390) && (py>=350 && py<=740))
-      then stor.message <- "You Clicked P2 Button Reg.!"
-
-      else if ((px>=10 && px<=390) && (py>=350 && py<=740))
-      then stor.message <- "You Clicked P1 Inv Reg.!" *)
-
+         then stor.message <- "You Clicked P2 Button Reg.!" *)
+          (* (400, 760, 175, 535) *)
+      else if ((px>=400 && px<=760) && (py>=175 && py<=575))
+      then
+        (* stor.message <- "You Clicked BOARD.!" *)
+        match game.canvas1tile with
+        | None -> stor.message <- "NOPE!"
+        | Some x ->
+          begin
+            game.state <- do_command (PLACE ((px,py),x)) game.state;
+            game.canvas1tile <- None
+          end
       else
         which_button t;
 
