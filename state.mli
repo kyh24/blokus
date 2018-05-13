@@ -40,7 +40,7 @@ val place_tile: state -> player-> tile -> (float * float) -> unit
 (* [do' c st t] is [st'] if doing command [c] in state [st] results
  * in a new state [st'].
 *)
-val do' : command -> (float*float) -> player -> state -> tile -> state
+(* val do' : command -> (float*float) -> player -> state -> tile -> state *)
 
 
 (*[print_state s] prints a string representation of the state of the game*)

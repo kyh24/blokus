@@ -197,7 +197,7 @@ let col_to_name col =
 if (st.curr_player).player_name = "Player 2" then p2_placed_tiles := t::(!p2_placed_tiles); *)
 
 
-let update_state c pos p t st =
+(* let update_state c pos p t st =
    match c with
   | PLACE t -> begin
       if is_valid_move p st pos t then
@@ -208,10 +208,10 @@ let update_state c pos p t st =
         end; st
   end
   | _ -> if (st.curr_player).player_name = "Player 2"  then st.canvas2 <- t.grid else st.canvas1 <- t.grid; st
+ *)
 
 
-
-let do' c pos p st t =
+(* let do' c pos p st t =
   let p1 = List.nth st.players 0 in
   let p2 = List.nth st.players 0 in
   match c with
@@ -220,7 +220,7 @@ let do' c pos p st t =
   | TURN t -> update_state c pos p (turn_tile t) st
   | PLACE t -> update_state c pos p t st
   | END -> if (st.curr_player).player_name = "Player 1" then p1.status <- Stop
-    else p2.status <- Stop; if p1.status = Stop && p2.status = Stop then st.game_over <- true; st
+    else p2.status <- Stop; if p1.status = Stop && p2.status = Stop then st.game_over <- true; st *)
 
 let print_winner st =
   if st.game_over then
