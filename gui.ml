@@ -214,7 +214,7 @@ let rec click_buttons lst px py player_id=
   | [] -> set_color black;
   | (x,y,w,h)::t ->
     match game.canvas1tile with
-    | None -> failwith "SDF"
+    | None -> set_color black;
     |Some x -> set_color black;
       if (px>=200 && px<=390) && (py>=274 && py<=340) then
         game.canvas1 <- State.do' (TURN x) game.state;
