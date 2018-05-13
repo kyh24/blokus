@@ -1,5 +1,5 @@
 
-type tile_id = One | Tee | L | X | Z | Tree | Line
+type tile_id = One | Tee | L | X | Z | Tree | Line | Empty 
 
 type color = White | Blue | Yellow
 

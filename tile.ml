@@ -1,5 +1,5 @@
 
-type tile_id = One | Tee | L | X | Z | Tree | Line
+type tile_id = One | Tee | L | X | Z | Tree | Line | Empty
 
 type color = White | Blue | Yellow
 
@@ -15,6 +15,14 @@ type direction = X | Y
 
 let init_tile id c =
   match id with
+  | Empty -> {name = Empty;
+              col = c;
+              value = 0;
+              grid = [((-1,1),White);  ((0,1),White);  ((1,1),White);
+                      ((-1,0),White);  ((0,0),White);      ((1,0),White);
+                      ((-1,-1),White); ((0,-1),White); ((1,-1),White)];
+              corners = []
+             }
   |One -> {name = One;
            col = c;
            value = 1;

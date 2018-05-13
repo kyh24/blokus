@@ -30,7 +30,7 @@ let init_state s =
 }
 
 let get_center_cell st (x,y) =
-    let brd_coord = ((int_of_float(x -. 200.)) mod 40 , (int_of_float(y -. 175.)) mod 40) in
+    let brd_coord = (x - 200) mod 40 , (y - 175) mod 40 in
     let index = get_index brd_coord (brd_size st.board) in
     fst (Array.get st.board index)
 
@@ -179,7 +179,7 @@ let is_valid_move p st pos tl =
    The *)
 
 let place_tile st p t (x,y) =
-  if x > 200. && x < 599. && y > 175. && y < 574. then
+  if x > 200 && x < 599 && y > 175 && y < 574 then
     let dot = get_center_cell st (x,y) in
     let coordinates = get_selection_space_coords dot in
     let colors_of_tile = get_tile_colors t coordinates [] in
@@ -194,32 +194,48 @@ let col_to_name col =
   |White -> "W"
 
 (* let p2_placed_tiles = ref []
-if (st.curr_player).player_name = "Player 2" then p2_placed_tiles := t::(!p2_placed_tiles); *)
+   if (st.curr_player).player_name = "Player 2" then p2_placed_tiles := t::(!p2_placed_tiles); *)
+
+let get_tile_from_tile_id st id =
+  List.find (fun elt -> id = elt.name) (st.curr_player).remaining_tiles
 
 
-let update_state c pos p t st =
+let update_state c st =
+  let p1_curr_player = (st.curr_player).player_name = "Player 1" in
    match c with
-  | PLACE t -> begin
-      if is_valid_move p st pos t then
+   | PLACE ((x,y), t_id) ->
+     begin
+       let t = get_tile_from_tile_id st t_id in
+       if p1_curr_player then t.grid <- st.canvas1 else t.grid <- st.canvas2;
+       if is_valid_move st.curr_player st (x,y) t then
         begin
-          place_tile st p t pos;
+          place_tile st st.curr_player t (x,y);
           if (st.curr_player).player_name = "Player 1" then (st.curr_player <- List.nth st.players 1; st.canvas1 <- empty_grid;)
           else  (st.curr_player <- List.nth st.players 0; st.canvas2 <- empty_grid;)
-        end; st
+      end; st
   end
-  | _ -> if (st.curr_player).player_name = "Player 2"  then st.canvas2 <- t.grid else st.canvas1 <- t.grid; st
+   | FLIPX t_id ->
+     let t = get_tile_from_tile_id st t_id in
+     if p1_curr_player then st.canvas1 <- (flip_tile t X).grid else st.canvas2 <- (flip_tile t X).grid; st
+   | FLIPY t_id ->
+     let t = get_tile_from_tile_id st t_id in
+     if p1_curr_player then st.canvas1 <- (flip_tile t Y).grid else st.canvas2 <- (flip_tile t Y).grid; st
+   | TURN t_id ->
+     let t = get_tile_from_tile_id st t_id in
+     if p1_curr_player then st.canvas1 <- (turn_tile t).grid else st.canvas2 <- (turn_tile t).grid; st
+   | FORFEIT -> failwith "Impossible"
 
 
 
-let do' c pos p st t =
+let do' c st =
   let p1 = List.nth st.players 0 in
-  let p2 = List.nth st.players 0 in
+  let p2 = List.nth st.players 1 in
   match c with
-  | FLIP X -> update_state c pos p (flip_tile t X) st
-  | FLIP Y -> update_state c pos p (flip_tile t Y) st
-  | TURN t -> update_state c pos p (turn_tile t) st
-  | PLACE t -> update_state c pos p t st
-  | END -> if (st.curr_player).player_name = "Player 1" then p1.status <- Stop
+  | FLIPX t_id -> update_state c st
+  | FLIPY t_id -> update_state c st
+  | TURN t_id -> update_state c st
+  | PLACE ((x,y),t_id) -> update_state c st
+  | FORFEIT -> if (st.curr_player).player_name = "Player 1" then p1.status <- Stop
     else p2.status <- Stop; if p1.status = Stop && p2.status = Stop then st.game_over <- true; st
 
 let print_winner st =

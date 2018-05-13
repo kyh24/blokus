@@ -29,10 +29,10 @@ val init_state : int -> state
     corners : top-left corner for player 1 and bottom right corner for player 2
  *
 *)
-val is_valid_move: player -> state -> (float * float) -> tile -> bool
+val is_valid_move: player -> state -> (int * int) -> tile -> bool
 
 
-val place_tile: state -> player-> tile -> (float * float) -> unit
+val place_tile: state -> player-> tile -> (int * int) -> unit
 
 (* val p2_placed_tiles: tile list ref *)
 
@@ -40,7 +40,7 @@ val place_tile: state -> player-> tile -> (float * float) -> unit
 (* [do' c st t] is [st'] if doing command [c] in state [st] results
  * in a new state [st'].
 *)
-val do' : command -> (float*float) -> player -> state -> tile -> state
+val do' : command -> state -> state
 
 
 (*[print_state s] prints a string representation of the state of the game*)

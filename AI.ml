@@ -1,4 +1,4 @@
-open Player
+(* open Player
 open Board
 open Tile
 open Command
@@ -43,4 +43,4 @@ let possible_positions brd p =
     let size = brd_size brd in
     [(size - 1, size - 1); (size - 1, size - 2); (size - 2 , size - 1); (size -2, size - 2)]
   else
-    List.map (fun elt -> elt.corners) p2_placed_tiles
+    List.map (fun elt -> elt.corners) p2_placed_tiles *)

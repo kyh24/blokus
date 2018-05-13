@@ -5,10 +5,10 @@ open Graphics
 type direction = X | Y
 
 (* [command] represents a command input by a player. *)
-type command = FLIP of direction | TURN of tile | PLACE of tile | END
+type command = FLIPX of tile_id | FLIPY of tile_id| TURN of tile_id | PLACE of (int * int) * tile_id | FORFEIT
 
 (*[parse_click ()] is the command selected by a mouse event*)
-let parse_click () = failwith "Unimplemented"
+(* let parse_click () = failwith "Unimplemented"
 
 (*if we implement by having clickable commands on gui*)
 
@@ -19,7 +19,7 @@ let commands (c:unit) (t:tile): command =
     else if pos > (0,0) then FLIP Y
     else if pos > (0,0) then TURN t
     else if pos > (1,1) then PLACE t
-    else failwith "poop" ) else failwith "fail"
+    else failwith "poop" ) else failwith "fail" *)
 (*if we implement using user input from terminal*)
 
         (*
