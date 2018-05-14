@@ -1,8 +1,9 @@
 
 (* This module represents the GUI window which will display State
  * changes depending on user commands and acceptable actions.
- * The GUI will determine the right state depending on actions
- * taken by the player that are acceptable by the program.
+ * The GUI will draw the view of the contents of the window,
+ * modify state and other fields depending on user actions, and process
+ * new displays through a REPL. 
  *)
 
 (* [opeing] initializes the GUI to the starting state.  The initial screen
