@@ -29,10 +29,11 @@ val init_state : int -> state
     corners : top-left corner for player 1 and bottom right corner for player 2
  *
 *)
-val is_valid_move: player -> state -> (int * int) -> tile -> bool
+val is_valid_move: player -> state -> tile -> (int*int) -> int -> ((int*int)*color) list
+    -> ((int*int)*color) list -> ((int*int)*color) list -> bool
 
 
-val place_tile: state -> player-> tile -> (int * int) -> unit
+(* val place_tile: state -> player-> tile -> (int * int) -> unit *)
 
 (* val p2_placed_tiles: tile list ref *)
 
