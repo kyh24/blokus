@@ -260,7 +260,9 @@ let rec click_inventory lst px py player_id=
    Takes in [px] and [py] which are the positions of the mouse clicks.*)
 let rec click_buttons_p1 px py =
     (match game.canvas1tile with
-    | None -> set_color black;
+    | None -> if (px>200 && px<390) && (py>=142 && py<208) then
+          (game.p1messages <-  "No more future turns!";
+           game.state <- (do_command (FORFEIT) game.state))
     | Some x ->
       if (px>=200 && px<=390) && (py>=274 && py<=340) then
         game.state <- (do_command (TURN x) game.state)
@@ -272,7 +274,8 @@ let rec click_buttons_p1 px py =
   game.state <- (do_command (FLIPY x) game.state)
   (* stor.message <- "You Clicked FLIPY.!" *)
       else if (px>200 && px<390) && (py>=142 && py<208) then
-  game.state <- (do_command (FORFEIT) game.state)
+        (game.p1messages <-  "No more future turns!";
+         game.state <- (do_command (FORFEIT) game.state))
   (* stor.message <- "You Clicked FORFEIT.!" *)
       else
         click_buttons_p1 px py )
@@ -283,7 +286,10 @@ let rec click_buttons_p1 px py =
    Takes in [px] and [py] which are the positions of the mouse clicks.*)
 let rec click_buttons_p2 px py =
   (match game.canvas2tile with
-   | None -> set_color black;
+   | None -> if (px>1000 && px<1190) && (py>=142 && py<208) then
+       ( game.p2messages <-  "No more future turns!";
+         game.state <- (do_command (FORFEIT) game.state)
+       )
    | Some x ->
      if (px>=1000 && px<=1190) && (py>=274 && py<=340) then
        game.state <- (do_command (TURN x) game.state)
@@ -295,7 +301,10 @@ let rec click_buttons_p2 px py =
        game.state <- (do_command (FLIPY x) game.state)
        (* stor.message <- "You Clicked FLIPY.!" *)
      else if (px>1000 && px<1190) && (py>=142 && py<208) then
-       game.state <- (do_command (FORFEIT) game.state)
+       ( game.p2messages <-  "No more future turns!";
+         game.state <- (do_command (FORFEIT) game.state)
+       )
+
        (* stor.message <- "You Clicked FORFEIT.!" *)
      else
          (* "You Clicked error.!" ) *)
@@ -413,7 +422,7 @@ let rec loop () =
   (*Player 2 Message Board*)
   draw_rect 810 10 380 120;
   draw_gui_text 940 100 "Player 2 Status Board" black;
-  draw_gui_text 940 60 game.p2messages blue;
+  draw_gui_text 940 60 game.p2messages black;
 
   draw_onto_canvas_helper game.state.canvas1 0;
   draw_onto_canvas_helper game.state.canvas2 1;
@@ -430,7 +439,8 @@ let rec loop () =
     | [] -> stor.message <- stor.message ;
     | ((x1,x2,y1,y2))::t ->
       if ((px>=10 && px<=390) && (py>=350 && py<=740)
-          && (getcurrentplayer game.state) = 0)
+          && (getcurrentplayer game.state) = 0 &&
+          game.state.curr_player.status != Stop)
       then
         begin
           (* stor.message <- "You Clicked P1 Inv Reg.!"; *)
@@ -438,7 +448,8 @@ let rec loop () =
           (click_inventory lst px py 0)
         end
       else if ((px>=200 && px<=390) && (py>= 142 && py<=406)
-              && (getcurrentplayer game.state) = 0)
+              && (getcurrentplayer game.state) = 0 &&
+              game.state.curr_player.status != Stop)
       then
         begin
           (* stor.message <- "You Clicked P1 Buttons Reg.!"; *)
@@ -447,7 +458,8 @@ let rec loop () =
         end
 
       else if ((px>=810 && px<=1190) && (py>=350 && py<=740)
-              && (getcurrentplayer game.state) = 1)
+              && (getcurrentplayer game.state) = 1 &&
+              game.state.curr_player.status != Stop)
       then
         begin
           (* stor.message <- "You Clicked P2 Inv Reg.!"; *)
@@ -456,7 +468,8 @@ let rec loop () =
         end
 
       else if ((px>=1000 && px<=1190) && (py>=142 && py<=340)
-              && (getcurrentplayer game.state) = 1)
+              && (getcurrentplayer game.state) = 1 &&
+              game.state.curr_player.status != Stop)
       then
         begin
           (* stor.message <- "You Clicked P2 Buttons Reg.!"; *)
