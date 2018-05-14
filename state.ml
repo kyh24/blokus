@@ -400,8 +400,8 @@ let do_command c st =
   | TURN t_id -> update_state c st
   | PLACE ((x,y),t_id) -> update_state c st
   | FORFEIT -> begin
-      if curr_p.player_name = "Player 1" then p1.status <- Stop
-      else p2.status <- Stop;
+      if curr_p.player_name = "Player 1" then (p1.status <- Stop; st.curr_player <- List.nth st.players 1)
+      else (p2.status <- Stop; st.curr_player <- List.nth st.players 0;);
       if p1.status = Stop && p2.status = Stop then st.game_over <- true; st
     end
 
