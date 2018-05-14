@@ -419,10 +419,9 @@ let do_command c st =
       if p1.status = Stop && p2.status = Stop then st.game_over <- true; st
     end
 
-(* let print_winner st =
-  if st.game_over then
-    if (List.nth st.players 0).score > (List.nth st.players 1).score then print_string "The Winner is Player 1!"
-    else print_string "The Winner is Player 2!" *)
+let print_winner st =
+    if (List.nth st.players 0).score > (List.nth st.players 1).score then "The Winner is Player 1!"
+    else "The Winner is Player 2!"
 
 (*[col_to_name col] is a string representation of [col].*)
 let col_to_name col =
