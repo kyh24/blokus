@@ -30,7 +30,7 @@ let init_state s =
 }
 
 let get_center_cell st (x,y) =
-    let brd_coord = (x - 200) mod 40 , (y - 175) mod 40 in
+  let brd_coord = (x - 200) / 40 , -(((y - 175) / 40) - 9) in
     let index = get_index brd_coord (brd_size st.board) in
     fst (Array.get st.board index)
 
@@ -46,16 +46,21 @@ let rec get_board_colors brd coords acc =
   | [] -> acc
   | (x,y)::t -> begin
       let lst_of_board = brd |> Array.to_list in
-      let colors = List.assoc (x,y) lst_of_board in
-      get_board_colors brd t (((x,y),colors)::acc)
+      if (List.mem_assoc (x,y) lst_of_board) then (
+        let colors = List.assoc (x,y) lst_of_board in
+        get_board_colors brd t (((x,y),colors)::acc)
+      ) else get_board_colors brd t acc
     end
 
 let rec get_tile_colors tl coords acc =
   match coords with
   | [] -> acc
   | h::t -> begin
+      if (List.mem_assoc h tl.grid) then (
       let colors = List.assoc h tl.grid in
       get_tile_colors tl t ((h,colors)::acc)
+    ) else get_tile_colors tl t acc
+
     end
 
 (* List.fold_right (fun (x,y,_) acc-> if x < 0 || y < 0 then false::acc else false::acc) select_space [] *)
@@ -163,7 +168,7 @@ let valid_first_move p tile_colors brd highest_i=
 
 
 let is_valid_move p st pos tl =
-  let highest_i = brd_size st.board in
+  let highest_i = brd_size st.board - 1 in
   let dot = get_center_cell st pos in
   let coordinates = get_selection_space_coords dot in
   let colors_on_board = get_board_colors st.board coordinates [] in
@@ -210,6 +215,8 @@ let update_state c st =
        if is_valid_move st.curr_player st (x,y) t then
         begin
           place_tile st st.curr_player t (x,y);
+          if (st.curr_player).status = Start then (st.curr_player).status <- Play;
+          if (st.curr_player).remaining_tiles = [] then (st.curr_player).status <- Stop;
           if (st.curr_player).player_name = "Player 1" then (st.curr_player <- List.nth st.players 1; st.canvas1 <- empty_grid;)
           else  (st.curr_player <- List.nth st.players 0; st.canvas2 <- empty_grid;)
       end; st
@@ -238,10 +245,10 @@ let do_command c st =
   | FORFEIT -> if (st.curr_player).player_name = "Player 1" then p1.status <- Stop
     else p2.status <- Stop; if p1.status = Stop && p2.status = Stop then st.game_over <- true; st
 
-let print_winner st =
+(* let print_winner st =
   if st.game_over then
     if (List.nth st.players 0).score > (List.nth st.players 1).score then print_string "The Winner is Player 1!"
-    else print_string "The Winner is Player 2!"
+    else print_string "The Winner is Player 2!" *)
 
 let rec print_state brd =
 let brd_lst = Array.to_list brd in

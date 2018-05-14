@@ -256,7 +256,16 @@ let rec loop () =
   draw_string stor.message;
   draw_tiles game.state.players;
   set_color black;
-
+  (*Instructions*)
+   moveto 580 720; draw_string ("BLOKAML");
+   moveto 580 700; draw_string ("-Rules-");
+   moveto 450 680; draw_string ("Goal of the game is to color as many cells as possible");
+   moveto 395 660; draw_string ("Select a tile, transform it, and select a space on the board to place");
+  (*QUIT Button*)
+   set_color red;
+   fill_rect 540 590 120 60;
+   set_color black;
+   moveto 590 615; draw_string ("QUIT");
   (*Board setup*)
   let xf= Graphics.size_x () in
   let yf= Graphics.size_y () in
@@ -386,6 +395,7 @@ let rec loop () =
             game.state <- do_command (PLACE ((px,py),x)) game.state;
             game.canvas1tile <- None
           end
+      else if ((px>=540 && px<=660) && (py>=590 && py<=650)) then Graphics.close_graph()
       else
         which_button t;
 
