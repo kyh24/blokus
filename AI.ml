@@ -35,9 +35,9 @@ let rec random_tile p tried_tiles =
 
 (*[possible_positions brd p t] returns a list of all the possible places that
   player [p] can place a tile t
-
   val possible_positions : board -> (int * int) list
-*)
+ *)
+   
 let possible_positions brd p =
   if p.status = Start then
     let size = brd_size brd in
