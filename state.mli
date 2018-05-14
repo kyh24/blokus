@@ -43,6 +43,8 @@ val is_valid_move: player -> state -> tile -> (int*int) -> int -> ((int*int)*col
 *)
 val do_command : command -> state -> state
 
+val print_winner : state -> string
+
 
 
 (*[print_state s] prints a string representation of the state of the game*)
