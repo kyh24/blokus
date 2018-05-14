@@ -25,6 +25,7 @@ type gamescreen = {
   gwindow: int*int;
   gboard: int*int*int*int;
   gregions: (int*int*int*int) list;
+  mutable gwinner : string;
 
   gp1buttons: (int*int*int*int) list;
   gp1rti: int *int *int *int;
@@ -56,6 +57,7 @@ let game = {
   p2messages = "";
   gregions = [(10,390,350,740); (200,390,142,400);
               (810, 1190, 350, 740); (400, 760, 175, 575)];
+  gwinner= "";
 
   gp1buttons = [(200,274,390,340); (200,208,295,274);
                 (295,208,390,274); (200,142,390,208)];
@@ -324,7 +326,7 @@ let getcurrentplayer st =
 (* [winner_detected st] will display the win message onto the message board
    if there is a winner. Takes in [st] the state to check if there is a win*)
 let winner_detected st=
-  if game.state.game_over = true then (print_winner game.state) else ""
+  if game.state.game_over = true then (game.gwinner <- (print_winner game.state))
 
 (*************************************************************************)
 
@@ -333,6 +335,7 @@ let winner_detected st=
 let rec loop () =
   clear_graph ();
   draw_string stor.message;
+  winner_detected game.state;
   draw_tiles game.state.players;
   set_color black;
 
@@ -415,7 +418,7 @@ let rec loop () =
   done;
 
   (*Writes WINNER when there is a winner.*)
-  (*draw_gui_text 550 140 (winner_detected ()) red; *)
+  draw_gui_text 550 30 (game.gwinner) red;
 
 
   (*Player 1 Message Board*)
@@ -484,7 +487,7 @@ let rec loop () =
       else if ((px>=400 && px<=760) && (py>=175 && py<=575))
       then
         (* stor.message <- "You Clicked BOARD.!" *)
-        let playerindex= getcurrentplayer game.state.curr_player in
+        (let playerindex= getcurrentplayer game.state.curr_player in
         if playerindex = 0 then
           begin
             match game.canvas1tile with
@@ -526,7 +529,7 @@ let rec loop () =
                   game.canvas1tile <- None;
                   game.canvas2tile <- None;
               end
-          end
+          end)
       else if ((px>=540 && px<=660) && (py>=590 && py<=650))
       then Graphics.close_graph()
       else
