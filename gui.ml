@@ -481,7 +481,9 @@ let rec loop () =
       then
         (* stor.message <- "You Clicked BOARD.!" *)
         match game.canvas1tile with
-        | None -> stor.message <- "NOPE!"
+        | None ->
+          stor.message <- "NOPE!"
+          
         | Some x ->
           begin stor.message <- "Kasdfs!";
             game.state <- do_command (PLACE ((px,py),x)) game.state
