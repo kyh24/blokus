@@ -234,7 +234,7 @@ let draw_onto_canvas tile_name player_id=
 
 
 (* [draw_onto_board_helper board player_id] .*)
-let rec draw_onto_board_helper board player_id =
+(* let rec draw_onto_board_helper board player_id =
 let lst= Array.to_list board in
  match lst with
 | [] -> set_color black;
@@ -262,7 +262,7 @@ let draw_onto_board tile_name player_id=
   if player_id = 1 then let tile= canvas2tiles in
     match tile with
     | None -> game.p1messages <- "Please place the tile on the board" dr
-    | Some x -> game.state.board <- Some tile
+    | Some x -> game.state.board <- Some tile *)
 
 
 (* [click_inventory lst px py player_id] links the click within the inventory box to a tile
