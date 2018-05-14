@@ -347,7 +347,10 @@ let place_tile' st p t_id (x,y) is_p1 =
       place_tile_on_brd colors_of_tile st.board; player_place_tile p t;
       p.status <- Play;
       if p.player_name = "Player 1" then
-        (st.curr_player <- List.nth st.players 1; st.canvas1 <- empty_grid;)
+        if (List.nth st.players 1).status = Stop then st.canvas1 <- empty_grid
+        else (st.curr_player <- List.nth st.players 1; st.canvas1 <- empty_grid;)
+      else
+      if (List.nth st.players 0).status = Stop then st.canvas2 <- empty_grid
       else (st.curr_player <- List.nth st.players 0; st.canvas2 <- empty_grid;)
      )
   ) else (
@@ -364,7 +367,7 @@ let update_state c st =
       place_tile' st curr_p t_id (x,y) p1_curr_player;
       (*only happens if a move was valid and placed, right*)
       (* if curr_p.status = Start then curr_p.status <- Play; *)
-      if curr_p.remaining_tiles = [] then curr_p.status <- Stop;
+      (* if curr_p.remaining_tiles = [] then curr_p.status <- Stop; *)
       (* if curr_p.player_name = "Player 1" then
         (st.curr_player <- List.nth st.players 1; st.canvas1 <- empty_grid;)
       else  (st.curr_player <- List.nth st.players 0; st.canvas2 <- empty_grid;); *)
