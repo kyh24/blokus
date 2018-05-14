@@ -319,8 +319,8 @@ let getcurrentplayer st =
 
 (* [winner_detected st] will display the win message onto the message board
    if there is a winner. Takes in [st] the state to check if there is a win*)
-(* let winner_detected st=
-  if game.state.game_over = true then (State.print_winner game.state) else "" *)
+let winner_detected st=
+  if game.state.game_over = true then (print_winner game.state) else ""
 
 (*************************************************************************)
 
@@ -480,13 +480,48 @@ let rec loop () =
       else if ((px>=400 && px<=760) && (py>=175 && py<=575))
       then
         (* stor.message <- "You Clicked BOARD.!" *)
-        match game.canvas1tile with
-        | None ->
-          stor.message <- "NOPE!"
-          
-        | Some x ->
-          begin stor.message <- "Kasdfs!";
-            game.state <- do_command (PLACE ((px,py),x)) game.state
+        let playerindex= getcurrentplayer game.state.curr_player in
+        if playerindex = 0 then
+          begin
+            match game.canvas1tile with
+            | None ->
+              game.p1messages <- "First select a tile!"
+            | Some x ->
+              begin
+                (* stor.message <- "Kasdfs!"; *)
+                let returnedst = do_command (PLACE ((px,py),x)) game.state in
+                if returnedst = game.state then
+                  begin
+                    game.p1messages <- "Invalid Move - Try Again!"
+                  end
+                else
+                  game.state <- returnedst;
+                  game.p1messages <- "";
+                  game.p2messages <- "Please select a tile.";
+                  game.canvas1tile <- None;
+                  game.canvas2tile <- None;
+              end
+          end
+        else if playerindex =1 then
+          begin
+            match game.canvas2tile with
+            | None ->
+              game.p2messages <- "First select a tile!"
+            | Some x ->
+              begin
+                (* stor.message <- "Kasdfs!"; *)
+                let returnedst = do_command (PLACE ((px,py),x)) game.state in
+                if returnedst = game.state then
+                  begin
+                    game.p1messages <- "Invalid Move - Try Again!"
+                  end
+                else
+                  game.state <- returnedst;
+                  game.p1messages <- "Please select a tile.";
+                  game.p2messages <- "" ;
+                  game.canvas1tile <- None;
+                  game.canvas2tile <- None;
+              end
           end
       else if ((px>=540 && px<=660) && (py>=590 && py<=650))
       then Graphics.close_graph()
