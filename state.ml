@@ -29,7 +29,7 @@ let init_state s =
   game_over = false
 }
 
-let get_center_cell st (x,y) =
+  let get_center_cell st (x,y) =
   let brd_coord = (x - 200) / 40 , -(((y - 175) / 40) - 9) in
     let index = get_index brd_coord (brd_size st.board) in
     fst (Array.get st.board index)
@@ -61,6 +61,25 @@ let  tile_coords_to_board_coords (x,y) t_grid =
    (x-1,y+1),(List.assoc (-1,-1) t_grid);(x,y+1),(List.assoc (0,-1) t_grid);
    (x+1,y+1),(List.assoc (1,-1)) t_grid]
 
+(* [tile_coords_to_board_coords (x,y) t_grid acc] converts the coordinates in [t_grid]
+   to their corresponding board coordinates based on the center cell (x,y) *)
+let  tile_coords_to_board_coords2 (x,y) c_grid =
+  [(x-2,y-2),(List.assoc (-2,2) c_grid); ((x-1,y-2),(List.assoc (-1,2) c_grid));
+   (x,y-2),(List.assoc (0,2) c_grid); ((x+1,y-2),(List.assoc (1,2) c_grid));
+   (x+2,y-2),(List.assoc (2,2) c_grid);
+   (x-2,y-1),(List.assoc (-2,1) c_grid);  (x-1,y-1),(List.assoc (-1,1) c_grid);
+   (x,y-1),(List.assoc (0,1) c_grid); (x+1,y-1),(List.assoc (1,1) c_grid);
+   (x+2,y-1),(List.assoc (2,1) c_grid);
+   (x-2,y),(List.assoc (-2,0) c_grid);(x-1,y),(List.assoc (-1,0) c_grid);
+   (x,y),(List.assoc (0,0)) c_grid;(x+1,y),(List.assoc (1,0) c_grid);
+   (x+2,y),(List.assoc (2,0) c_grid);
+   (x-2,y+1),(List.assoc (-2,-1) c_grid);(x-1,y+1),(List.assoc (-1,-1) c_grid);
+   (x,y+1),(List.assoc (0,-1)) c_grid;(x+1,y+1),(List.assoc (1,-1) c_grid);
+   (x+2,y+1),(List.assoc (2,-1) c_grid);
+   (x-2,y+2),(List.assoc (-2,-2) c_grid);(x-2,y+2),(List.assoc (-1,-2) c_grid);
+   (x,y+2),(List.assoc (0,-2)) c_grid;(x+1,y+2),(List.assoc (1,-2) c_grid);
+   (x+2,y+2),(List.assoc (2,-2) c_grid)]
+
  (*[corners_grid t] is a 5x5 grid that incorporates [t.corners]. this function
    allows the mapping of tile coordinates to board coordinates.*)
  let grid_of_corners t =
@@ -73,10 +92,9 @@ let  tile_coords_to_board_coords (x,y) t_grid =
            || (List.mem_assoc (!x,!y) t.grid && (List.assoc (!x,!y) t.grid) = t.col))
        then acc := ((!x,!y), t.col)::!acc
        else acc := ((!x,!y), White)::!acc;
-
        x := !x + 1; ) done;
-     x := -2;
-     y := !y - 1;
+       x := -2;
+       y := !y - 1;
    ) done; !acc
 
 (* [corners_grid_to_board_coords (x,y) c_grid t_to_b max_i] converts the
@@ -101,13 +119,13 @@ let corners_grid_to_board_coords (x,y) t t_to_b max_i =
    (x-2,y+1),(List.assoc (-2,-1) c_grid);(x-1,y+1),(List.assoc (-1,-1) c_grid);
    (x,y+1),(List.assoc (0,-1)) c_grid;(x+1,y+1),(List.assoc (1,-1) c_grid);
    (x+2,y+1),(List.assoc (2,-1) c_grid);
-   (x-2,y+2),(List.assoc (-2,-2) c_grid);(x-2,y+2),(List.assoc (-1,-2) c_grid);
+   (x-2,y+2),(List.assoc (-2,-2) c_grid);(x-1,y+2),(List.assoc (-1,-2) c_grid);
    (x,y+2),(List.assoc (0,-2)) c_grid;(x+1,y+2),(List.assoc (1,-2) c_grid);
    (x+2,y+2),(List.assoc (2,-2) c_grid)] in
   let remove_whites = List.filter (fun ((x,y),c) -> (c = White) = false)
       new_c_grid in
   let remove_out_of_bounds = List.filter (fun ((x,y),c) ->
-      x > 0 && x < max_i && y > 0 && y < max_i)
+      x >= 0 && x <= max_i && y >= 0 && y <= max_i)
       remove_whites in
   List.filter (fun t_coor -> (List.mem t_coor t_to_b) = false) remove_out_of_bounds
 
@@ -124,36 +142,43 @@ let rec get_tile_colors tl_b_coords b_cols acc =
        (* else get_tile_colors tl_b_coords t acc *)
     end
 
+(* [extract_t_cols_only t_grid_cols] is the list representing the tile itself,
+   not the entire canvas that includes white spaces. *)
 let extract_t_cols_only t_grid_cols =
   List.filter (fun ((x,y),col) -> col != White) t_grid_cols
+
 (* [check_sides t_cols_ref brd_array highest_i is_valid_ref]
     is true if the tile to be placed/played is to be placed in a space that does not result in
     any of the sides of tile touching the sides of other tiles on the board of the same color. *)
 let check_sides t_cols_ref brd_array highest_i is_valid_ref =
-  while (!t_cols_ref <> [] || !is_valid_ref) do (
+  while ((!t_cols_ref <> []) && !is_valid_ref) do (
     match !t_cols_ref with
     | [] -> ()
     | ((x,y),col)::t -> begin
         let board_list = Array.to_list brd_array in
         if (x=0 && y=0) then (
+          Printf.printf("hello1");
           let right = List.assoc (x+1,y) board_list in
           let bottom = List.assoc (x, y+1) board_list in
           is_valid_ref := ((right <> col) && (bottom <> col));
           t_cols_ref := t;
         )(*check right and bottom) *)
         else if (x=0 && y=highest_i) then (
+          Printf.printf("hello2");
           let top = List.assoc (x, y-1) board_list in
           let right = List.assoc (x+1, y) board_list in
           is_valid_ref := ((top <> col) && (right <> col));
           t_cols_ref := t;
         )(*check top and right*)
         else if (x=highest_i && y=0) then (
+          Printf.printf("hello3");
           let left = List.assoc (x-1,y) board_list in
           let bottom = List.assoc (x, y+1) board_list in
           is_valid_ref := ((left <> col) && (bottom <> col));
           t_cols_ref := t;
         ) (*check left and bottom*)
         else if (x=highest_i && y=highest_i) then (
+          Printf.printf("hello4");
           let top = List.assoc (x, y-1) board_list in
           let left = List.assoc (x-1,y) board_list in
           is_valid_ref := ((left <> col) && (top <> col));
@@ -161,6 +186,7 @@ let check_sides t_cols_ref brd_array highest_i is_valid_ref =
         ) (*check top and left*)
         else (
           if (x=0) then (
+            Printf.printf("hello5");
             let top = List.assoc (x, y-1) board_list in
             let right = List.assoc (x+1, y) board_list in
             let bottom = List.assoc (x, y+1) board_list in
@@ -168,6 +194,7 @@ let check_sides t_cols_ref brd_array highest_i is_valid_ref =
             t_cols_ref := t;
           ) (*don't check the left*)
           else if (x=highest_i) then (
+            Printf.printf("hello6");
             let top = List.assoc (x, y-1) board_list in
             let left = List.assoc (x-1, y) board_list in
             let bottom = List.assoc (x, y+1) board_list in
@@ -175,6 +202,7 @@ let check_sides t_cols_ref brd_array highest_i is_valid_ref =
             t_cols_ref := t;
           ) (*dont check right*)
           else if (y=0) then (
+            Printf.printf("hello7");
             let left = List.assoc (x-1, y) board_list in
             let right = List.assoc (x+1, y) board_list in
             let bottom = List.assoc (x, y+1) board_list in
@@ -182,6 +210,7 @@ let check_sides t_cols_ref brd_array highest_i is_valid_ref =
             t_cols_ref := t;
           ) (*dont check top*)
           else if (y=highest_i) then (
+            Printf.printf("hello8");
             let top = List.assoc (x, y-1) board_list in
             let right = List.assoc (x+1, y) board_list in
             let left = List.assoc (x-1, y) board_list in
@@ -189,7 +218,7 @@ let check_sides t_cols_ref brd_array highest_i is_valid_ref =
             t_cols_ref := t;
           ) (*don't check bottom*)
           else (
-            Printf.printf "hello";
+            Printf.printf "hello9";
             let top = List.assoc (x, y-1) board_list in
             let right = List.assoc (x+1, y) board_list in
             let left = List.assoc (x-1, y) board_list in
@@ -212,7 +241,7 @@ let check_corners c_on_b t brd =
   (* let brd_coordinates = List.map (fun ((x,y), col) -> (x,y)) brd_lst in
   let valid_corners_ref =  ref (List.filter (fun (x, y) -> List.mem (x,y) brd_coordinates) t.corners) in *)
   let is_valid_ref = ref true in
-  while (!valid_corners_ref <> [] || !is_valid_ref) do (
+  while (!valid_corners_ref <> [] && !is_valid_ref) do (
     match !valid_corners_ref with
     |[] -> ()
     |((x,y),c)::tl -> begin
@@ -228,7 +257,7 @@ let check_corners c_on_b t brd =
     outside the dimensions of the board.
     returns: true if all the elements in [invalid_coord_list]
     are of white color or [invalid_coord_list] = []. false otherwise. *)
-let outside_board_invalid invalid_coord_list =
+let outside_board_is_invalid invalid_coord_list =
   let invalid_brd_coord = ref invalid_coord_list in
   let invalid_coord_has_no_color = ref true in
   while (!invalid_brd_coord <> [] && !invalid_coord_has_no_color) do (
@@ -242,6 +271,22 @@ let outside_board_invalid invalid_coord_list =
   )
   done; !invalid_coord_has_no_color
 
+(* [is_on_free_space t_cols_only is_free b] is true if the tile is placed on spaces
+    where the board is free. In other words, there have not already been tiles placed on
+    those coordinates. false otherwise.  *)
+let is_on_free_space t_cols_only is_free b =
+  let t_cols_ref = ref t_cols_only in
+  while (!t_cols_ref <> [] && !is_free) do (
+    match !t_cols_ref with
+    | [] -> ()
+    | ((x,y),col)::t -> begin
+        let board_list = Array.to_list b in
+        let b_col = List.assoc (x,y) board_list in
+        if (b_col = White) then is_free := true else is_free := false;
+        t_cols_ref := t;
+    end
+  ) done; !is_free
+
 (* [valid_first_move p tile_colors invalid_coords brd highest_i] is true if the
    desired location that [p] wants to place a tile on [brd] is legal. false otherwise.
    this function specifically checks the validity of a move for the first move of a
@@ -249,7 +294,7 @@ let outside_board_invalid invalid_coord_list =
    1) Player 1 must play a piece in the top left hand corner.
    2) Player 2 must play a piece in the bottom right corner.*)
 let valid_first_move p tile_colors invalid_coords brd highest_i =
-  let out_of_bounds = outside_board_invalid invalid_coords in
+  let out_of_bounds = outside_board_is_invalid invalid_coords in
   if (p.player_name = "Player 1") then
     (List.mem_assoc (0,0) tile_colors && List.assoc (0,0) tile_colors = Yellow)
     && out_of_bounds
@@ -267,10 +312,19 @@ let valid_first_move p tile_colors invalid_coords brd highest_i =
       tile of the same color that is already placed on the board.*)
  (*may not need specification because in mli file*)
 let is_valid_move p st tl dot highest_i t_cols b_cols invalid_coords =
-  let out_of_bounds = outside_board_invalid invalid_coords in
+  let not_out_of_bounds = outside_board_is_invalid invalid_coords in
   let t_on_b = tile_coords_to_board_coords dot tl.grid in
+  (* let c_grid = tl |> grid_of_corners in
+  let c_grid_on_b = tile_coords_to_board_coords dot c_grid in *)
   let c_on_b = corners_grid_to_board_coords dot tl t_on_b highest_i in
-  let valid_cells = List.map2 (fun ((bx,by),b_col) ((tx,ty), t_col) ->
+  let t_cols_only = extract_t_cols_only t_cols in
+  let tile_colors_ref = ref t_cols_only in
+  let valid_sides_ref = ref true in
+  let is_free_ref = ref true in
+  let valid_corners = st.board |> check_corners c_on_b tl in
+  let valid_sides = check_sides tile_colors_ref st.board highest_i valid_sides_ref in
+  let is_free_space = is_on_free_space t_cols_only is_free_ref st.board in
+  (* let valid_cells = List.map2 (fun ((bx,by),b_col) ((tx,ty), t_col) ->
       if (b_col = White && t_col <> White) then (
         let t_cols_only = extract_t_cols_only t_cols in
         let tile_colors_ref = ref t_cols_only in
@@ -278,8 +332,9 @@ let is_valid_move p st tl dot highest_i t_cols b_cols invalid_coords =
         (check_sides tile_colors_ref st.board highest_i valid_sides_ref) &&
         (check_corners c_on_b tl st.board)
       )
-      else t_col = White) b_cols t_cols in
-  (not(List.mem false valid_cells)) && out_of_bounds
+      else t_col = White) b_cols t_cols in *)
+  (* (not(List.mem false valid_cells)) &&*)
+  not_out_of_bounds && valid_corners && valid_sides && is_free_space
 
 (*[get_tile_from_tile_id st id] is the tile whose tile_id is [id].*)
 let get_tile_from_tile_id st id =
