@@ -261,7 +261,8 @@ let rec click_inventory lst px py player_id=
 let rec click_buttons_p1 px py =
     (match game.canvas1tile with
     | None -> if (px>200 && px<390) && (py>=142 && py<208) then
-          (game.p1messages <-  "No more future turns!";
+        (game.p1messages <-  "No more future turns!";
+         game.p2messages <-  "Please select a tile.";
            game.state <- (do_command (FORFEIT) game.state))
     | Some x ->
       if (px>=200 && px<=390) && (py>=274 && py<=340) then
@@ -275,6 +276,7 @@ let rec click_buttons_p1 px py =
   (* stor.message <- "You Clicked FLIPY.!" *)
       else if (px>200 && px<390) && (py>=142 && py<208) then
         (game.p1messages <-  "No more future turns!";
+         game.p2messages <-  "Please select a tile.";
          game.state <- (do_command (FORFEIT) game.state))
   (* stor.message <- "You Clicked FORFEIT.!" *)
       else
@@ -288,6 +290,7 @@ let rec click_buttons_p2 px py =
   (match game.canvas2tile with
    | None -> if (px>1000 && px<1190) && (py>=142 && py<208) then
        ( game.p2messages <-  "No more future turns!";
+         game.p1messages <-  "Please select a tile.";
          game.state <- (do_command (FORFEIT) game.state)
        )
    | Some x ->
@@ -302,6 +305,7 @@ let rec click_buttons_p2 px py =
        (* stor.message <- "You Clicked FLIPY.!" *)
      else if (px>1000 && px<1190) && (py>=142 && py<208) then
        ( game.p2messages <-  "No more future turns!";
+         game.p1messages <-  "Please select a tile.";
          game.state <- (do_command (FORFEIT) game.state)
        )
 
