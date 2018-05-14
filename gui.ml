@@ -86,6 +86,13 @@ let game = {
 (* [draw_gui_rect] draws filled rectangle on the GUI window
    when given a starting point (x and y), the width w, the height h, and
    the color of the filled shape. Intended for drawing cells. *)
+
+(* let blue = Graphics.rgb 95 173 225 *)
+let blue = Graphics.rgb 52 142 229
+let yellow= Graphics.rgb 250 222 39
+let red= Graphics.rgb 215 10 26
+let green= Graphics.rgb 104 218 56
+
 let draw_gui_rect x y w h color =
   set_color color;
   fill_rect x y w h;
@@ -117,7 +124,7 @@ let rec draw_tiles_helper tilelist i=
   match tilelist with
   | [] -> set_color black;
   | h::t ->
-    if i=0 then set_color yellow else set_color cyan;
+    if i=0 then set_color yellow else set_color blue;
     begin
         match h.name with
         | Empty -> draw_tiles_helper t i;
@@ -311,7 +318,6 @@ let getcurrentplayer st =
 (* [loop ()] is the REPL that will display the game window and adapt with
     changes to state. *)
 let rec loop () =
-
   clear_graph ();
   draw_string stor.message;
   draw_tiles game.state.players;
