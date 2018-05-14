@@ -18,7 +18,9 @@ bLoKaML is a OCaml terminal-based GUI game that resembles the wildly popular boa
 2. OCaml's Graphics library: To install the library, run the following command: ```opam install Graphics```
 	* It is highly recommended that the user runs the following command after installing the Graphics library to ensure it was installed successfully: ```opam list```.  This lists all the packages installed for the given OPAM.
 3. XQuartz: This allows for the GUI to open and run on the device. This should come preinstalled when using the Installation Guide.
-#### To run game, please go to this game's directory on your device and run the following command: ```make play```
+#### To run game, please go to this game's directory on your device and run the following commands:
+```make compile```
+```make play```
 
 
 ## Game Instructions
