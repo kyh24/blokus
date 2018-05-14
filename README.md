@@ -1,6 +1,16 @@
 # bLoKaML
-## Srishti B., Kati H., Sahithi K., and Devki T.
-### CS 3110 (Spring 2018) Final Project
+CS 3110 (Spring 2018) Final Project
+Developed by Srishti B., Kati H., Sahithi K., and Devki T.
+
+## Development Team
+This project was developed by the following team members
+* [Srishti Belwariar] (https://github.com/srishtibelwariar)
+* Kati Hsu (kyh24)
+* Sahithi Kalvakota (sk2679)
+* Devki Trivedi (dt395)
+
+[GitHub](http://github.com)
+
 
 
 
