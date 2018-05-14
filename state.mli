@@ -10,7 +10,7 @@ type state = {
   mutable canvas1: ((int*int)* color) list;
   mutable canvas2: ((int*int)* color) list;
   mutable curr_player: player;
-    mutable game_over : bool
+  mutable game_over : bool
 }
 
 

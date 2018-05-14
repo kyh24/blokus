@@ -120,3 +120,20 @@ let turn_tile t =
   t.grid <- new_grid;
   t.corners <- List.map(fun (x,y) -> (y,-x)) t.corners;
   t
+
+  (*[corners_grid t] is a 5x5 grid that incorporates [t.corners]. this function
+    allows the mapping of tile coordinates to board coordinates.*)
+  let grid_of_corners t =
+    let y = ref 2 in
+    let x = ref (-2) in
+    let acc = ref [] in
+    while (!y >= -2) do (
+      while (!x <= 2) do (
+        if (List.mem (!x,!y) t.corners
+            || (List.mem_assoc (!x,!y) t.grid && (List.assoc (!x,!y) t.grid) = t.col))
+        then acc := ((!x,!y), t.col)::!acc
+        else acc := ((!x,!y), White)::!acc;
+        x := !x + 1; ) done;
+        x := -2;
+        y := !y - 1;
+    ) done; !acc
