@@ -299,6 +299,8 @@ let getcurrentplayer st =
   let playername= game.state.curr_player.player_name in
   if playername = "Player 1" then 0 else 1
 
+(* let winner_detected st=
+  if game.state.game_over = true then (State.print_winner game.state) else "" *)
 (*************************************************************************)
 (* [loop] is the REPL that will display the game window and adapt with
     changes to state. *)
@@ -384,6 +386,10 @@ let rec loop () =
        (string_of_int (score)))
       black;
   done;
+
+  (*Writes WINNER when there is a winner.*)
+  (* draw_gui_text 550 140 (winner_detected ()) red; *)
+
 
   (*Player 1 Message Board*)
   draw_rect 10 10 380 120;
