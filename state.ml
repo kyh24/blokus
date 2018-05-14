@@ -406,7 +406,8 @@ let do_command c st =
     end
 
 let print_winner st =
-    if (List.nth st.players 0).score > (List.nth st.players 1).score then "The Winner is Player 1!"
+    if (List.nth st.players 0).score = (List.nth st.players 1).score then "It's a tie!"
+    else if (List.nth st.players 0).score > (List.nth st.players 1).score then "The Winner is Player 1!"
     else "The Winner is Player 2!"
 
 (*[col_to_name col] is a string representation of [col].*)
