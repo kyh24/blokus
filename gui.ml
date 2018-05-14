@@ -14,7 +14,6 @@ let stor = {
   message = ""
 }
 
-
 type gamescreen = {
   mutable state: state; (*state.init_state 10*)
   mutable p1messages: string;
