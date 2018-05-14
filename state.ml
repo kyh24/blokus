@@ -80,23 +80,6 @@ let  tile_coords_to_board_coords2 (x,y) c_grid =
    (x,y+2),(List.assoc (0,-2)) c_grid;(x+1,y+2),(List.assoc (1,-2) c_grid);
    (x+2,y+2),(List.assoc (2,-2) c_grid)]
 
- (*[corners_grid t] is a 5x5 grid that incorporates [t.corners]. this function
-   allows the mapping of tile coordinates to board coordinates.*)
- let grid_of_corners t =
-   let y = ref 2 in
-   let x = ref (-2) in
-   let acc = ref [] in
-   while (!y >= -2) do (
-     while (!x <= 2) do (
-       if (List.mem (!x,!y) t.corners
-           || (List.mem_assoc (!x,!y) t.grid && (List.assoc (!x,!y) t.grid) = t.col))
-       then acc := ((!x,!y), t.col)::!acc
-       else acc := ((!x,!y), White)::!acc;
-       x := !x + 1; ) done;
-       x := -2;
-       y := !y - 1;
-   ) done; !acc
-
 (* [corners_grid_to_board_coords (x,y) c_grid t_to_b max_i] converts the
    coordinates in [c_grid]to their corresponding board coordinates based on
    the center cell (x,y). in other words, it returns a list of the corners'

@@ -1,5 +1,5 @@
 
-type tile_id = One | Tee | L | X | Z | Tree | Line | Empty 
+type tile_id = One | Tee | L | X | Z | Tree | Line | Empty
 
 type color = White | Blue | Yellow
 
@@ -35,3 +35,5 @@ val compare_lsts: (int*int) list -> (int*int) list -> bool
 val flip_tile: tile -> direction -> tile
 
 val turn_tile: tile -> tile
+
+val grid_of_corners: tile -> ((int * int) * color) list
