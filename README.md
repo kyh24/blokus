@@ -1,6 +1,6 @@
 # bLoKaML
 CS 3110 (Spring 2018) Final Project
-Developed by Srishti B., Kati H., Sahithi K., and Devki T.
+Developed by Srishti Belwariar, Kati Hsu, Sahithi Kalvakota, and Devki Trivedi
 
 ## Table of Contents
 * About Game
@@ -16,9 +16,15 @@ Developed by Srishti B., Kati H., Sahithi K., and Devki T.
 ## Game Instructions
 
 ## Makefile Commands
+* make play:  Make and run the GUI game.
+* make clean: Clean up the _build file.
+* make compile: Compiles the game.
+* make test: Make and run test file.
+
+
 
 ## Development Team
-This project was developed by the following team members
+This project was developed by the following team members:
 * [Srishti Belwariar](https://github.com/srishtibelwariar) (sb2355)
 * [Kati Hsu](https://github.com/kyh24) (kyh24)
 * [Sahithi Kalvakota](https://github.com/sahithi-kal) (sk2679)
