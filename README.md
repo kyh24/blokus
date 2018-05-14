@@ -15,6 +15,7 @@ Developed by Srishti Belwariar, Kati Hsu, Sahithi Kalvakota, and Devki Trivedi
 #### To set up your system to play this game, please install the following:
 1. OPAM (OCaml Package Manager) v1.2.2 and OCaml compiler v4.06.0: These were installed already for the purposes of this course.  However to install these, please refer to this [guide](http://www.cs.cornell.edu/courses/cs3110/2018sp/install.html).
 2. OCaml's Graphics library: To install the library, run the following command: ```opam install Graphics```
+	* It is highly recommended that the user runs the following command after installing the Graphics library to ensure it was installed successfully: ```opam list```.  This lists all the packages installed for the given OPAM.
 3. XQuartz: This allows for the GUI to open and run on the device.
 
 #### To run game, please go to this game's directory on your device and run the following command: ```make play```
