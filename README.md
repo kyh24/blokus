@@ -5,9 +5,9 @@ Developed by Srishti B., Kati H., Sahithi K., and Devki T.
 ## Development Team
 This project was developed by the following team members
 * [Srishti Belwariar](https://github.com/srishtibelwariar) (sb2355)
-* Kati Hsu (kyh24)
-* Sahithi Kalvakota (sk2679)
-* Devki Trivedi (dt395)
+* [Kati Hsu](https://github.com/kyh24) (kyh24)
+* [Sahithi Kalvakota](https://github.com/sahithi-kal) (sk2679)
+* [Devki Trivedi](https://github.com/devki98) (dt395)
 
 [GitHub](http://github.com)
 
