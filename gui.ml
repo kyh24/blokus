@@ -15,6 +15,7 @@ let stor = {
 }
 
 (**** GUI STATE ****)
+
 (* gamescreen contains state as well as other fields that are useful
    in developing the GUI window.*)
 type gamescreen = {
@@ -41,6 +42,7 @@ type gamescreen = {
   mutable gp2inv: (Tile.tile_id * (int*int*int*int)) list;
   mutable canvas2tile: Tile.tile_id option
 }
+
 
 (* game is of type gamescreen and contains state as well as other
    fields that are useful in developing the GUI window.  Some of these
@@ -84,12 +86,19 @@ let game = {
 (* [draw_gui_rect] draws filled rectangle on the GUI window
    when given a starting point (x and y), the width w, the height h, and
    the color of the filled shape. Intended for drawing cells. *)
+
+(* let blue = Graphics.rgb 95 173 225 *)
+let blue = Graphics.rgb 52 142 229
+let yellow= Graphics.rgb 250 222 39
+let red= Graphics.rgb 215 10 26
+let green= Graphics.rgb 104 218 56
+
 let draw_gui_rect x y w h color =
   set_color color;
   fill_rect x y w h;
   set_color black
 
-(* [draw_gui_button] draws empty rectangle outlines on the GUI window
+(* [draw_gui_button figure color] draws empty rectangle outlines on the GUI window
    when given a starting point (x and y), the width w, the height h, and
    the color of the outline. Intended for drawing GUI buttons.*)
 let draw_gui_button figure color=
@@ -97,7 +106,7 @@ let draw_gui_button figure color=
   |(x,y,w,h) -> set_color color; draw_rect x y w h;
   set_color black
 
-(* [draw_gui_text] draws a string on the GUI window
+(* [draw_gui_text x y str color] draws a string on the GUI window
    when given a starting point (x and y), the string str, and
    the color of the text. *)
 let draw_gui_text x y str color =
@@ -107,7 +116,7 @@ let draw_gui_text x y str color =
   set_color black
 
 (**** HELPER DRAW TILE FUNCTIONS ****)
-(* [draw_tiles_helper] draws the entire inventory of a player in their
+(* [draw_tiles_helper tilelist i] draws the entire inventory of a player in their
    respective inventory board.  Takes in [tilelist] which is the list
    of tiles in the player's remaining_tiles list.  Takes in [i] which is
    the index of the player.  *)
@@ -115,7 +124,7 @@ let rec draw_tiles_helper tilelist i=
   match tilelist with
   | [] -> set_color black;
   | h::t ->
-    if i=0 then set_color yellow else set_color cyan;
+    if i=0 then set_color yellow else set_color blue;
     begin
         match h.name with
         | Empty -> draw_tiles_helper t i;
@@ -150,7 +159,7 @@ let rec draw_tiles_helper tilelist i=
                   fill_rect (210+(800*i)) 410 30 30; draw_tiles_helper t i;
       end
 
-(* [draw_tiles] determines the right inventory set being searched through
+(* [draw_tiles playerlist] determines the right inventory set being searched through
    and changed with the tile selection.  Takes in [playerlist] which is
    the list of players in this game.  *)
   let rec draw_tiles playerlist=
@@ -161,7 +170,7 @@ let rec draw_tiles_helper tilelist i=
       draw_tiles_helper tilelist i
     done
 
-(* [tiles_searcher] searches the entire inventory of a player
+(* [tiles_searcher inv name] searches the entire inventory of a player
    for a given tile name.  Takes in [inv] which is the list
    of tiles in the player's remaining_tiles list.  Takes in [name]
    which is name or tile_id of the tile selected.  If a tile with such
@@ -173,7 +182,7 @@ let rec draw_tiles_helper tilelist i=
     then Some h
     else tiles_searcher t name
 
-(* [draw_onto_canvas_helper] draws teh canvas of the player specified.
+(* [draw_onto_canvas_helper canvas player_id] draws teh canvas of the player specified.
    Takes [canvas] to draw the cells of the canvas in a loop.  Takes
    [player_id] to calculate placement of the canvas on the GUI window
    according to player id.*)
@@ -193,7 +202,7 @@ let rec draw_onto_canvas_helper canvas player_id=
        draw_onto_canvas_helper t player_id;)
     end
 
-(* [draw_onto_canvas] draws the tile on the right player's canvas.
+(* [draw_onto_canvas tile_name player_id] draws the tile on the right player's canvas.
    Takes in [tile_name] which is the name of the tile selected.
    Takes in [player_id] which is the index of the player.
     Changes the tile on the canvas, changes the player message if needed,
@@ -221,7 +230,7 @@ let draw_onto_canvas tile_name player_id=
           game.p1messages <- "Modify & place tile.");
     draw_onto_canvas_helper tilecells player_id
 
-(* [click_inventory] links the click within the inventory box to a tile
+(* [click_inventory lst px py player_id] links the click within the inventory box to a tile
    and starts the drawing onto canvas process if a tile was clicked in the
    GUI.  Takes in [lst] which is the gui inventory list.
    Takes in [px] and [py] which are the positions of the mouse clicks.
@@ -245,13 +254,15 @@ let rec click_inventory lst px py player_id=
       else
         click_inventory t px py player_id
 
-(* [click_buttons_p1] links the click within the player 1's box of tile
+(* [click_buttons_p1 px py] links the click within the player 1's box of tile
    transformation buttons to a specific transformation/command.
    Starts the drawing onto canvas process to show transformation selected.  '
    Takes in [px] and [py] which are the positions of the mouse clicks.*)
 let rec click_buttons_p1 px py =
     (match game.canvas1tile with
-    | None -> set_color black;
+    | None -> if (px>200 && px<390) && (py>=142 && py<208) then
+          (game.p1messages <-  "No more future turns!";
+           game.state <- (do_command (FORFEIT) game.state))
     | Some x ->
       if (px>=200 && px<=390) && (py>=274 && py<=340) then
         game.state <- (do_command (TURN x) game.state)
@@ -263,18 +274,22 @@ let rec click_buttons_p1 px py =
   game.state <- (do_command (FLIPY x) game.state)
   (* stor.message <- "You Clicked FLIPY.!" *)
       else if (px>200 && px<390) && (py>=142 && py<208) then
-  game.state <- (do_command (FORFEIT) game.state)
+        (game.p1messages <-  "No more future turns!";
+         game.state <- (do_command (FORFEIT) game.state))
   (* stor.message <- "You Clicked FORFEIT.!" *)
       else
         click_buttons_p1 px py )
 
-(* [click_buttons_p2] links the click within the player 2's box of tile
+(* [click_buttons_p2 px py] links the click within the player 2's box of tile
    transformation buttons to a specific transformation/command.
    Starts the drawing onto canvas process to show transformation selected.  '
    Takes in [px] and [py] which are the positions of the mouse clicks.*)
 let rec click_buttons_p2 px py =
   (match game.canvas2tile with
-   | None -> set_color black;
+   | None -> if (px>1000 && px<1190) && (py>=142 && py<208) then
+       ( game.p2messages <-  "No more future turns!";
+         game.state <- (do_command (FORFEIT) game.state)
+       )
    | Some x ->
      if (px>=1000 && px<=1190) && (py>=274 && py<=340) then
        game.state <- (do_command (TURN x) game.state)
@@ -286,26 +301,32 @@ let rec click_buttons_p2 px py =
        game.state <- (do_command (FLIPY x) game.state)
        (* stor.message <- "You Clicked FLIPY.!" *)
      else if (px>1000 && px<1190) && (py>=142 && py<208) then
-       game.state <- (do_command (FORFEIT) game.state)
+       ( game.p2messages <-  "No more future turns!";
+         game.state <- (do_command (FORFEIT) game.state)
+       )
+
        (* stor.message <- "You Clicked FORFEIT.!" *)
      else
          (* "You Clicked error.!" ) *)
        click_buttons_p2 px py )
 
-(* [getcurrentplayer] finds the index of the current player in the state
+(* [getcurrentplayer st] finds the index of the current player in the state
    within the list of players.  Takes in [st] the state to access the
    player list.*)
 let getcurrentplayer st =
   let playername= game.state.curr_player.player_name in
   if playername = "Player 1" then 0 else 1
 
+(* [winner_detected st] will display the win message onto the message board
+   if there is a winner. Takes in [st] the state to check if there is a win*)
 (* let winner_detected st=
   if game.state.game_over = true then (State.print_winner game.state) else "" *)
+
 (*************************************************************************)
-(* [loop] is the REPL that will display the game window and adapt with
+
+(* [loop ()] is the REPL that will display the game window and adapt with
     changes to state. *)
 let rec loop () =
-
   clear_graph ();
   draw_string stor.message;
   draw_tiles game.state.players;
@@ -320,10 +341,11 @@ let rec loop () =
   draw_string ("Goal of the game is to color as many cells as possible");
   moveto 395 660;
   draw_string ("Select a tile, transform it, and select a space on the board to place");
+
   (*QUIT Button*)
-   set_color red;
-   fill_rect 540 590 120 60;
-   set_color black;
+  set_color red;
+  fill_rect 540 590 120 60;
+  set_color black;
   moveto 590 615; draw_string ("QUIT");
 
 
@@ -339,7 +361,8 @@ let rec loop () =
     done;
   done;
 
-  (*Player Inventory set up*)
+  (*Player Inventory Set Up*)
+
   (*Player 1 Inventory*)
   draw_rect 10 350 380 390;
   moveto 150 720; draw_string ("Player 1 Inventory");
@@ -373,7 +396,7 @@ let rec loop () =
   draw_gui_button game.gp2rot black;
   draw_gui_text 1025 172 "Forfeit All Future Turns" black;
 
-  (*Messaage Board*)
+  (*Message Board*)
   draw_rect 400 10 400 ((750-400)/2 -20);
   draw_gui_text 550 140 "Game Status Board" black;
   draw_gui_text 530 110
@@ -388,7 +411,7 @@ let rec loop () =
   done;
 
   (*Writes WINNER when there is a winner.*)
-  (* draw_gui_text 550 140 (winner_detected ()) red; *)
+  (*draw_gui_text 550 140 (winner_detected ()) red; *)
 
 
   (*Player 1 Message Board*)
@@ -399,13 +422,13 @@ let rec loop () =
   (*Player 2 Message Board*)
   draw_rect 810 10 380 120;
   draw_gui_text 940 100 "Player 2 Status Board" black;
-  draw_gui_text 940 60 game.p2messages blue;
+  draw_gui_text 940 60 game.p2messages black;
 
   draw_onto_canvas_helper game.state.canvas1 0;
   draw_onto_canvas_helper game.state.canvas2 1;
 
   (**** CLICKER FUNCTIONS ****)
-  (* [click] links the click in the GUI window to the gui region the click
+  (*[click ()] links the click in the GUI window to the gui region the click
     was in to properly process the functions of that region.*)
   let click () =
     let clicker = Graphics.wait_next_event [Button_down] in
@@ -416,7 +439,8 @@ let rec loop () =
     | [] -> stor.message <- stor.message ;
     | ((x1,x2,y1,y2))::t ->
       if ((px>=10 && px<=390) && (py>=350 && py<=740)
-          && (getcurrentplayer game.state) = 0)
+          && (getcurrentplayer game.state) = 0 &&
+          game.state.curr_player.status != Stop)
       then
         begin
           (* stor.message <- "You Clicked P1 Inv Reg.!"; *)
@@ -424,7 +448,8 @@ let rec loop () =
           (click_inventory lst px py 0)
         end
       else if ((px>=200 && px<=390) && (py>= 142 && py<=406)
-              && (getcurrentplayer game.state) = 0)
+              && (getcurrentplayer game.state) = 0 &&
+              game.state.curr_player.status != Stop)
       then
         begin
           (* stor.message <- "You Clicked P1 Buttons Reg.!"; *)
@@ -433,7 +458,8 @@ let rec loop () =
         end
 
       else if ((px>=810 && px<=1190) && (py>=350 && py<=740)
-              && (getcurrentplayer game.state) = 1)
+              && (getcurrentplayer game.state) = 1 &&
+              game.state.curr_player.status != Stop)
       then
         begin
           (* stor.message <- "You Clicked P2 Inv Reg.!"; *)
@@ -442,7 +468,8 @@ let rec loop () =
         end
 
       else if ((px>=1000 && px<=1190) && (py>=142 && py<=340)
-              && (getcurrentplayer game.state) = 1)
+              && (getcurrentplayer game.state) = 1 &&
+              game.state.curr_player.status != Stop)
       then
         begin
           (* stor.message <- "You Clicked P2 Buttons Reg.!"; *)
@@ -463,16 +490,14 @@ let rec loop () =
       then Graphics.close_graph()
       else
         which_button t;
-
   in
   begin
     moveto 200 200; which_button game.gregions; clear_graph(); loop ();
   end
 
-(* [opening] presents the opening window of the game application.*)
+(* [opening ()] presents the opening window of the game application.*)
 let rec opening ()=
   clear_graph ();
-  (* Png.load ("blokaml.png"); *)
   let xf= Graphics.size_x () in
   let yf= Graphics.size_y () in
   moveto (xf/2) (2*yf/3);
