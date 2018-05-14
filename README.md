@@ -10,6 +10,7 @@ Developed by Srishti Belwariar, Kati Hsu, Sahithi Kalvakota, and Devki Trivedi
 * Development Team
 
 ## About Game
+bLoKaML is a OCaml terminal-based GUI game that resembles the wildly popular board game, Blokus.  Players take turns to place differnt tiles on the board.  The purpose of this two-player game bLoKaML is to have the fewest number of your tiles remaining when no remaining moves are possible.
 
 ## System Setup and Installation
 #### To set up your system to play this game, please install the following:
