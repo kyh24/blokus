@@ -233,37 +233,25 @@ let draw_onto_canvas tile_name player_id=
     draw_onto_canvas_helper tilecells player_id
 
 
-(* [draw_onto_board_helper board player_id] .*)
-(* let rec draw_onto_board_helper board player_id =
-let lst= Array.to_list board in
- match lst with
-| [] -> set_color black;
-| ((x,y), color)::t ->
-  begin
-    let fill_color =
-    (match color with
-      (* | White -> white *)
-      | Blue -> blue
-      | Yellow -> yellow) in
-      for x = 0 to 9
-        let pt1 = 400 + (40 * (x)) in
-        let pt2 = 575 - (40 * (y+1)) in
-        draw_gui_rect pt1 pt2 40 40 fill_color;
-        set_color black;
-        draw_rect pt1 pt2 40 40;
+let rec draw_onto_board lst =
+  match lst with
+  | [] -> set_color black;
+  | ((x,y), color)::t ->
+    begin
+      let fill_color =
+        (match color with
+         | White -> white
+         | Blue -> blue
+         | Yellow -> yellow)
+      in
+      let pt1 = 400 + (40 * (x)) in
+      let pt2 = 575 - (40 * (y+1)) in
+      draw_gui_rect pt1 pt2 40 40 fill_color;
+      set_color black;
+      draw_rect pt1 pt2 40 40;
+      (draw_onto_board t);
+
     end
-
-(* [draw_onto_board tile_name player_id] .*)
-let draw_onto_board tile_name player_id=
-  if player_id = 0 then let tile= canvas1tiles in
-    match tile with
-    | None -> game.p1messages <- "Please place the tile on the board" dr
-    | Some x -> game.state.board <- Some tile
-  if player_id = 1 then let tile= canvas2tiles in
-    match tile with
-    | None -> game.p1messages <- "Please place the tile on the board" dr
-    | Some x -> game.state.board <- Some tile *)
-
 
 (* [click_inventory lst px py player_id] links the click within the inventory box to a tile
    and starts the drawing onto canvas process if a tile was clicked in the
@@ -390,7 +378,7 @@ let rec loop () =
 
 
   (*Board setup*)
-  for x = 0 to 9
+  (* for x = 0 to 9
   do
     for y = 0 to 9 do
       let pt1 = 400 + (40 * (x)) in
@@ -399,7 +387,7 @@ let rec loop () =
       moveto pt1 pt2;
       draw_string ("("^(string_of_int x)^", "^(string_of_int y)^")");
     done;
-  done;
+  done; *)
 
   (*Player Inventory Set Up*)
 
@@ -466,6 +454,7 @@ let rec loop () =
 
   draw_onto_canvas_helper game.state.canvas1 0;
   draw_onto_canvas_helper game.state.canvas2 1;
+  draw_onto_board (Array.to_list game.state.board);
 
   (**** CLICKER FUNCTIONS ****)
   (*[click ()] links the click in the GUI window to the gui region the click
