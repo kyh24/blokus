@@ -21,8 +21,7 @@ bLoKaML is a OCaml terminal-based GUI game that resembles the wildly popular boa
 	* The VMs installed using the Installation Guide linked above will have a preinstalled windowing system that is compatible with this application.
 	* XQuartz (for Mac OS X): This allows for the GUI to open and run on the Mac OS device. This can be installed from [here](https://www.xquartz.org)
 
-#### To run game, please go to this game's directory on your device and run the following commands:
-```make compile```
+#### To run game, please go to this game's directory on your device and run the following command:
 ```make play```
 
 
