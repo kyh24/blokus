@@ -3,6 +3,11 @@ open State
 open Tile
 open Player
 
+let rec compare_lsts lst1 lst2 =
+  match lst1 with
+  | [] -> true
+  | h::t -> List.mem h lst2 && compare_lsts t lst2
+
 let t1 = init_tile One Blue
 let grid_t1 = [((-1,1),White);  ((0,1),White);  ((1,1),White);
                ((-1,0),White);  ((0,0),Blue);      ((1,0),White);
@@ -64,10 +69,13 @@ let turn1_tree = [(0,2);(2,2);(2,-1);(1,-2);(-1,-2);(-2,-1);(-2,1)]
 let turnflip_tree = [(-1,2);(1,2);(2,-2);(0,-2);(-2,-1);(-2,1);(2,1)]
 
 (*State Tests*)
-let init = init_state 8
-let player_1 = Player.init_player "Player 1" Yellow
-let player_2 = Player.init_player "Player 2" Blue
-let t = init_tile Tee Yellow
+let init = init_state 10
+let player_1 = init_player "Player 1" Yellow
+let player_2 = init_player "Player 2" Blue
+let t1 = init_tile One Yellow
+let t2 = init_tile One Blue
+let t1' = init_tile Tee Yellow
+
 
 let player_1_2 = {player_name = "Player 1";
                   col = Yellow;

@@ -16,14 +16,12 @@ let t2 = init_tile One Blue ;;
 let t1' = init_tile Tee Yellow;;
 
 init.canvas1 <- t1.grid;;
-let st2 = State.do_command (PLACE ((204,570),t1.name)) init;;
-st2.canvas2 <- t2.grid;;
-let st3 = State.do_command (PLACE ((570,176),t2.name)) st2;;
+let st2 = State.do_command (PLACE ((604,570),t1.name)) init;;
 
-let max_i = (st3.board |> brd_size) - 1
-let dot = (280,456) |> get_center_cell st3
+let max_i = (st2.board |> brd_size) - 1
+let dot = (280,456) |> get_center_cell st2
 let coordinates = dot |> get_selection_space_coords
-let colors_on_board = [] |> get_board_colors st3.board coordinates
+let colors_on_board = [] |> get_board_colors st2.board coordinates
 let t_to_b = t1'.grid |> tile_coords_to_board_coords dot
 let invalid_coords = max_i |> invalid_board_coords t_to_b
 let colors_of_tile = [] |> get_tile_colors t_to_b colors_on_board ;;
