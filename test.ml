@@ -103,9 +103,11 @@ let t2_init = init_tile One Blue
 let t2_init6 = init_tile One Blue
 let t2_init7 = init_tile One Blue
 let t2_init8 = init_tile One Blue
+let t1_init_10 = init_tile Recliner Yellow
 let p1_m2_8 = init_tile Cowgirl Yellow
 let p2_m2_8 = init_tile Cowgirl Blue
 let t1' = init_tile Tee Yellow
+let t1_init_11 = init_tile One Yellow
 
 (*st2 - p1 first move*)
 let st2 = do_command (PLACE ((404,570),t1_init.name)) init2'
@@ -143,11 +145,28 @@ let init8'' = {init8' with canvas2 = t2_init8.grid} |> do_command (PLACE ((780,1
 let init8_3 = {init8'' with canvas1 = p1_m2.grid} |> do_command (PLACE ((426,546),p1_m2.name))
 let init8_p2 = {init8_3 with canvas2 = p2_m2.grid} |> do_command (PLACE ((746,226),p2_m2.name))
 
-(*st9 - both = forfeit*)
+(*st9 - both = forfeit -> tie*)
 let init9 = 16 |> init_state
 let init9' = {init9 with canvas1 = t1_init6.grid} |> do_command (PLACE ((404,570),t1_init.name))
 let init9'' = {init9' with canvas2 = t2_init6.grid} |> do_command (PLACE ((780,176),t2_init6.name))
 let init9_p1_f = (init9'' |> do_command FORFEIT) |> do_command FORFEIT
+
+(*st10 - both = forfeit -> p1 wins*)
+let init10 = 16 |> init_state
+let init10' = {init10 with canvas1 = t1_init_10.grid} |> do_command (PLACE ((404,545),t1_init_10.name))
+let init10'' = {init10' with canvas2 = t2_init6.grid} |> do_command (PLACE ((780,176),t2_init6.name))
+let init10f = (init10'' |> do_command FORFEIT) |> do_command FORFEIT
+
+(*st11 - uses all tiles*)
+let p1_empty = {player_name = "Player 1";
+                col = Yellow;
+                score = 0;
+                status = Play;
+                remaining_tiles = [t1_init_11]}
+let init11 = 16 |> init_state
+let init11_update = {init11 with players = [p1_empty; player_2]}
+let init11' = {init11_update with canvas1 = t1_init_11.grid} |> do_command (PLACE ((404,545),t1_init_11.name))
+
 
 (*updating players*)
 let p1_invalid_move1 = {player_name = "Player 1";
@@ -425,7 +444,23 @@ let state_tests = [
   "st9_p1_score" >:: (fun _ -> assert_equal 1 (nth init9_p1_f.players 0).score);
   "st9_p2_score" >:: (fun _ -> assert_equal 1 (nth init9_p1_f.players 1).score);
   "st9_status" >:: (fun _ -> assert_equal true init9_p1_f.game_over);
+  "st9_message" >:: (fun _ -> assert_equal "      It's a Tie!      " (print_winner init9_p1_f));
 
+  (*FORFEIT*)
+  "st10_canvas1" >:: (fun _ -> assert_equal [((-1,1),White);  ((0,1),White);  ((1,1),White);
+                                            ((-1,0),White);  ((0,0),White);  ((1,0),White);
+                                            ((-1,-1),White); ((0,-1),White); ((1,-1),White)]
+                        (init10f.canvas1));
+  "st10_canvas2" >:: (fun _ -> assert_equal [((-1,1),White);  ((0,1),White);  ((1,1),White);
+                                            ((-1,0),White);  ((0,0),White);  ((1,0),White);
+                                            ((-1,-1),White); ((0,-1),White); ((1,-1),White)]
+                        (init10f.canvas2));
+  "st10_p1_stat" >:: (fun _ -> assert_equal Stop (nth init10f.players 0).status);
+  "st10_p2_stat" >:: (fun _ -> assert_equal Stop (nth init10f.players 1).status);
+  "st10_p1_score" >:: (fun _ -> assert_equal 3 (nth init10f.players 0).score);
+  "st10_p2_score" >:: (fun _ -> assert_equal 1 (nth init10f.players 1).score);
+  "st10_status" >:: (fun _ -> assert_equal true init10f.game_over);
+  "st10_message" >:: (fun _ -> assert_equal "The Winner is Player 1!"(print_winner init10f));
 
 ]
 
