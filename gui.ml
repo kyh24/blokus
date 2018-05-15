@@ -537,7 +537,7 @@ let rec loop () =
                   (game.p1messages <- "Invalid Move - Try Again!";
                    game.p2messages <- "")
                 else (
-                  game.p1messages <- "dd";
+                  game.p1messages <- "";
                   game.p2messages <- "Please select a tile.";
                   game.canvas1tile <- None;
                   game.canvas2tile <- None;
