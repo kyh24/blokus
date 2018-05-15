@@ -247,6 +247,11 @@ let rec draw_onto_board lst =
       let pt1 = 400 + (40 * (x)) in
       let pt2 = 575 - (40 * (y+1)) in
       draw_gui_rect pt1 pt2 40 40 fill_color;
+
+      begin
+        if (x=0 && y=0) then (set_color yellow; fill_ellipse (pt1+20) (20+pt2) 10 10)
+        else if (x=9 && y=9) then (set_color blue; fill_ellipse (pt1+20) (20+pt2) 10 10)
+      end;
       set_color black;
       draw_rect pt1 pt2 40 40;
       moveto pt1 pt2;
@@ -357,6 +362,8 @@ let winner_detected st=
     changes to state. *)
 let rec loop () =
   clear_graph ();
+  draw_gui_text 140 60 game.p1messages black;
+  draw_gui_text 940 60 game.p2messages black;
   draw_string stor.message;
   winner_detected game.state;
   draw_tiles game.state.players;
@@ -469,7 +476,7 @@ let rec loop () =
   let (px,py)= click () in
   let rec which_button regions=
     match regions with
-    | [] -> stor.message <- stor.message ;
+    | [] -> set_color black ;
     | ((x1,x2,y1,y2))::t ->
       if ((px>=10 && px<=390) && (py>=350 && py<=740)
           && (getcurrentplayer game.state) = 0 &&
@@ -526,18 +533,16 @@ let rec loop () =
               begin
                 (* stor.message <- "Kasdfs!"; *)
                 let returnedst = do_command (PLACE ((px,py),x)) game.state in
-                if (returnedst = game.state) then
+                (if (returnedst = game.state) then
                   (game.p1messages <- "Invalid Move - Try Again!";
                    game.p2messages <- "")
-
                 else (
-
-                  game.p1messages <- "";
+                  game.p1messages <- "dd";
                   game.p2messages <- "Please select a tile.";
                   game.canvas1tile <- None;
-                  (* game.canvas2tile <- None; *)
+                  game.canvas2tile <- None;
                   game.state <- returnedst;
-                )
+                ))
               end
           end
         else if ( playerindex =1 ) then
@@ -547,9 +552,8 @@ let rec loop () =
               game.p2messages <- "First select a tile!"
             | Some y ->
               begin
-                (* stor.message <- "Kasdfs!"; *)
                 let returnedst = do_command (PLACE ((px,py),y)) game.state in
-                if (returnedst = game.state) then
+                (if (returnedst = game.state) then
                  (  game.p1messages <- "";
                     game.p2messages <- "Invalid Move - Try Again!"
                   )
@@ -557,10 +561,10 @@ let rec loop () =
 
                   game.p1messages <- "Please select a tile.";
                   game.p2messages <- "" ;
-                  (* game.canvas1tile <- None; *)
+                  game.canvas1tile <- None;
                   game.canvas2tile <- None;
                   game.state <- returnedst;
-                )
+                ))
               end
           end)
       end
@@ -570,6 +574,8 @@ let rec loop () =
         which_button t;
   in
   begin
+    draw_gui_text 140 60 game.p1messages black;
+    draw_gui_text 940 60 game.p2messages black;
     moveto 200 200; which_button game.gregions; clear_graph(); loop ();
   end
 
