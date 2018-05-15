@@ -1,5 +1,6 @@
 
-type tile_id = One | Tee | L | X | Z | Tree | Line | Empty
+type tile_id = One | Tee | L | X | Z | Tree | Line | Two | Four | Cowgirl | Couch
+             | Recliner | Kink | C | Boot | Stairmaster
 
 type color = White | Blue | Yellow
 
@@ -15,13 +16,20 @@ type direction = X | Y
 
 let init_tile id c =
   match id with
-  | Empty -> {name = Empty;
+  | C-> {name = C;
+             col = c;
+             value = 5;
+             grid = [((-1,1),White);  ((0,1),c);  ((1,1),c);
+                     ((-1,0),White);  ((0,0),c);      ((1,0),White);
+                     ((-1,-1),White); ((0,-1),c); ((1,-1),c)];
+             corners = [(-1,1);(-2,0);(-2,-2);(1,-2);(2,-1);(2,1)]}
+  | Two -> {name = Two;
               col = c;
-              value = 0;
+              value = 2;
               grid = [((-1,1),White);  ((0,1),White);  ((1,1),White);
-                      ((-1,0),White);  ((0,0),White);      ((1,0),White);
+                      ((-1,0),White);  ((0,0),c);      ((1,0),c);
                       ((-1,-1),White); ((0,-1),White); ((1,-1),White)];
-              corners = []
+            corners = [(1,1);(-1,-1);(2,1);(2,-1)]
              }
   |One -> {name = One;
            col = c;
@@ -31,6 +39,60 @@ let init_tile id c =
                    ((-1,-1),White); ((0,-1),White); ((1,-1),White)];
            corners = [(-1,1);(1,1);(-1,-1);(1,-1)]
           }
+  | Four -> {name = Four;
+            col = c;
+            value = 4;
+            grid = [((-1,1),White);  ((0,1),White);  ((1,1),White);
+                    ((-1,0),White);  ((0,0),c);      ((1,0),c);
+                    ((-1,-1),White); ((0,-1),c); ((1,-1),c)];
+             corners = [(-1,1);(-1,-2);(2,1);(2,-2)]
+            }
+  | Cowgirl -> {name = Cowgirl;
+             col = c;
+             value = 4;
+             grid = [((-1,1),White);  ((0,1),White);  ((1,1),White);
+                     ((-1,0),White);  ((0,0),c);      ((1,0),White);
+                     ((-1,-1),c); ((0,-1),c); ((1,-1),c)];
+                corners = [(-1,1);(-2,0);(-2,-2);(2,0);(2,-2);(1,1)]
+               }
+  | Couch -> {name = Couch;
+             col = c;
+             value = 4;
+             grid = [((-1,1),White);  ((0,1),White);  ((1,1),White);
+                     ((-1,0),White);  ((0,0),c);      ((1,0),c);
+                     ((-1,-1),c); ((0,-1),c); ((1,-1),c)];
+              corners = [(-2,0);(-2,-2);(2,1);(2,-2);(0,1)]
+             }
+  | Recliner -> {name = Recliner;
+             col = c;
+             value = 3;
+             grid = [((-1,1),White);  ((0,1),c);  ((1,1),White);
+                     ((-1,0),White);  ((0,0),c);      ((1,0),c);
+                     ((-1,-1),White); ((0,-1),White); ((1,-1),White)];
+                 corners = [(-1,2);(-1,-1);(1,2);(2,1);(2,-1)]
+
+                }
+  | Kink -> {name = Kink;
+                 col = c;
+                 value = 4;
+                 grid = [((-1,1),White);  ((0,1),White);  ((1,1),White);
+                         ((-1,0),White);  ((0,0),c);      ((1,0),c);
+                         ((-1,-1),c); ((0,-1),c); ((1,-1),White)];
+             corners = [(-1,1);(-2,0);(-2,-2);(1,-2);(2,-1);(2,1)]}
+  | Boot -> {name = Boot;
+             col = c;
+             value = 5;
+             grid = [((-1,1),c);  ((0,1),White);  ((1,1),White);
+                     ((-1,0),c);  ((0,0),c);      ((1,0),White);
+                     ((-1,-1),c); ((0,-1),c); ((1,-1),White)];
+             corners = [(0,2);(1,1);(1,-2);(-2,2);(-2,-2)]}
+  | Stairmaster -> {name = Stairmaster;
+             col = c;
+             value = 5;
+             grid = [((-1,1),White);  ((0,1),c);  ((1,1),c);
+                     ((-1,0),c);  ((0,0),c);      ((1,0),White);
+                     ((-1,-1),c); ((0,-1),White); ((1,-1),White)];
+                    corners = [(-1,2);(2,2);(2,0);(1,-1);(0,-2);(-2,-2);(-2,1)]}
   |Tee -> {name = Tee;
            col= c;
            value = 5;
