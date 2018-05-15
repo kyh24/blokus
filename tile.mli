@@ -1,5 +1,6 @@
 
-type tile_id = One | Tee | L | X | Z | Tree | Line | Empty
+type tile_id = One | Tee | L | X | Z | Tree | Line | Two | Four | Cowgirl | Couch
+             | Recliner | Kink | C | Boot | Stairmaster
 
 type color = White | Blue | Yellow
 
