@@ -20,12 +20,14 @@ init.canvas1 <- t1.grid;;
 let st2 = State.do_command (PLACE ((404,570),t1.name)) init;;
 st2.canvas2 <- t2.grid;;
 let st3 = State.do_command (PLACE ((780,176),t2.name)) st2;;
-st3.canvas1 <- t_line.grid;;
+st3.canvas1 <- t1'.grid;;
 
 let max_i = (st3.board |> brd_size) - 1
-let dot = (780,176) |> get_center_cell st3
+let dot = (456,520) |> get_center_cell st3
 let coordinates = dot |> get_selection_space_coords
 let colors_on_board = [] |> get_board_colors st3.board coordinates
-let t_to_b = t_line.grid |> tile_coords_to_board_coords dot
+let t_to_b = t1'.grid |> convert_to_board_coors dot
+let corners = grid_of_corners t1'
+let convert_corns = corners_grid_to_board_coords (2,2) t1' t_to_b max_i
 let invalid_coords = max_i |> invalid_board_coords t_to_b
 let colors_of_tile = [] |> get_tile_colors t_to_b colors_on_board ;;
