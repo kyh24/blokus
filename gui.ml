@@ -125,7 +125,6 @@ let rec draw_tiles_helper tilelist i=
     if i=0 then set_color yellow else set_color blue;
     begin
         match h.name with
-        | Empty -> draw_tiles_helper t i;
         | One ->  fill_rect (30 +(800*i)) 680 30 30; draw_tiles_helper t i;
         | Tee ->  fill_rect (120+(800*i)) 680 30 30;
                   fill_rect (150+(800*i)) 680 30 30;
@@ -154,7 +153,8 @@ let rec draw_tiles_helper tilelist i=
                   fill_rect (330+(800*i)) 530 30 30; draw_tiles_helper t i;
         | Line -> fill_rect (150+(800*i)) 410 30 30;
                   fill_rect (180+(800*i)) 410 30 30;
-                  fill_rect (210+(800*i)) 410 30 30; draw_tiles_helper t i;
+          fill_rect (210+(800*i)) 410 30 30; draw_tiles_helper t i;
+        | _ -> set_color black;
       end
 
 (* [draw_tiles playerlist] determines the right inventory set being searched through

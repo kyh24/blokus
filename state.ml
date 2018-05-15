@@ -3,7 +3,6 @@ open Board
 open Tile
 open Command
 
-
 type state = {
   board : ((int*int) * color) array;
   players : player list;
@@ -29,8 +28,8 @@ let init_state s =
   game_over = false
 }
 
-  let get_center_cell st (x,y) =
-  let brd_coord = (x - 400) / 25 , -(((y - 175) / 25) - 15) in
+let get_center_cell st (x,y) =
+  let brd_coord = (x - 400) / 40 , -(((y - 175) / 40) - 9) in
     let index = get_index brd_coord (brd_size st.board) in
     fst (Array.get st.board index)
 
@@ -215,24 +214,6 @@ let check_sides t_cols_ref brd_array highest_i is_valid_ref =
   )
   done; !is_valid_ref
 
-(* let check_corners c_on_b t brd =
-let brd_lst = Array.to_list brd in
-let valid_corners_ref = ref c_on_b in
-let is_valid_ref = ref true in
-
-while (!valid_corners_ref <> [] && !is_valid_ref) do (
-  match !valid_corners_ref with
-  |[] -> ()
-  |((x,y),c)::tl -> begin
-      let brd_color = List.assoc (x,y) brd_lst in
-      if (brd_color = t.col) || (brd_color = White) then is_valid_ref := true
-      else is_valid_ref := false;
-      valid_corners_ref := tl;
-    end
-)
-done; !is_valid_ref
- *)
-
 (* [check_corners t brd] is true if at least one of the corners/vertices of [t] is
     touching another corner or vertice of a tile of the same color that is already on
     [brd]. false otherwise. *)
@@ -242,33 +223,10 @@ let rec check_corners c_on_b t brd acc =
   | [] -> acc
   | ((x,y),corner_col)::tl -> begin
       let brd_color = List.assoc (x,y) brd_lst in
-      (* let is_white = 0 in
-      let is_col = 1 in
-      let is_other_col = 2 in  *)
       if (brd_color = White) then check_corners tl t brd (0::acc)
       else if (brd_color = corner_col) then check_corners tl t brd (1::acc)
       else check_corners tl t brd (2::acc)
   end
-
-(* [check_corners t brd] is true if at least one of the corners/vertices of [t] is
-    touching another corner or vertice of a tile of the same color that is already on
-    [brd]. false otherwise.
-let check_corners c_on_b t brd =
-  let brd_lst = Array.to_list brd in
-  let valid_corners_ref = ref c_on_b in
-  let is_valid_ref = ref true in
-
-  while (!valid_corners_ref <> [] && !is_valid_ref) do (
-    match !valid_corners_ref with
-    |[] -> ()
-    |((x,y),c)::tl -> begin
-        let brd_color = List.assoc (x,y) brd_lst in
-        if (brd_color = t.col) || (brd_color = White) then is_valid_ref := true
-        else is_valid_ref := false;
-        valid_corners_ref := tl;
-      end
-  )
-   done; !is_valid_ref*)
 
 (* [outside_board_invalid invalid_coord_list] looks at the coordinates that lay
     outside the dimensions of the board.
@@ -285,8 +243,7 @@ let outside_board_is_invalid invalid_coord_list =
       else invalid_coord_has_no_color := false;
       invalid_brd_coord := t;
     end
-  )
-  done; !invalid_coord_has_no_color
+  ) done; !invalid_coord_has_no_color
 
 (* [is_on_free_space t_cols_only is_free b] is true if the tile is placed on spaces
     where the board is free. In other words, there have not already been tiles placed on
@@ -318,21 +275,21 @@ let valid_first_move p tile_colors invalid_coords brd highest_i =
   else (List.mem_assoc (highest_i, highest_i) tile_colors &&
         List.assoc (highest_i,highest_i) tile_colors = Blue) && out_of_bounds
 
-(* [is_valid_move p st tl highest_i t_cols b_cols invalid_coords] is true if the
-   desired location that [p] wants to place a tile on [st.board] is legal.
-   false otherwise.
-   this function specifically checks the validity of a move for any move of a
-   player after the first move. a move is valid if:
-   1) A corner of [tl] is touching the corner of another tile of the same color
-      that is already placed on the board.
-   2) None of the sides (or edges) of [tl] is touching a side (or edge) or another
-      tile of the same color that is already placed on the board.*)
- (*may not need specification because in mli file*)
+(** [is_valid_move lst] is true if the following conditions are satisfied:
+ *  (1) none of the edges are touching an edge of the same color
+ * 	(2) vertex of tile placed is touching the vertex of at least one
+        previously placed tile of the same color
+    (3) all coordinates of the tile placed do not already have a tile
+    placed there
+    (4) all coordinates of the tile placed are valid coordinates on
+        board (no part of the tile is off the board)
+    (5) if it is a player's first move, the tile they place is on their respective
+    corners : top-left corner for player 1 and bottom right corner for player 2
+ *
+*)
 let is_valid_move p st tl dot highest_i t_cols b_cols invalid_coords =
   let not_out_of_bounds = outside_board_is_invalid invalid_coords in
   let t_on_b = tile_coords_to_board_coords dot tl.grid in
-  (* let c_grid = tl |> grid_of_corners in
-  let c_grid_on_b = tile_coords_to_board_coords dot c_grid in *)
   let c_on_b = corners_grid_to_board_coords dot tl t_on_b highest_i in
   let t_cols_only = extract_t_cols_only t_cols in
   let tile_colors_ref = ref t_cols_only in
@@ -351,7 +308,21 @@ let get_tile_from_tile_id st id =
     [t_w_b_coords] that are out of the dimensions of the board. *)
 let invalid_board_coords t_w_b_coords max_idx =
   List.filter (fun ((x,y),col) -> x < 0 || x > max_idx || y < 0 || y > max_idx)
-  t_w_b_coords
+    t_w_b_coords
+
+(* [place_tile_helper p st t t_grid_cols t_cols invalid_coords b max_i] places
+    a tile on the board if the tile [t] to be placed is to be placed in a valid position.
+    it removes the placed tile from [p's] remaining tiles and then switches the player. *)
+let place_tile_helper p st t t_grid_cols t_cols invalid_coords b max_i =
+    place_tile_on_brd t_cols st.board; player_place_tile p t;
+    p.status <- Play;
+    if p.player_name = "Player 1" then (
+      if ((List.nth st.players 1).status = Stop) then st.canvas1 <- empty_grid
+      else (st.curr_player <- List.nth st.players 1; st.canvas1 <- empty_grid;))
+    else (
+      if ((List.nth st.players 0).status = Stop) then st.canvas2 <- empty_grid
+      else (st.curr_player <- List.nth st.players 0; st.canvas2 <- empty_grid;)
+    )
 
 (* [place_tile' st p t_id (x,y) is_p1] places [t] onto the board if the choice
    of placement (x,y) is a legal move. If it is, it removes [t] from [p's]
@@ -368,37 +339,12 @@ let place_tile' st p t_id (x,y) is_p1 =
   let tile_only = extract_t_cols_only colors_of_tile in
   if is_p1 then t.grid <- st.canvas1 else t.grid <- st.canvas2;
   if (p.status = Start) then (
-    if (valid_first_move p colors_of_tile invalid_coords st.board max_i) then (
-      place_tile_on_brd tile_only st.board; player_place_tile p t;
-      p.status <- Play;
-      if p.player_name = "Player 1" then (
-        if ((List.nth st.players 1).status = Stop) then st.canvas1 <- empty_grid
-        else (st.curr_player <- List.nth st.players 1; st.canvas1 <- empty_grid;))
-      else (
-        if ((List.nth st.players 0).status = Stop) then st.canvas2 <- empty_grid
-      else (st.curr_player <- List.nth st.players 0; st.canvas2 <- empty_grid;)
-    )
-    ))
-
-
-  else
-    begin
+      if (valid_first_move p colors_of_tile invalid_coords st.board max_i) then
+      place_tile_helper p st t colors_of_tile tile_only invalid_coords st.board max_i)
+  else (
       if (is_valid_move p st t dot max_i colors_of_tile colors_on_board invalid_coords)
-      then
-        begin
-          place_tile_on_brd tile_only st.board;
-          player_place_tile p t;
-          if p.player_name = "Player 1" then (
-            if ((List.nth st.players 1).status = Stop) then st.canvas1 <- empty_grid
-            else (st.curr_player <- List.nth st.players 1; st.canvas1 <- empty_grid;)
-          )
-          else (
-            if ((List.nth st.players 0).status = Stop) then st.canvas2 <- empty_grid
-            else (st.curr_player <- List.nth st.players 0; st.canvas2 <- empty_grid;))
-      end
-    end
-
-
+      then place_tile_helper p st t colors_of_tile tile_only invalid_coords st.board max_i
+  )
 
 (* [update_state c st] updates [st] based on what [c] is. *)
 let update_state c st =
@@ -407,12 +353,7 @@ let update_state c st =
   match c with
   | PLACE ((x,y), t_id) -> begin
       place_tile' st curr_p t_id (x,y) p1_curr_player;
-      (*only happens if a move was valid and placed, right*)
-      (* if curr_p.status = Start then curr_p.status <- Play; *)
-      (* if curr_p.remaining_tiles = [] then curr_p.status <- Stop; *)
-      (* if curr_p.player_name = "Player 1" then
-        (st.curr_player <- List.nth st.players 1; st.canvas1 <- empty_grid;)
-      else  (st.curr_player <- List.nth st.players 0; st.canvas2 <- empty_grid;); *)
+      if curr_p.remaining_tiles = [] then curr_p.status <- Stop;
       st
     end
    | FLIPX t_id -> begin
@@ -442,28 +383,15 @@ let do_command c st =
   | TURN t_id -> update_state c st
   | PLACE ((x,y),t_id) -> update_state c st
   | FORFEIT -> begin
-      if curr_p.player_name = "Player 1" then (p1.status <- Stop; st.curr_player <- List.nth st.players 1)
+      if curr_p.player_name = "Player 1" then
+        (p1.status <- Stop; st.curr_player <- List.nth st.players 1)
       else (p2.status <- Stop; st.curr_player <- List.nth st.players 0;);
       if p1.status = Stop && p2.status = Stop then st.game_over <- true; st
     end
 
 let print_winner st =
-  if (List.nth st.players 0).score = (List.nth st.players 1).score then "It's a Tie!!!"
-      else if (List.nth st.players 0).score > (List.nth st.players 1).score then "The Winner is Player 1!"
-    else "The Winner is Player 2!"
-
-(*[col_to_name col] is a string representation of [col].*)
-let col_to_name col =
-  match col with
-  |Blue -> "B"
-  |Yellow -> "Y"
-  |White -> "W"
-
-
-let rec print_state brd =
-let brd_lst = Array.to_list brd in
-let str =
- match brd_lst with
- |[] -> ""
- |((x,_),col)::t -> if x <> 7 then col_to_name col ^ " " else col_to_name col ^ "\n"
-in print_string str
+  if (List.nth st.players 0).score = (List.nth st.players 1).score
+    then "      It's a Tie!      "
+  else if (List.nth st.players 0).score > (List.nth st.players 1).score
+    then "The Winner is Player 1!"
+  else "The Winner is Player 2!"

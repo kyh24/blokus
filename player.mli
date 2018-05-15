@@ -24,6 +24,7 @@ val color: player -> color
 (*[score p] is the player's current score.*)
 val score: player -> int
 
+(*[status p] is the player's current status in the game.*)
 val status: player -> status
 
 (*[remaining_tiles p] is the list of tiles that the player has not yet placed
