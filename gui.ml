@@ -25,6 +25,7 @@ type gamescreen = {
   gwindow: int*int;
   gboard: int*int*int*int;
   gregions: (int*int*int*int) list;
+  mutable gwinner : string;
 
   gp1buttons: (int*int*int*int) list;
   gp1rti: int *int *int *int;
@@ -56,6 +57,7 @@ let game = {
   p2messages = "";
   gregions = [(10,390,350,740); (200,390,142,400);
               (810, 1190, 350, 740); (400, 760, 175, 575)];
+  gwinner= "";
 
   gp1buttons = [(200,274,390,340); (200,208,295,274);
                 (295,208,390,274); (200,142,390,208)];
@@ -231,37 +233,27 @@ let draw_onto_canvas tile_name player_id=
     draw_onto_canvas_helper tilecells player_id
 
 
-(* [draw_onto_board_helper board player_id] .*)
-let rec draw_onto_board_helper board player_id =
-let lst= Array.to_list board in
- match lst with
-| [] -> set_color black;
-| ((x,y), color)::t ->
-  begin
-    let fill_color =
-    (match color with
-      (* | White -> white *)
-      | Blue -> blue
-      | Yellow -> yellow) in
-      for x = 0 to 9
-        let pt1 = 400 + (40 * (x)) in
-        let pt2 = 575 - (40 * (y+1)) in
-        draw_gui_rect pt1 pt2 40 40 fill_color;
-        set_color black;
-        draw_rect pt1 pt2 40 40;
+let rec draw_onto_board lst =
+  match lst with
+  | [] -> set_color black;
+  | ((x,y), color)::t ->
+    begin
+      let fill_color =
+        (match color with
+         | White -> white
+         | Blue -> blue
+         | Yellow -> yellow)
+      in
+      let pt1 = 400 + (40 * (x)) in
+      let pt2 = 575 - (40 * (y+1)) in
+      draw_gui_rect pt1 pt2 40 40 fill_color;
+      set_color black;
+      draw_rect pt1 pt2 40 40;
+      moveto pt1 pt2;
+      draw_string ("("^(string_of_int x)^", "^(string_of_int y)^")");
+      (draw_onto_board t);
+
     end
-
-(* [draw_onto_board tile_name player_id] .*)
-let draw_onto_board tile_name player_id=
-  if player_id = 0 then let tile= canvas1tiles in
-    match tile with
-    | None -> game.p1messages <- "Please place the tile on the board" dr
-    | Some x -> game.state.board <- Some tile
-  if player_id = 1 then let tile= canvas2tiles in
-    match tile with
-    | None -> game.p1messages <- "Please place the tile on the board" dr
-    | Some x -> game.state.board <- Some tile
-
 
 (* [click_inventory lst px py player_id] links the click within the inventory box to a tile
    and starts the drawing onto canvas process if a tile was clicked in the
@@ -294,7 +286,8 @@ let rec click_inventory lst px py player_id=
 let rec click_buttons_p1 px py =
     (match game.canvas1tile with
     | None -> if (px>200 && px<390) && (py>=142 && py<208) then
-          (game.p1messages <-  "No more future turns!";
+        (game.p1messages <-  "No more future turns!";
+         game.p2messages <-  "Please select a tile.";
            game.state <- (do_command (FORFEIT) game.state))
     | Some x ->
       if (px>=200 && px<=390) && (py>=274 && py<=340) then
@@ -308,6 +301,7 @@ let rec click_buttons_p1 px py =
   (* stor.message <- "You Clicked FLIPY.!" *)
       else if (px>200 && px<390) && (py>=142 && py<208) then
         (game.p1messages <-  "No more future turns!";
+         game.p2messages <-  "Please select a tile.";
          game.state <- (do_command (FORFEIT) game.state))
   (* stor.message <- "You Clicked FORFEIT.!" *)
       else
@@ -321,6 +315,7 @@ let rec click_buttons_p2 px py =
   (match game.canvas2tile with
    | None -> if (px>1000 && px<1190) && (py>=142 && py<208) then
        ( game.p2messages <-  "No more future turns!";
+         game.p1messages <-  "Please select a tile.";
          game.state <- (do_command (FORFEIT) game.state)
        )
    | Some x ->
@@ -335,6 +330,7 @@ let rec click_buttons_p2 px py =
        (* stor.message <- "You Clicked FLIPY.!" *)
      else if (px>1000 && px<1190) && (py>=142 && py<208) then
        ( game.p2messages <-  "No more future turns!";
+         game.p1messages <-  "Please select a tile.";
          game.state <- (do_command (FORFEIT) game.state)
        )
 
@@ -353,7 +349,7 @@ let getcurrentplayer st =
 (* [winner_detected st] will display the win message onto the message board
    if there is a winner. Takes in [st] the state to check if there is a win*)
 let winner_detected st=
-  if game.state.game_over = true then (print_winner game.state) else ""
+  if game.state.game_over = true then (game.gwinner <- (print_winner game.state))
 
 (*************************************************************************)
 
@@ -362,8 +358,10 @@ let winner_detected st=
 let rec loop () =
   clear_graph ();
   draw_string stor.message;
+  winner_detected game.state;
   draw_tiles game.state.players;
   set_color black;
+
 
   (*Instructions*)
   moveto 580 720;
@@ -383,7 +381,7 @@ let rec loop () =
 
 
   (*Board setup*)
-  for x = 0 to 9
+  (* for x = 0 to 9
   do
     for y = 0 to 9 do
       let pt1 = 400 + (40 * (x)) in
@@ -392,7 +390,7 @@ let rec loop () =
       moveto pt1 pt2;
       draw_string ("("^(string_of_int x)^", "^(string_of_int y)^")");
     done;
-  done;
+  done; *)
 
   (*Player Inventory Set Up*)
 
@@ -444,7 +442,7 @@ let rec loop () =
   done;
 
   (*Writes WINNER when there is a winner.*)
-  (*draw_gui_text 550 140 (winner_detected ()) red; *)
+  draw_gui_text 550 30 (game.gwinner) red;
 
 
   (*Player 1 Message Board*)
@@ -457,8 +455,10 @@ let rec loop () =
   draw_gui_text 940 100 "Player 2 Status Board" black;
   draw_gui_text 940 60 game.p2messages black;
 
+  (*DRAWING IMPORTANT STUFF*)
   draw_onto_canvas_helper game.state.canvas1 0;
   draw_onto_canvas_helper game.state.canvas2 1;
+  draw_onto_board (Array.to_list game.state.board);
 
   (**** CLICKER FUNCTIONS ****)
   (*[click ()] links the click in the GUI window to the gui region the click
@@ -513,7 +513,7 @@ let rec loop () =
       else if ((px>=400 && px<=760) && (py>=175 && py<=575))
       then
         (* stor.message <- "You Clicked BOARD.!" *)
-        let playerindex= getcurrentplayer game.state.curr_player in
+        (let playerindex= getcurrentplayer game.state.curr_player in
         if playerindex = 0 then
           begin
             match game.canvas1tile with
@@ -555,7 +555,7 @@ let rec loop () =
                   game.canvas1tile <- None;
                   game.canvas2tile <- None;
               end
-          end
+          end)
       else if ((px>=540 && px<=660) && (py>=590 && py<=650))
       then Graphics.close_graph()
       else
