@@ -1,8 +1,12 @@
 open Tile
 
+(* [status] represents the player status of whether they are doing their
+ * first move, successive move, or finally forfeit/stop.*)
 type status = Start | Play | Stop
 
-(*[player] is an abstract type representing the state of an adventure. *)
+(*[player] is an abstract type representing the player of the game.
+ * Includes the player's name, their color, status in game play, score,
+ * remaining tiles/inventory. *)
 type player = {
   player_name : string;
   col : color;
@@ -11,7 +15,8 @@ type player = {
   mutable remaining_tiles : tile list;
 }
 
-(*[init player n c t_lst] is the state of player [p] at the beginning of the game. *)
+(*[init player n c t_lst] initializes the player when given a string for
+ * the player name and a color.  *)
 val init_player: string -> color -> player
 
 (*[name p] is the name of the player.*)
