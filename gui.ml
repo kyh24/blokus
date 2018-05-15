@@ -233,6 +233,10 @@ let draw_onto_canvas tile_name player_id=
     draw_onto_canvas_helper tilecells player_id
 
 
+(* [draw_onto_board lst] draws the board recursively depending on which tiles 
+   have been clicked and place Takes in [lst] which is the same thing as board, 
+   but changed to list using Array.tolist for the purpose of pattern matching
+   easily.*)
 let rec draw_onto_board lst =
   match lst with
   | [] -> set_color black;
