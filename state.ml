@@ -341,16 +341,6 @@ let is_valid_move p st tl dot highest_i t_cols b_cols invalid_coords =
   let valid_corners = List.mem (1) ([]|> check_corners c_on_b tl st.board) in
   let valid_sides = check_sides tile_colors_ref st.board highest_i valid_sides_ref in
   let is_free_space = is_on_free_space t_cols_only is_free_ref st.board in
-  (* let valid_cells = List.map2 (fun ((bx,by),b_col) ((tx,ty), t_col) ->
-      if (b_col = White && t_col <> White) then (
-        let t_cols_only = extract_t_cols_only t_cols in
-        let tile_colors_ref = ref t_cols_only in
-        let valid_sides_ref = ref true in
-        (check_sides tile_colors_ref st.board highest_i valid_sides_ref) &&
-        (check_corners c_on_b tl st.board)
-      )
-      else t_col = White) b_cols t_cols in *)
-  (* (not(List.mem false valid_cells)) &&*)
   not_out_of_bounds && valid_corners && valid_sides && is_free_space
 
 (*[get_tile_from_tile_id st id] is the tile whose tile_id is [id].*)
@@ -387,10 +377,9 @@ let place_tile' st p t_id (x,y) is_p1 =
       if (List.nth st.players 0).status = Stop then st.canvas2 <- empty_grid
       else (st.curr_player <- List.nth st.players 0; st.canvas2 <- empty_grid;)
     )
-    else ()
   ) else (
     if (is_valid_move p st t dot max_i colors_of_tile colors_on_board invalid_coords)
-    then place_tile_on_brd colors_of_tile st.board; player_place_tile p t;
+    then (place_tile_on_brd colors_of_tile st.board; player_place_tile p t;)
   )
 
 (* [update_state c st] updates [st] based on what [c] is. *)
