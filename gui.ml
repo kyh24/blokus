@@ -415,60 +415,6 @@ let cover_options player=
   else if (player=1 && game.state.game_over = false ) then draw_gui_rect 200 142 190 198 gray
   else if game.state.game_over = true then (draw_gui_rect 1000 142 190 198 gray;draw_gui_rect 200 142 190 198 gray)
 
-
-(* let place_tile_checker st px py=
-  (let playerindex= getcurrentplayer game.state.curr_player in
-       if (playerindex = 0) then
-         begin
-           match game.canvas1tile with
-           | None ->
-             Printf.printf "Hits NONE";
-             game.p1messages <- "First select a tile!";
-           | Some x ->
-             begin
-               let orig = ref game.state in
-               let returnedst = (do_command (PLACE ((px,py),x)) !orig) in
-               (if (returnedst != (game.state)) then
-                  (Printf.printf "Hits Some, inval";
-                   game.p1messages <- "Invalid Move - Try Again!";
-                   game.p2messages <- ""
-                  )
-                else ( Printf.printf "Hits Some, command";
-                       game.state <- returnedst;
-                       game.p1messages <- "";
-                       game.p2messages <- "Please select a tile.";
-                       game.canvas1tile <- None;
-                       game.canvas2tile <- None;
-
-                     ))
-             end
-         end
-       else if ( playerindex =1 ) then
-         begin
-           match game.canvas2tile with
-           | None ->
-             game.p2messages <- "First select a tile!"
-           | Some y ->
-             begin
-
-               let orig = ref game.state in
-               let returnedst = (do_command (PLACE ((px,py),y)) !orig) in
-               (if (returnedst != (game.state)) then
-                  (  Printf.printf "Hits Some, inval2";game.p1messages <- "";
-                     game.p2messages <- "Invalid Move - Try Again!";
-                     game.p1messages <- ""
-                  )
-                else ( Printf.printf "Hits Some, command2";
-                       game.state <- returnedst;
-                       game.p1messages <- "Please select a tile.";
-                       game.p2messages <- "" ;
-                       game.canvas1tile <- None;
-                       game.canvas2tile <- None;
-
-                     ))
-             end
-         end) *)
-
 let place_tile_checker st px py=
   (let playerindex= getcurrentplayer st.curr_player in
    if (playerindex = 0) then
@@ -616,7 +562,11 @@ let rec loop () =
   done;
 
   (*Writes WINNER when there is a winner.*)
+  set_color yellow;
+  (if (game.state.game_over = true) then
+    fill_rect 405 20 390 30);
   draw_gui_text 530 30 (game.gwinner) red;
+  set_color black;
 
 
   (*Player 1 Message Board*)
