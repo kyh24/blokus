@@ -647,7 +647,6 @@ let rec loop () =
       let pt1 = (810) + ((60)*(x-1)) in
       let pt2 = (140) + ((200/3) * (y-1)) +2 in
       draw_rect pt1 pt2 (60) (200/3);
-      moveto pt1 pt2; draw_string ("P2("^(string_of_int x)^", "^(string_of_int y)^")");
     done;
   done;);
   set_color red;
