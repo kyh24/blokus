@@ -371,24 +371,33 @@ let place_tile' st p t_id (x,y) is_p1 =
       place_tile_on_brd colors_of_tile st.board; player_place_tile p t;
       p.status <- Play;
       if p.player_name = "Player 1" then (
-        if (List.nth st.players 1).status = Stop then st.canvas1 <- empty_grid
-        else (st.curr_player <- List.nth st.players 1; st.canvas1 <- empty_grid;)
+        if ((List.nth st.players 1).status = Stop) then st.canvas1 <- empty_grid
+        else (st.curr_player <- List.nth st.players 1; st.canvas1 <- empty_grid;))
       else (
-      if (List.nth st.players 0).status = Stop then st.canvas2 <- empty_grid
+        if ((List.nth st.players 0).status = Stop) then st.canvas2 <- empty_grid
       else (st.curr_player <- List.nth st.players 0; st.canvas2 <- empty_grid;)
     )
-  ) else (
-    if (is_valid_move p st t dot max_i colors_of_tile colors_on_board invalid_coords)
-    then (place_tile_on_brd colors_of_tile st.board;
+    ))
+
+
+  else
+    begin
+      if (is_valid_move p st t dot max_i colors_of_tile colors_on_board invalid_coords)
+      then
+        begin
+          place_tile_on_brd colors_of_tile st.board;
           player_place_tile p t;
           if p.player_name = "Player 1" then (
-            if (List.nth st.players 1).status = Stop then st.canvas1 <- empty_grid
+            if ((List.nth st.players 1).status = Stop) then st.canvas1 <- empty_grid
             else (st.curr_player <- List.nth st.players 1; st.canvas1 <- empty_grid;)
-          else (
-            if (List.nth st.players 0).status = Stop then st.canvas2 <- empty_grid
-            else (st.curr_player <- List.nth st.players 0; st.canvas2 <- empty_grid;)
           )
-  )
+          else (
+            if ((List.nth st.players 0).status = Stop) then st.canvas2 <- empty_grid
+            else (st.curr_player <- List.nth st.players 0; st.canvas2 <- empty_grid;))
+      end
+    end
+
+
 
 (* [update_state c st] updates [st] based on what [c] is. *)
 let update_state c st =
