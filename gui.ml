@@ -278,7 +278,9 @@ let rec click_inventory lst px py player_id=
   | (n, (x,y,w,h))::t ->
     if (px>=x && px<=(x+w)) && (py>=y && py<=(y+h))
     then
-      (
+      ( (if (player_id =0 )
+        then game.canvas1tile <- Some n
+        else if (player_id=1) then game.canvas2tile <-Some n);
         (* stor.message <- "LOOKS GOOD!!!"; *)
        draw_onto_canvas n player_id)
       else
@@ -528,21 +530,30 @@ let rec loop () =
           begin
             match game.canvas1tile with
             | None ->
-              game.p1messages <- "First select a tile!"
+              Printf.printf "Hits NONE";
+              game.p1messages <- "First select a tile!";
+(* game.canvas1tile <- None;
+game.canvas2tile <- None; *)
             | Some x ->
               begin
                 (* stor.message <- "Kasdfs!"; *)
-                let returnedst = do_command (PLACE ((px,py),x)) game.state in
-                (if (returnedst = game.state) then
-                  (game.p1messages <- "Invalid Move - Try Again!";
-                   game.p2messages <- "")
-                else (
+                let orig = ref game.state in
+                let returnedst = (do_command (PLACE ((px,py),x)) !orig) in
+                (if (returnedst != (game.state)) then
+                   (Printf.printf "Hits Some, inval";
+                    game.p1messages <- "Invalid Move - Try Again!";
+                    game.p2messages <- ""
+                    (* game.canvas1tile <- None;
+                    game.canvas2tile <- None; *)
+                   )
+                 else ( Printf.printf "Hits Some, command";
+                  game.state <- returnedst;
                   game.p1messages <- "";
                   game.p2messages <- "Please select a tile.";
                   game.canvas1tile <- None;
                   game.canvas2tile <- None;
-                  game.state <- returnedst;
-                ))
+
+                      ))
               end
           end
         else if ( playerindex =1 ) then
@@ -552,18 +563,20 @@ let rec loop () =
               game.p2messages <- "First select a tile!"
             | Some y ->
               begin
-                let returnedst = do_command (PLACE ((px,py),y)) game.state in
-                (if (returnedst = game.state) then
-                 (  game.p1messages <- "";
+
+                let orig = ref game.state in
+                let returnedst = (do_command (PLACE ((px,py),y)) !orig) in
+                (if (returnedst != (game.state)) then
+                 (  Printf.printf "Hits Some, inval2";game.p1messages <- "";
                     game.p2messages <- "Invalid Move - Try Again!"
                   )
-                else (
-
+                else ( Printf.printf "Hits Some, command2";
+                  game.state <- returnedst;
                   game.p1messages <- "Please select a tile.";
                   game.p2messages <- "" ;
                   game.canvas1tile <- None;
                   game.canvas2tile <- None;
-                  game.state <- returnedst;
+
                 ))
               end
           end)
