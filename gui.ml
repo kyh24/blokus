@@ -83,7 +83,6 @@ let game = {
 
 (**** HELPER GUI MOUSE CLICK AND DRAWING FUNCTIONS ****)
 
-(* let blue = Graphics.rgb 95 173 225 *)
 let blue = Graphics.rgb 52 142 229
 let yellow= Graphics.rgb 250 222 39
 let red= Graphics.rgb 215 10 26
@@ -242,9 +241,9 @@ let rec draw_onto_canvas_helper canvas player_id=
 (* [draw_onto_canvas tile_name player_id] draws the tile on the right player's canvas.
    Takes in [tile_name] which is the name of the tile selected.
    Takes in [player_id] which is the index of the player.
-    Changes the tile on the canvas, changes the player message if needed,
-    and will use [draw_onto_canvas_helper] to draw in tile on respective
-    canvas.*)
+   Changes the tile on the canvas, changes the player message if needed,
+   and will use [draw_onto_canvas_helper] to draw in tile on respective
+   canvas.*)
 let draw_onto_canvas tile_name player_id=
   let inv= ((Array.of_list(game.state.players)).(player_id)).remaining_tiles in
   let tile= tiles_searcher inv tile_name in
@@ -308,12 +307,6 @@ let rec draw_onto_board lst=
 let rec click_inventory lst px py player_id=
   match lst with
   | [] ->
-    (* if player_id=0
-    then game.p1messages <- "Please select a tile."
-    else if player_id=1
-    then game.p2messages <- "Please select a tile."; *)
-    (* else (game.p1messages <- game.p1messages ;
-          game.p2messages <- game.p2messages); *)
     game.canvas1tile <- game.canvas1tile;
     game.canvas2tile <- game.canvas2tile
   | (n, (x,y,w,h))::t ->
@@ -442,7 +435,8 @@ let place_tile_checker st px py=
                    game.canvas2tile <- None;
                    game.state <- returnedst;
 
-                 ))
+                 )
+          )
          end
      end)
 (*************************************************************************)
@@ -466,14 +460,16 @@ let rec loop () =
   draw_string ("-Rules-");
   moveto 450 680;
   draw_string ("Goal of the game is to color as many cells as possible");
-  moveto 395 660;
+  moveto 420 660;
+  draw_string ("First move must start from the corner where the dot is placed" );
+  moveto 395 640;
   draw_string ("Select a tile, transform it, and select a space on the board to place");
 
   (*QUIT Button*)
   set_color red;
-  fill_rect 540 590 120 60;
+  fill_rect 540 580 120 50;
   set_color black;
-  moveto 590 615; draw_string ("QUIT");
+  moveto 590 600; draw_string ("QUIT");
 
   (*Player Inventory Set Up*)
 
@@ -542,12 +538,10 @@ let rec loop () =
   draw_gui_text 940 100 "Player 2 Status Board" black;
   draw_gui_text 940 60 game.p2messages black;
 
-  (*DRAWING IMPORTANT STUFF*)
+  (*DRAWING IMPORTANT CANVAS FEATURES*)
   draw_onto_canvas_helper game.state.canvas1 0;
   draw_onto_canvas_helper game.state.canvas2 1;
   draw_onto_board (Array.to_list game.state.board);
-  (*  let pt1= 10 + (60* (x+1)) + (800*(player_id)) in
-      let pt2= 142 + ((200/3) * (y+1)) in *)
   (for x = 1 to 3 do
     for y = 1 to 3 do
       let pt1 = 10 + (((200 - 20)/3) * (x-1)) in
@@ -564,7 +558,7 @@ let rec loop () =
   done;);
   set_color red;
   fill_ellipse  100 242 15 15;
-    fill_ellipse  900 242 15 15;
+  fill_ellipse  900 242 15 15;
 
   (**** CLICKER FUNCTIONS ****)
   (*[click ()] links the click in the GUI window to the gui region the click
@@ -616,7 +610,7 @@ let rec loop () =
         begin
         place_tile_checker game.state px py;
       end
-      else if ((px>=540 && px<=660) && (py>=590 && py<=650))
+      else if ((px>=540 && px<=660) && (py>=580 && py<=630))
       then Graphics.close_graph()
       else
         which_button t;
