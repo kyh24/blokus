@@ -26,12 +26,13 @@ bLoKaML is a OCaml terminal-based GUI game that resembles the wildly popular boa
 
 
 ## Game Instructions
+####Testing font.
 
 ## Makefile Commands
-* make play:  Make and run the GUI game.
-* make clean: Clean up the _build directory.
-* make compile: Compiles the game.
-* make test: Make and run test file.
+* '''make play''':  Make and run the GUI game.
+* '''make clean''': Clean up the _build directory.
+* '''make compile''': Compiles the game.
+* '''make test''': Make and run test file.
 
 
 
