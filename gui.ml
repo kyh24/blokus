@@ -22,8 +22,6 @@ type gamescreen = {
   mutable state: state;
   mutable p1messages: string;
   mutable p2messages: string;
-  gwindow: int*int;
-  gboard: int*int*int*int;
   gregions: (int*int*int*int) list;
   mutable gwinner : string;
 
@@ -51,8 +49,6 @@ type gamescreen = {
    the window. *)
 let game = {
   state = State.init_state 10;
-  gwindow = (1200, 750);
-  gboard = (200, 175, 400, 400);
   p1messages = "Please select a tile.";
   p2messages = "";
   gregions = [(10,390,350,740); (200,390,142,400);
@@ -68,7 +64,7 @@ let game = {
   gp1inv = [(One, (30, 680, 30, 30)); (Tee, (120, 620, 90, 90));
             (L, (270, 620, 90, 90)); (X, (30, 500, 90, 90));
             (Z, (150, 500, 90, 90)); (Tree, (270, 500, 90, 90));
-            (Line, (150, 410, 60, 30))];
+            (Line, (150, 410, 90, 30))];
   canvas1tile= None;
 
   gp2buttons = [(1000,274,190,66); (1000,208,95,66);
@@ -80,7 +76,7 @@ let game = {
   gp2inv = [(One, (830, 680, 30, 30)); (Tee, (920, 620, 90, 90));
             (L, (1070, 620, 90, 90)); (X, (830, 500, 90, 90));
             (Z, (950, 500, 90, 90)); (Tree, (1070, 500, 90, 90));
-            (Line, (950, 410, 60, 30))];
+            (Line, (950, 410, 90, 30))];
   canvas2tile = None
 }
 
@@ -218,7 +214,7 @@ let draw_onto_canvas tile_name player_id=
     if player_id=0
     then game.p1messages <- "Please select a tile."
     else if player_id=1
-    then game.p1messages <- "Please select a tile."
+    then game.p2messages <- "Please select a tile."
     else (game.p1messages <- game.p1messages ;
           game.p2messages <- game.p2messages)
   | Some x ->
@@ -229,12 +225,12 @@ let draw_onto_canvas tile_name player_id=
           game.p1messages <- "Modify & place tile.")
     else (game.state.canvas2 <- tilecells ;
           game.canvas2tile <- Some tile_name;
-          game.p1messages <- "Modify & place tile.");
+          game.p2messages <- "Modify & place tile.");
     draw_onto_canvas_helper tilecells player_id
 
 
-(* [draw_onto_board lst] draws the board recursively depending on which tiles 
-   have been clicked and place Takes in [lst] which is the same thing as board, 
+(* [draw_onto_board lst] draws the board recursively depending on which tiles
+   have been clicked and place Takes in [lst] which is the same thing as board,
    but changed to list using Array.tolist for the purpose of pattern matching
    easily.*)
 let rec draw_onto_board lst =
@@ -271,7 +267,7 @@ let rec click_inventory lst px py player_id=
     if player_id=0
     then game.p1messages <- "Please select a tile."
     else if player_id=1
-    then game.p1messages <- "Please select a tile."
+    then game.p2messages <- "Please select a tile."
     else (game.p1messages <- game.p1messages ;
          game.p2messages <- game.p2messages)
   | (n, (x,y,w,h))::t ->
@@ -514,11 +510,14 @@ let rec loop () =
           (click_buttons_p2 px py )
         end
 
-      else if ((px>=400 && px<=760) && (py>=175 && py<=575))
+      else if ((px>=400 && px<=800) && (py>=175 && py<=575))
       then
-        (* stor.message <- "You Clicked BOARD.!" *)
+        begin
+        (* stor.message <- "You Clicked BOARD.!"; *)
+        (* game.p1messages <- "" ;
+        game.p2messages <- "" ; *)
         (let playerindex= getcurrentplayer game.state.curr_player in
-        if playerindex = 0 then
+         if (playerindex = 0) then
           begin
             match game.canvas1tile with
             | None ->
@@ -527,37 +526,44 @@ let rec loop () =
               begin
                 (* stor.message <- "Kasdfs!"; *)
                 let returnedst = do_command (PLACE ((px,py),x)) game.state in
-                if returnedst = game.state then
-                    game.p1messages <- "Invalid Move - Try Again!"
-                else
-                  game.state <- returnedst;
+                if (returnedst = game.state) then
+                  (game.p1messages <- "Invalid Move - Try Again!";
+                   game.p2messages <- "")
+
+                else (
+
                   game.p1messages <- "";
                   game.p2messages <- "Please select a tile.";
                   game.canvas1tile <- None;
-                  game.canvas2tile <- None;
+                  (* game.canvas2tile <- None; *)
+                  game.state <- returnedst;
+                )
               end
           end
-        else if playerindex =1 then
+        else if ( playerindex =1 ) then
           begin
             match game.canvas2tile with
             | None ->
               game.p2messages <- "First select a tile!"
-            | Some x ->
+            | Some y ->
               begin
                 (* stor.message <- "Kasdfs!"; *)
-                let returnedst = do_command (PLACE ((px,py),x)) game.state in
-                if returnedst = game.state then
-                  begin
-                    game.p1messages <- "Invalid Move - Try Again!"
-                  end
-                else
-                  game.state <- returnedst;
+                let returnedst = do_command (PLACE ((px,py),y)) game.state in
+                if (returnedst = game.state) then
+                 (  game.p1messages <- "";
+                    game.p2messages <- "Invalid Move - Try Again!"
+                  )
+                else (
+
                   game.p1messages <- "Please select a tile.";
                   game.p2messages <- "" ;
-                  game.canvas1tile <- None;
+                  (* game.canvas1tile <- None; *)
                   game.canvas2tile <- None;
+                  game.state <- returnedst;
+                )
               end
           end)
+      end
       else if ((px>=540 && px<=660) && (py>=590 && py<=650))
       then Graphics.close_graph()
       else
