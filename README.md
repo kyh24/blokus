@@ -26,14 +26,15 @@ bLoKaML is a OCaml terminal-based GUI game that resembles the wildly popular boa
 
 
 ## Game Instructions
-Before You Start:
+#### Before You Start:
 * Each player has 16 polyomino pieces in a distinct color of yellow or blue. Player 1's pieces are yellow while Player 2's
 pieces are blue.
 * Each pieces is made up of squares. The number of squares a piece has coordinates with its value, that is, the value added
 to they player's score when that piece is placed.
 * The goal of the game is to put as many *squares* (not pieces) on the board as possible. The winner is the person who places the most squares on the board and has the highest score of the remaining players.
 
-Playing bLoKaML using the GUI :
+
+#### Playing bLoKaML using the GUI :
 1. When the game is first start, players are presented with a home screen. If they wish to continue and play the game, they should press the "Play Now!" Button and be taking to the game screen. If they wish to quit the game, they should press the "Quit Game button".
 2. At the start of the game, both players are given 16 polyomino pieces, and empty board and scores of 0.
 3. Player 1 goes first.
