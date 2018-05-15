@@ -370,16 +370,24 @@ let place_tile' st p t_id (x,y) is_p1 =
     if (valid_first_move p colors_of_tile invalid_coords st.board max_i) then (
       place_tile_on_brd colors_of_tile st.board; player_place_tile p t;
       p.status <- Play;
-      if p.player_name = "Player 1" then
+      if p.player_name = "Player 1" then (
         if (List.nth st.players 1).status = Stop then st.canvas1 <- empty_grid
         else (st.curr_player <- List.nth st.players 1; st.canvas1 <- empty_grid;)
-      else
+      else (
       if (List.nth st.players 0).status = Stop then st.canvas2 <- empty_grid
       else (st.curr_player <- List.nth st.players 0; st.canvas2 <- empty_grid;)
     )
   ) else (
     if (is_valid_move p st t dot max_i colors_of_tile colors_on_board invalid_coords)
-    then (place_tile_on_brd colors_of_tile st.board; player_place_tile p t;)
+    then (place_tile_on_brd colors_of_tile st.board;
+          player_place_tile p t;
+          if p.player_name = "Player 1" then (
+            if (List.nth st.players 1).status = Stop then st.canvas1 <- empty_grid
+            else (st.curr_player <- List.nth st.players 1; st.canvas1 <- empty_grid;)
+          else (
+            if (List.nth st.players 0).status = Stop then st.canvas2 <- empty_grid
+            else (st.curr_player <- List.nth st.players 0; st.canvas2 <- empty_grid;)
+          )
   )
 
 (* [update_state c st] updates [st] based on what [c] is. *)
