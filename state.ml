@@ -310,6 +310,8 @@ let update_state c st =
   | PLACE ((x,y), t_id) -> begin
       place_tile' st curr_p t_id (x,y) p1_curr_player;
       if curr_p.remaining_tiles = [] then curr_p.status <- Stop;
+      if (List.nth st.players 0).status = Stop && (List.nth st.players 1).status = Stop then
+        st.game_over <- true; 
       st
     end
    | FLIPX t_id -> begin
