@@ -365,10 +365,11 @@ let place_tile' st p t_id (x,y) is_p1 =
   let t_to_b = t.grid |> tile_coords_to_board_coords dot in
   let invalid_coords = max_i |> invalid_board_coords t_to_b in
   let colors_of_tile = [] |> get_tile_colors t_to_b colors_on_board in
+  let tile_only = extract_t_cols_only colors_of_tile in
   if is_p1 then t.grid <- st.canvas1 else t.grid <- st.canvas2;
   if (p.status = Start) then (
     if (valid_first_move p colors_of_tile invalid_coords st.board max_i) then (
-      place_tile_on_brd colors_of_tile st.board; player_place_tile p t;
+      place_tile_on_brd tile_only st.board; player_place_tile p t;
       p.status <- Play;
       if p.player_name = "Player 1" then (
         if ((List.nth st.players 1).status = Stop) then st.canvas1 <- empty_grid
@@ -385,7 +386,7 @@ let place_tile' st p t_id (x,y) is_p1 =
       if (is_valid_move p st t dot max_i colors_of_tile colors_on_board invalid_coords)
       then
         begin
-          place_tile_on_brd colors_of_tile st.board;
+          place_tile_on_brd tile_only st.board;
           player_place_tile p t;
           if p.player_name = "Player 1" then (
             if ((List.nth st.players 1).status = Stop) then st.canvas1 <- empty_grid
