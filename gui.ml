@@ -633,6 +633,26 @@ let rec loop () =
   draw_onto_canvas_helper game.state.canvas1 0;
   draw_onto_canvas_helper game.state.canvas2 1;
   draw_onto_board (Array.to_list game.state.board);
+  (*  let pt1= 10 + (60* (x+1)) + (800*(player_id)) in
+      let pt2= 142 + ((200/3) * (y+1)) in *)
+  (for x = 1 to 3 do
+    for y = 1 to 3 do
+      let pt1 = 10 + (((200 - 20)/3) * (x-1)) in
+      let pt2 = (750- 610) + ((200/3) * (y-1)) +2 in
+      draw_rect pt1 pt2 (180/3) (200/3);
+    done;
+  done);
+  (for x = 1 to 3 do
+    for y = 1 to 3 do
+      let pt1 = (810) + ((60)*(x-1)) in
+      let pt2 = (140) + ((200/3) * (y-1)) +2 in
+      draw_rect pt1 pt2 (60) (200/3);
+      moveto pt1 pt2; draw_string ("P2("^(string_of_int x)^", "^(string_of_int y)^")");
+    done;
+  done;);
+  set_color red;
+  fill_ellipse  100 242 15 15;
+    fill_ellipse  900 242 15 15;
 
   (**** CLICKER FUNCTIONS ****)
   (*[click ()] links the click in the GUI window to the gui region the click
@@ -700,6 +720,7 @@ let rec loop () =
   begin
     draw_gui_text 140 60 game.p1messages black;
     draw_gui_text 940 60 game.p2messages black;
+
     moveto 200 200; which_button game.gregions; clear_graph(); loop ();
   end
 
