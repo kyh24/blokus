@@ -30,7 +30,6 @@ val col : tile -> color
 (*[color t] is the grid of tile t*)
 val grid: tile -> ((int * int) * color) list
 
-val compare_lsts: (int*int) list -> (int*int) list -> bool
 
 (*[flip_tile t dir] reflects tile [t] over the axis specified by [dir]*)
 val flip_tile: tile -> direction -> tile

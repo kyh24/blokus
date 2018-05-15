@@ -72,8 +72,8 @@ let turnflip_tree = [(-1,2);(1,2);(2,-2);(0,-2);(-2,-1);(-2,1);(2,1)]
 let init = init_state 10
 let player_1 = init_player "Player 1" Yellow
 let player_2 = init_player "Player 2" Blue
-let t1 = init_tile One Yellow
-let t2 = init_tile One Blue
+let t1_init = init_tile One Yellow
+let t2_init = init_tile One Blue
 let t1' = init_tile Tee Yellow
 
 
@@ -214,7 +214,7 @@ let tests = [
 ]
 
 let state_tests = [
-  "init_st" >:: (fun _ -> assert_equal
+  (* "init_st" >:: (fun _ -> assert_equal
                     {board = [|((0,0),White);((1,0),White);((2,0),White);((3,0),White);
                                ((4,0),White);((5,0),White);((6,0),White);((7,0),White);
                                ((0,1),White);((1,1),White);((2,1),White);((3,1),White);
@@ -296,7 +296,7 @@ let state_tests = [
     ((-1,0),White);  ((0,0),White);  ((1,0),White);
     ((-1,-1),White); ((0,-1),White); ((1,-1),White)];
     curr_player = player_2;
-                game_over = false} (do_command (PLACE ((205, 570), One)) st2));
+                game_over = false} (do_command (PLACE ((205, 570), One)) st2)); *)
 
 ]
 

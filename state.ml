@@ -215,15 +215,49 @@ let check_sides t_cols_ref brd_array highest_i is_valid_ref =
   )
   done; !is_valid_ref
 
+(* let check_corners c_on_b t brd =
+let brd_lst = Array.to_list brd in
+let valid_corners_ref = ref c_on_b in
+let is_valid_ref = ref true in
+
+while (!valid_corners_ref <> [] && !is_valid_ref) do (
+  match !valid_corners_ref with
+  |[] -> ()
+  |((x,y),c)::tl -> begin
+      let brd_color = List.assoc (x,y) brd_lst in
+      if (brd_color = t.col) || (brd_color = White) then is_valid_ref := true
+      else is_valid_ref := false;
+      valid_corners_ref := tl;
+    end
+)
+done; !is_valid_ref
+ *)
+
 (* [check_corners t brd] is true if at least one of the corners/vertices of [t] is
     touching another corner or vertice of a tile of the same color that is already on
     [brd]. false otherwise. *)
+let rec check_corners c_on_b t brd acc =
+  let brd_lst = Array.to_list brd in
+  match c_on_b with
+  | [] -> acc
+  | ((x,y),corner_col)::tl -> begin
+      let brd_color = List.assoc (x,y) brd_lst in
+      (* let is_white = 0 in
+      let is_col = 1 in
+      let is_other_col = 2 in  *)
+      if (brd_color = White) then check_corners tl t brd (0::acc)
+      else if (brd_color = corner_col) then check_corners tl t brd (1::acc)
+      else check_corners tl t brd (2::acc)
+  end
+
+(* [check_corners t brd] is true if at least one of the corners/vertices of [t] is
+    touching another corner or vertice of a tile of the same color that is already on
+    [brd]. false otherwise.
 let check_corners c_on_b t brd =
   let brd_lst = Array.to_list brd in
   let valid_corners_ref = ref c_on_b in
-  (* let brd_coordinates = List.map (fun ((x,y), col) -> (x,y)) brd_lst in
-  let valid_corners_ref =  ref (List.filter (fun (x, y) -> List.mem (x,y) brd_coordinates) t.corners) in *)
   let is_valid_ref = ref true in
+
   while (!valid_corners_ref <> [] && !is_valid_ref) do (
     match !valid_corners_ref with
     |[] -> ()
@@ -234,7 +268,7 @@ let check_corners c_on_b t brd =
         valid_corners_ref := tl;
       end
   )
-  done; !is_valid_ref
+   done; !is_valid_ref*)
 
 (* [outside_board_invalid invalid_coord_list] looks at the coordinates that lay
     outside the dimensions of the board.
@@ -304,7 +338,7 @@ let is_valid_move p st tl dot highest_i t_cols b_cols invalid_coords =
   let tile_colors_ref = ref t_cols_only in
   let valid_sides_ref = ref true in
   let is_free_ref = ref true in
-  let valid_corners = st.board |> check_corners c_on_b tl in
+  let valid_corners = List.mem (1) ([]|> check_corners c_on_b tl st.board) in
   let valid_sides = check_sides tile_colors_ref st.board highest_i valid_sides_ref in
   let is_free_space = is_on_free_space t_cols_only is_free_ref st.board in
   (* let valid_cells = List.map2 (fun ((bx,by),b_col) ((tx,ty), t_col) ->
