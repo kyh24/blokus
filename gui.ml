@@ -249,6 +249,8 @@ let rec draw_onto_board lst =
       draw_gui_rect pt1 pt2 40 40 fill_color;
       set_color black;
       draw_rect pt1 pt2 40 40;
+      moveto pt1 pt2;
+      draw_string ("("^(string_of_int x)^", "^(string_of_int y)^")");
       (draw_onto_board t);
 
     end
@@ -360,6 +362,7 @@ let rec loop () =
   draw_tiles game.state.players;
   set_color black;
 
+
   (*Instructions*)
   moveto 580 720;
   draw_string ("BLOKAML");
@@ -452,6 +455,7 @@ let rec loop () =
   draw_gui_text 940 100 "Player 2 Status Board" black;
   draw_gui_text 940 60 game.p2messages black;
 
+  (*DRAWING IMPORTANT STUFF*)
   draw_onto_canvas_helper game.state.canvas1 0;
   draw_onto_canvas_helper game.state.canvas2 1;
   draw_onto_board (Array.to_list game.state.board);
