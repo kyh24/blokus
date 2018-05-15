@@ -352,7 +352,8 @@ let place_tile' st p t_id (x,y) is_p1 =
       else
       if (List.nth st.players 0).status = Stop then st.canvas2 <- empty_grid
       else (st.curr_player <- List.nth st.players 0; st.canvas2 <- empty_grid;)
-     )
+    )
+    else ()
   ) else (
     if (is_valid_move p st t dot max_i colors_of_tile colors_on_board invalid_coords)
     then place_tile_on_brd colors_of_tile st.board; player_place_tile p t;

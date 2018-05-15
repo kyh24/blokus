@@ -121,8 +121,6 @@ let turn_tile t =
   t.corners <- List.map(fun (x,y) -> (y,-x)) t.corners;
   t
 
-  (*[corners_grid t] is a 5x5 grid that incorporates [t.corners]. this function
-    allows the mapping of tile coordinates to board coordinates.*)
   let grid_of_corners t =
     let y = ref 2 in
     let x = ref (-2) in

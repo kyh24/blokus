@@ -32,8 +32,12 @@ val grid: tile -> ((int * int) * color) list
 
 val compare_lsts: (int*int) list -> (int*int) list -> bool
 
+(*[flip_tile t dir] reflects tile [t] over the axis specified by [dir]*)
 val flip_tile: tile -> direction -> tile
 
+(*[turn_tile t] rotates tile [t] 90 degrees clockwise*)
 val turn_tile: tile -> tile
 
+(*[corners_grid t] is a 5x5 grid that incorporates [t.corners]. this function
+  allows the mapping of tile coordinates to board coordinates.*)
 val grid_of_corners: tile -> ((int * int) * color) list
