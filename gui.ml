@@ -48,7 +48,7 @@ type gamescreen = {
    fields will be updated as users change the state of the game or modify
    the window. *)
 let game = {
-  state = State.init_state 10;
+  state = State.init_state 16;
   p1messages = "Please select a tile.";
   p2messages = "";
   gregions = [(10,390,350,740); (200,390,142,400);
@@ -61,10 +61,14 @@ let game = {
   gp1fx= 200,208,95,66;
   gp1fy= 295,208,95,66;
   gp1rot = 200,142,190,66;
-  gp1inv = [(One, (30, 680, 30, 30)); (Tee, (120, 620, 90, 90));
-            (L, (270, 620, 90, 90)); (X, (30, 500, 90, 90));
-            (Z, (150, 500, 90, 90)); (Tree, (270, 500, 90, 90));
-            (Line, (150, 410, 90, 30))];
+  gp1inv = [(One, (20, 680, 20, 20)); (Tee, (70, 640, 60, 60));
+            (L, (150, 640, 60, 60)); (X, (240, 640, 60, 60));
+            (Z, (320, 640, 60, 60)); (Tree, (20, 520, 60, 60));
+            (Line, (100, 520, 20, 60)); (Two, (140,540,40,20));
+            (Four, (200,520,40,40)); (Boot,(260,520,40,60));
+            (Kink, (320,520,60, 40)); (C,(20,400,40,60));
+            (Cowgirl, (80,400,60,40)); (Couch, (160,400,60,40));
+            (Recliner, (240,400,40,40)); (Stairmaster, (300,400,60,60))];
   canvas1tile= None;
 
   gp2buttons = [(1000,274,190,66); (1000,208,95,66);
@@ -73,10 +77,14 @@ let game = {
   gp2fx= 1000,208,95,66;
   gp2fy= 1095,208,95,66;
   gp2rot= 1000,142,190,66;
-  gp2inv = [(One, (830, 680, 30, 30)); (Tee, (920, 620, 90, 90));
-            (L, (1070, 620, 90, 90)); (X, (830, 500, 90, 90));
-            (Z, (950, 500, 90, 90)); (Tree, (1070, 500, 90, 90));
-            (Line, (950, 410, 90, 30))];
+  gp2inv = [(One, (820, 680, 20, 20)); (Tee, (870, 640, 60, 60));
+            (L, (950, 640, 60, 60)); (X, (1040, 640, 60, 60));
+            (Z, (1120, 640, 60, 60)); (Tree, (820, 520, 60, 60));
+            (Line, (900, 520, 20, 60)); (Two, (940,540,40,20));
+            (Four, (1000,520,40,40)); (Boot,(1060,520,40,60));
+            (Kink, (1120,520,60, 40)); (C,(820,400,40,60));
+            (Cowgirl, (880,400,60,40)); (Couch, (960,400,60,40));
+            (Recliner, (1040,400,40,40)); (Stairmaster, (1100,400,60,60))];
   canvas2tile = None
 }
 
@@ -156,14 +164,44 @@ let rec draw_tiles_helper tilelist i=
                   fill_rect (100+(800*i)) 520 20 20; draw_tiles_helper t i;
         | Two ->  fill_rect (140+(800*i)) 540 20 20;
                   fill_rect (160+(800*i)) 540 20 20; draw_tiles_helper t i;
-        | Four ->
+        | Four -> fill_rect (200+(800*i)) 540 20 20;
+                  fill_rect (220+(800*i)) 540 20 20;
+                  fill_rect (200+(800*i)) 520 20 20;
+                  fill_rect (220+(800*i)) 520 20 20; draw_tiles_helper t i;
+        | Boot -> fill_rect (260+(800*i)) 560 20 20;
+                  fill_rect (260+(800*i)) 540 20 20;
+                  fill_rect (260+(800*i)) 520 20 20;
+                  fill_rect (280+(800*i)) 540 20 20;
+                  fill_rect (280+(800*i)) 520 20 20; draw_tiles_helper t i;
+        | Kink -> fill_rect (320+(800*i)) 520 20 20;
+                  fill_rect (340+(800*i)) 520 20 20;
+                  fill_rect (340+(800*i)) 540 20 20;
+                  fill_rect (360+(800*i)) 540 20 20; draw_tiles_helper t i;
+        | C ->    fill_rect (20+(800*i)) 440 20 20;
+                  fill_rect (40+(800*i)) 440 20 20;
+                  fill_rect (20+(800*i)) 420 20 20;
+                  fill_rect (20+(800*i)) 400 20 20;
+                  fill_rect (40+(800*i)) 400 20 20; draw_tiles_helper t i;
         | Cowgirl ->
+                  fill_rect (100+(800*i)) 420 20 20;
+                  fill_rect (80+(800*i)) 400 20 20;
+                  fill_rect (100+(800*i)) 400 20 20;
+                  fill_rect (120+(800*i)) 400 20 20; draw_tiles_helper t i;
         | Couch ->
+                  fill_rect (200+(800*i)) 420 20 20;
+                  fill_rect (160+(800*i)) 400 20 20;
+                  fill_rect (180+(800*i)) 400 20 20;
+                  fill_rect (200+(800*i)) 400 20 20; draw_tiles_helper t i;
         | Recliner ->
-        | Kink ->
-        | C ->
-        | Boot ->
-        | Stairmaster ->
+                  fill_rect (240+(800*i)) 420 20 20;
+                  fill_rect (240+(800*i)) 400 20 20;
+                  fill_rect (260+(800*i)) 400 20 20; draw_tiles_helper t i;
+        | Stairmaster->
+                  fill_rect (340+(800*i)) 440 20 20;
+                  fill_rect (320+(800*i)) 440 20 20;
+                  fill_rect (320+(800*i)) 420 20 20;
+                  fill_rect (300+(800*i)) 420 20 20;
+                  fill_rect (300+(800*i)) 400 20 20; draw_tiles_helper t i;
 
       end
 
@@ -243,7 +281,7 @@ let draw_onto_canvas tile_name player_id=
    have been clicked and place Takes in [lst] which is the same thing as board,
    but changed to list using Array.tolist for the purpose of pattern matching
    easily.*)
-(* let rec draw_onto_board lst =
+let rec draw_onto_board lst=
   match lst with
   | [] -> set_color black;
   | ((x,y), color)::t ->
@@ -254,21 +292,21 @@ let draw_onto_canvas tile_name player_id=
          | Blue -> blue
          | Yellow -> yellow)
       in
-      let pt1 = 400 + (40 * (x)) in
-      let pt2 = 575 - (40 * (y+1)) in
-      draw_gui_rect pt1 pt2 40 40 fill_color;
+      let pt1 = 400 + (25 * (x)) in
+      let pt2 = 575 - (25 * (y+1)) in
+      draw_gui_rect pt1 pt2 25 25 fill_color;
 
       begin
-        if (x=0 && y=0) then (set_color yellow; fill_ellipse (pt1+20) (20+pt2) 10 10)
-        else if (x=9 && y=9) then (set_color blue; fill_ellipse (pt1+20) (20+pt2) 10 10)
+        if (x=0 && y=0) then (set_color yellow; fill_ellipse (pt1+12) (12+pt2) 8 8)
+        else if (x=15 && y=15) then (set_color blue; fill_ellipse (pt1+12) (12+pt2) 8 8)
       end;
       set_color black;
-      draw_rect pt1 pt2 40 40;
-      moveto pt1 pt2;
-      draw_string ("("^(string_of_int x)^", "^(string_of_int y)^")");
+      draw_rect pt1 pt2 25 25;
+      (* moveto pt1 pt2;
+      draw_string ("("^(string_of_int x)^", "^(string_of_int y)^")"); *)
       (draw_onto_board t);
 
-    end *)
+    end
 
 (* [click_inventory lst px py player_id] links the click within the inventory box to a tile
    and starts the drawing onto canvas process if a tile was clicked in the
@@ -400,7 +438,7 @@ let rec loop () =
 
 
   (*Board setup*)
-  for x = 0 to 15
+  (* for x = 0 to 15
   do
     for y = 0 to 15 do
       let pt1 = 400 + (25 * (x)) in
@@ -409,7 +447,7 @@ let rec loop () =
       (* moveto pt1 pt2;
       draw_string ("("^(string_of_int x)^", "^(string_of_int y)^")"); *)
     done;
-  done;
+  done; *)
 
   (*Player Inventory Set Up*)
 
@@ -477,7 +515,7 @@ let rec loop () =
   (*DRAWING IMPORTANT STUFF*)
   draw_onto_canvas_helper game.state.canvas1 0;
   draw_onto_canvas_helper game.state.canvas2 1;
-  (* draw_onto_board (Array.to_list game.state.board); *)
+  draw_onto_board (Array.to_list game.state.board);
 
   (**** CLICKER FUNCTIONS ****)
   (*[click ()] links the click in the GUI window to the gui region the click
@@ -542,8 +580,6 @@ let rec loop () =
             | None ->
               Printf.printf "Hits NONE";
               game.p1messages <- "First select a tile!";
-(* game.canvas1tile <- None;
-game.canvas2tile <- None; *)
             | Some x ->
               begin
                 (* stor.message <- "Kasdfs!"; *)
@@ -553,8 +589,6 @@ game.canvas2tile <- None; *)
                    (Printf.printf "Hits Some, inval";
                     game.p1messages <- "Invalid Move - Try Again!";
                     game.p2messages <- ""
-                    (* game.canvas1tile <- None;
-                    game.canvas2tile <- None; *)
                    )
                  else ( Printf.printf "Hits Some, command";
                   game.state <- returnedst;
@@ -578,7 +612,8 @@ game.canvas2tile <- None; *)
                 let returnedst = (do_command (PLACE ((px,py),y)) !orig) in
                 (if (returnedst != (game.state)) then
                  (  Printf.printf "Hits Some, inval2";game.p1messages <- "";
-                    game.p2messages <- "Invalid Move - Try Again!"
+                    game.p2messages <- "Invalid Move - Try Again!";
+                    game.p1messages <- ""
                   )
                 else ( Printf.printf "Hits Some, command2";
                   game.state <- returnedst;
