@@ -12,4 +12,4 @@ val brd_size : board -> int
 val get_index : int*int -> int -> int
 
 (*[place_tile_on_brd tile_colors brd] places the tile on [tile_colors] onto [brd] ]*)
-val place_tile_on_brd : ((int * int) * 'a) list -> ((int * int) * 'a') array -> unit
+val place_tile_on_brd : ((int * int) * 'a) list -> ((int * int) * 'a) array -> unit
