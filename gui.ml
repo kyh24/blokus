@@ -524,9 +524,7 @@ let rec loop () =
                 (* stor.message <- "Kasdfs!"; *)
                 let returnedst = do_command (PLACE ((px,py),x)) game.state in
                 if returnedst = game.state then
-                  begin
                     game.p1messages <- "Invalid Move - Try Again!"
-                  end
                 else
                   game.state <- returnedst;
                   game.p1messages <- "";
