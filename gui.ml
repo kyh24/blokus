@@ -125,36 +125,46 @@ let rec draw_tiles_helper tilelist i=
     if i=0 then set_color yellow else set_color blue;
     begin
         match h.name with
-        | Empty -> draw_tiles_helper t i;
-        | One ->  fill_rect (30 +(800*i)) 680 30 30; draw_tiles_helper t i;
-        | Tee ->  fill_rect (120+(800*i)) 680 30 30;
-                  fill_rect (150+(800*i)) 680 30 30;
-                  fill_rect (180+(800*i)) 680 30 30;
-                  fill_rect (150+(800*i)) 650 30 30;
-                  fill_rect (150+(800*i)) 620 30 30; draw_tiles_helper t i;
-        | L ->    fill_rect (270 +(800*i)) 680 30 30;
-                  fill_rect (270 +(800*i)) 650 30 30;
-                  fill_rect (270 +(800*i)) 620 30 30;
-                  fill_rect (300 +(800*i)) 620 30 30;
-                  fill_rect (330 +(800*i)) 620 30 30; draw_tiles_helper t i;
-        | X ->    fill_rect (60 +(800*i)) 560 30 30;
-                  fill_rect (60 +(800*i)) 530 30 30;
-                  fill_rect (60 +(800*i)) 500 30 30;
-                  fill_rect (30 +(800*i)) 530 30 30;
-                  fill_rect (90 +(800*i)) 530 30 30; draw_tiles_helper t i;
-        | Z ->    fill_rect (150+(800*i)) 560 30 30;
-                  fill_rect (180+(800*i)) 560 30 30;
-                  fill_rect (180+(800*i)) 530 30 30;
-                  fill_rect (180+(800*i)) 500 30 30;
-                  fill_rect (210+(800*i)) 500 30 30; draw_tiles_helper t i;
-        | Tree -> fill_rect (270+(800*i)) 560 30 30;
-                  fill_rect (300+(800*i)) 560 30 30;
-                  fill_rect (300+(800*i)) 530 30 30;
-                  fill_rect (300+(800*i)) 500 30 30;
-                  fill_rect (330+(800*i)) 530 30 30; draw_tiles_helper t i;
-        | Line -> fill_rect (150+(800*i)) 410 30 30;
-                  fill_rect (180+(800*i)) 410 30 30;
-                  fill_rect (210+(800*i)) 410 30 30; draw_tiles_helper t i;
+        | One ->  fill_rect (20 +(800*i)) 680 20 20; draw_tiles_helper t i;
+        | Tee ->  fill_rect (70+(800*i)) 680 20 20;
+                  fill_rect (90+(800*i)) 680 20 20;
+                  fill_rect (110+(800*i)) 680 20 20;
+                  fill_rect (90+(800*i)) 660 20 20;
+                  fill_rect (90+(800*i)) 640 20 20; draw_tiles_helper t i;
+        | L ->    fill_rect (150 +(800*i)) 680 20 20;
+                  fill_rect (150 +(800*i)) 660 20 20;
+                  fill_rect (150 +(800*i)) 640 20 20;
+                  fill_rect (170 +(800*i)) 640 20 20;
+                  fill_rect (190 +(800*i)) 640 20 20; draw_tiles_helper t i;
+        | X ->    fill_rect (260 +(800*i)) 680 20 20;
+                  fill_rect (260 +(800*i)) 660 20 20;
+                  fill_rect (260 +(800*i)) 640 20 20;
+                  fill_rect (240 +(800*i)) 660 20 20;
+                  fill_rect (280 +(800*i)) 660 20 20; draw_tiles_helper t i;
+        | Z ->    fill_rect (320+(800*i))  680 20 20;
+                  fill_rect (340+(800*i))  680 20 20;
+                  fill_rect (340+(800*i))  660 20 20;
+                  fill_rect (340+(800*i))  640 20 20;
+                  fill_rect (360+(800*i))  640 20 20; draw_tiles_helper t i;
+        | Tree -> fill_rect (20+(800*i)) 560 20 20;
+                  fill_rect (40+(800*i)) 560 20 20;
+                  fill_rect (40+(800*i)) 540 20 20;
+                  fill_rect (40+(800*i)) 520 20 20;
+                  fill_rect (60+(800*i)) 540 20 20; draw_tiles_helper t i;
+        | Line -> fill_rect (100+(800*i)) 560 20 20;
+                  fill_rect (100+(800*i)) 540 20 20;
+                  fill_rect (100+(800*i)) 520 20 20; draw_tiles_helper t i;
+        | Two ->  fill_rect (140+(800*i)) 540 20 20;
+                  fill_rect (160+(800*i)) 540 20 20; draw_tiles_helper t i;
+        | Four ->
+        | Cowgirl ->
+        | Couch ->
+        | Recliner ->
+        | Kink ->
+        | C ->
+        | Boot ->
+        | Stairmaster ->
+
       end
 
 (* [draw_tiles playerlist] determines the right inventory set being searched through
@@ -233,7 +243,7 @@ let draw_onto_canvas tile_name player_id=
    have been clicked and place Takes in [lst] which is the same thing as board,
    but changed to list using Array.tolist for the purpose of pattern matching
    easily.*)
-let rec draw_onto_board lst =
+(* let rec draw_onto_board lst =
   match lst with
   | [] -> set_color black;
   | ((x,y), color)::t ->
@@ -258,7 +268,7 @@ let rec draw_onto_board lst =
       draw_string ("("^(string_of_int x)^", "^(string_of_int y)^")");
       (draw_onto_board t);
 
-    end
+    end *)
 
 (* [click_inventory lst px py player_id] links the click within the inventory box to a tile
    and starts the drawing onto canvas process if a tile was clicked in the
@@ -390,16 +400,16 @@ let rec loop () =
 
 
   (*Board setup*)
-  (* for x = 0 to 9
+  for x = 0 to 15
   do
-    for y = 0 to 9 do
-      let pt1 = 400 + (40 * (x)) in
-      let pt2 = 575 - (40 * (y+1)) in
-      draw_rect pt1 pt2 40 40;
-      moveto pt1 pt2;
-      draw_string ("("^(string_of_int x)^", "^(string_of_int y)^")");
+    for y = 0 to 15 do
+      let pt1 = 400 + (25 * (x)) in
+      let pt2 = 575 - (25 * (y+1)) in
+      draw_rect pt1 pt2 25 25;
+      (* moveto pt1 pt2;
+      draw_string ("("^(string_of_int x)^", "^(string_of_int y)^")"); *)
     done;
-  done; *)
+  done;
 
   (*Player Inventory Set Up*)
 
@@ -467,7 +477,7 @@ let rec loop () =
   (*DRAWING IMPORTANT STUFF*)
   draw_onto_canvas_helper game.state.canvas1 0;
   draw_onto_canvas_helper game.state.canvas2 1;
-  draw_onto_board (Array.to_list game.state.board);
+  (* draw_onto_board (Array.to_list game.state.board); *)
 
   (**** CLICKER FUNCTIONS ****)
   (*[click ()] links the click in the GUI window to the gui region the click
