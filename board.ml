@@ -9,7 +9,8 @@ let rec init_row brd_size x (y:int) =
 
 (*[init_board_lst brd_size iterx itery] initalizes a board as a list with all white cells*)
 let rec init_board_lst brd_size iterx itery =
-  if  itery = brd_size then [] else (init_row (brd_size) 0 itery)@ (init_board_lst brd_size (itery+1) (iterx +1))
+  if itery = brd_size then []
+  else (init_row (brd_size) 0 itery)@(init_board_lst brd_size (itery+1) (iterx +1))
 
 let init_board brd_size : ((int * int) * color) array =
   Array.of_list (init_board_lst brd_size 0 0)

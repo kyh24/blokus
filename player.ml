@@ -21,10 +21,9 @@ let init_player n c =
                       init_tile Z c; init_tile Tree c;
                       init_tile Line c; init_tile Two c;
                       init_tile Four c; init_tile Boot c;
-                      init_tile Kink c; init_tile C;
+                      init_tile Kink c; init_tile C c;
                       init_tile Cowgirl c; init_tile Couch c;
-                     init_tile Recliner c;init_tile Stairmaster c]
-  }
+                     init_tile Recliner c;init_tile Stairmaster c]}
 
 let name p =
   p.player_name

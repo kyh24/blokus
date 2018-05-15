@@ -68,28 +68,34 @@ let tree_corns = [(-2,2);(-2,0);(1,2);(2,1);(2,-1);(1,-2);(-1,-2)]
 let turn1_tree = [(0,2);(2,2);(2,-1);(1,-2);(-1,-2);(-2,-1);(-2,1)]
 let turnflip_tree = [(-1,2);(1,2);(2,-2);(0,-2);(-2,-1);(-2,1);(2,1)]
 
-(*State Tests*)
-let init = init_state 10
+(*****************************State Tests****************************)
+
+(*initial states*)
+let init = init_state 16
+let init2 = init_state 16
+let init2' = {init2 with canvas1 = [((-1,1),White);  ((0,1),White);  ((1,1),White);
+((-1,0),White);  ((0,0),Yellow);  ((1,0),White);
+                                    ((-1,-1),White); ((0,-1),White); ((1,-1),White)];}
+let init3 = init_state 16
+let init3' = {init3 with canvas1 = [((-1,1),White);  ((0,1),White);  ((1,1),White);
+                                    ((-1,0),White);  ((0,0),Yellow);  ((1,0),White);
+                                    ((-1,-1),White); ((0,-1),White); ((1,-1),White)];}
+
 let player_1 = init_player "Player 1" Yellow
 let player_2 = init_player "Player 2" Blue
 let t1_init = init_tile One Yellow
 let t2_init = init_tile One Blue
 let t1' = init_tile Tee Yellow
 
+(*st2*)
+let st2 = do_command (PLACE ((404,570),t1_init.name)) init2'
+let st2_invalid_move = do_command (PLACE ((404,570),t1_init.name)) init3
 
 let player_1_2 = {player_name = "Player 1";
                   col = Yellow;
-                  score = 0;
-                  status = Start;
-                  remaining_tiles = [init_tile One Yellow;
-                                     {name = Tee;
-                                     col= Yellow;
-                                     value = 5;
-                                     grid = [((-1,1),White);      ((0,1),White);  ((1,1),Yellow);
-                                             ((-1,0),Yellow);  ((0,0),Yellow);  ((1,0),Yellow);
-                                             ((-1,-1),White); ((0,-1),White); ((1,-1),Yellow)];
-                                     corners = [(2, 2); (2, -2); (-2, 1); (-2, -1); (0, -2); (0, 2)]
-                                    };
+                  score = 1;
+                  status = Play;
+                  remaining_tiles = [init_tile Tee Yellow;
                                      init_tile L Yellow; init_tile X Yellow;
                                      init_tile Z Yellow; init_tile Tree Yellow;
                                      init_tile Line Yellow];
@@ -103,39 +109,8 @@ let player_1_3 = {player_name = "Player 1";
                                      init_tile Z Yellow; init_tile Tree Yellow;
                                      init_tile Line Yellow];
                  }
-
-let st2 =
-{board = [|((0,0),Yellow);((1,0),White);((2,0),White);((3,0),White);((4,0),White);
-           ((5,0),White);((6,0),White);((7,0),White); ((8,0),White);((9,0),White);
-           ((0,1),White);((1,1),White);((2,1),White);((3,1),White);((4,1),White);
-           ((5,1),White);((6,1),White);((7,1),White); ((8,1),White);((9,1), White);
-           ((0,2),White);((1,2),White);((2,2),White);((3,2),White);((4,2),White);
-           ((5,2),White);((6,2),White);((7,2),White); ((8,2),White);((9,2), White);
-           ((0,3),White);((1,3),White);((2,3),White);((3,3),White);((4,3),White);
-           ((5,3),White);((6,3),White);((7,3),White); ((8,3),White); ((9,3), White);
-           ((0,4),White);((1,4),White);((2,4),White);((3,4),White);((4,4),White);
-           ((5,4),White);((6,4),White);((7,4),White); ((8,4),White); ((9,4), White);
-           ((0,5),White);((1,5),White);((2,5),White);((3,5),White);((4,5),White);
-           ((5,5),White);((6,5),White);((7,5),White); ((8,5),White); ((9,5), White);
-           ((0,6),White);((1,6),White);((2,6),White);((3,6),White);((4,6),White);
-           ((5,6),White);((6,6),White);((7,6),White); ((8,6),White); ((9,6), White);
-           ((0,7),White);((1,7),White);((2,7),White);((3,7),White);((4,7),White);
-           ((5,7),White);((6,7),White);((7,7),White); ((8,7),White); ((9,7), White);
-           ((0,8),White);((1,8),White);((2,8),White);((3,8),White);((4,8),White);
-           ((5,8),White);((6,8),White);((7,8),White); ((8,8),White); ((9,8), White);
-           ((0,9),White);((1,9),White);((2,9),White);((3,9),White);((4,9),White);
-           ((5,9),White);((6,9),White);((7,9),White); ((8,9),White); ((9,9), White);|];
-players = [player_1_3; player_2];
-canvas1 = [((-1,1),White);  ((0,1),White);  ((1,1),White);
-((-1,0),White);  ((0,0),Yellow);  ((1,0),White);
-((-1,-1),White); ((0,-1),White); ((1,-1),White)];
-canvas2 = [((-1,1),White);  ((0,1),White);  ((1,1),White);
-((-1,0),White);  ((0,0),White);  ((1,0),White);
-((-1,-1),White); ((0,-1),White); ((1,-1),White)];
-curr_player = player_2;
- game_over = false}
-
-
+(********************************************************)
+(*************************TILE ROTATION AND FLIP TESTS***************************)
 let tests = [
 
   (* One Tile Tests  *)
@@ -213,34 +188,55 @@ let tests = [
 
 ]
 
+(*************************UPDATING STATE TESTS***************************)
 let state_tests = [
-  (* "init_st" >:: (fun _ -> assert_equal
-                    {board = [|((0,0),White);((1,0),White);((2,0),White);((3,0),White);
-                               ((4,0),White);((5,0),White);((6,0),White);((7,0),White);
-                               ((0,1),White);((1,1),White);((2,1),White);((3,1),White);
-                               ((4,1),White);((5,1),White);((6,1),White);((7,1),White);
-                               ((0,2),White);((1,2),White);((2,2),White);((3,2),White);
-                               ((4,2),White);((5,2),White);((6,2),White);((7,2),White);
-                               ((0,3),White);((1,3),White);((2,3),White);((3,3),White);
-                               ((4,3),White);((5,3),White);((6,3),White);((7,3),White);
-                               ((0,4),White);((1,4),White);((2,4),White);((3,4),White);
-                               ((4,4),White);((5,4),White);((6,4),White);((7,4),White);
-                               ((0,5),White);((1,5),White);((2,5),White);((3,5),White);
-                               ((4,5),White);((5,5),White);((6,5),White);((7,5),White);
-                               ((0,6),White);((1,6),White);((2,6),White);((3,6),White);
-                               ((4,6),White);((5,6),White);((6,6),White);((7,6),White);
-                               ((0,7),White);((1,7),White);((2,7),White);((3,7),White);
-                               ((4,7),White);((5,7),White);((6,7),White);((7,7),White)|];
-  players = [player_1; player_2];
-  canvas1 = [((-1,1),White);  ((0,1),White);  ((1,1),White);
-           ((-1,0),White);  ((0,0),White);  ((1,0),White);
-             ((-1,-1),White); ((0,-1),White); ((1,-1),White)];
-   canvas2 = [((-1,1),White);  ((0,1),White);  ((1,1),White);
-            ((-1,0),White);  ((0,0),White);  ((1,0),White);
-            ((-1,-1),White); ((0,-1),White); ((1,-1),White)];
-   curr_player = player_1;
-   game_over = false} init);
-  "st1" >:: (fun _ -> assert_equal
+  "init_canvas1" >:: (fun _ -> assert_equal
+                    [((-1,1),White);  ((0,1),White);  ((1,1),White);
+                     ((-1,0),White);  ((0,0),White);  ((1,0),White);
+                     ((-1,-1),White); ((0,-1),White); ((1,-1),White)] init.canvas1);
+  "init_canvas2" >:: (fun _ -> assert_equal
+               [((-1,1),White);  ((0,1),White);  ((1,1),White);
+                ((-1,0),White);  ((0,0),White);  ((1,0),White);
+                ((-1,-1),White); ((0,-1),White); ((1,-1),White)] init.canvas2);
+
+  "init_player_stat" >:: (fun _ -> assert_equal Start (init.curr_player).status);
+  "init_player_stat2">:: (fun _ -> assert_equal Start (List.nth init.players 1).status);
+  "init_curr_p" >:: (fun _ -> assert_equal player_1 (init.curr_player));
+
+  (*Player 1 valid first move*)
+  "st2_curr_p" >:: (fun _ -> assert_equal player_2 (st2.curr_player));
+  "st2_canvas1" >:: (fun _ -> assert_equal [((-1,1),White);  ((0,1),White);  ((1,1),White);
+                                            ((-1,0),White);  ((0,0),White);  ((1,0),White);
+                                            ((-1,-1),White); ((0,-1),White); ((1,-1),White)]
+                        (st2.canvas1));
+  "st2_canvas2" >:: (fun _ -> assert_equal [((-1,1),White);  ((0,1),White);  ((1,1),White);
+                                        ((-1,0),White);  ((0,0),White);  ((1,0),White);
+                                        ((-1,-1),White); ((0,-1),White); ((1,-1),White)]
+                        (st2.canvas2));
+  "st2_p1_stat" >:: (fun _ -> assert_equal Play (List.nth st2.players 0).status);
+  "st2_p2_stat" >:: (fun _ -> assert_equal Start (List.nth st2.players 1).status);
+  "st2_board" >:: (fun _ -> assert_equal (Array.get (st2.board) 0) ((0,0),Yellow));
+  "st2_p1_score" >:: (fun _ -> assert_equal 1 (List.nth st2.players 0).score);
+  "st2_p2_score" >:: (fun _ -> assert_equal 0 (List.nth st2.players 1).score);
+
+  (*Player 1 invalid first move*)
+  "st2'_curr_p" >:: (fun _ -> assert_equal player_1 (st2_invalid_move.curr_player));
+  "st2'_canvas1" >:: (fun _ -> assert_equal [((-1,1),White);  ((0,1),White);  ((1,1),White);
+                                            ((-1,0),White);  ((0,0),Yellow);  ((1,0),White);
+                                            ((-1,-1),White); ((0,-1),White); ((1,-1),White)]
+                        (st2_invalid_move.canvas1));
+  "st2'_canvas2" >:: (fun _ -> assert_equal [((-1,1),White);  ((0,1),White);  ((1,1),White);
+                                        ((-1,0),White);  ((0,0),White);  ((1,0),White);
+                                        ((-1,-1),White); ((0,-1),White); ((1,-1),White)]
+                        (st2_invalid_move.canvas2));
+  "st2'_p1_stat" >:: (fun _ -> assert_equal Start (List.nth st2.players 0).status);
+  "st2'_p2_stat" >:: (fun _ -> assert_equal Start (List.nth st2.players 1).status);
+  "st2'_p1_score" >:: (fun _ -> assert_equal 0 (List.nth st2.players 0).score);
+  "st2'_p2_score" >:: (fun _ -> assert_equal 0 (List.nth st2.players 1).score);
+  "st2'_board" >:: (fun _ -> assert_equal (Array.get (st2.board) 0) ((0,0),Yellow));
+
+
+  (*"st1" >:: (fun _ -> assert_equal
                 {board = [|((0,0),White);((1,0),White);((2,0),White);((3,0),White);
                            ((4,0),White);((5,0),White);((6,0),White);((7,0),White);
                            ((0,1),White);((1,1),White);((2,1),White);((3,1),White);

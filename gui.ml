@@ -133,6 +133,7 @@ let rec draw_tiles_helper tilelist i=
     if i=0 then set_color yellow else set_color blue;
     begin
         match h.name with
+<<<<<<< HEAD
         | One ->  fill_rect (20 +(800*i)) 680 20 20; draw_tiles_helper t i;
         | Tee ->  fill_rect (70+(800*i)) 680 20 20;
                   fill_rect (90+(800*i)) 680 20 20;
@@ -203,6 +204,38 @@ let rec draw_tiles_helper tilelist i=
                   fill_rect (300+(800*i)) 420 20 20;
                   fill_rect (300+(800*i)) 400 20 20; draw_tiles_helper t i;
 
+=======
+        | One ->  fill_rect (30 +(800*i)) 680 30 30; draw_tiles_helper t i;
+        | Tee ->  fill_rect (120+(800*i)) 680 30 30;
+                  fill_rect (150+(800*i)) 680 30 30;
+                  fill_rect (180+(800*i)) 680 30 30;
+                  fill_rect (150+(800*i)) 650 30 30;
+                  fill_rect (150+(800*i)) 620 30 30; draw_tiles_helper t i;
+        | L ->    fill_rect (270 +(800*i)) 680 30 30;
+                  fill_rect (270 +(800*i)) 650 30 30;
+                  fill_rect (270 +(800*i)) 620 30 30;
+                  fill_rect (300 +(800*i)) 620 30 30;
+                  fill_rect (330 +(800*i)) 620 30 30; draw_tiles_helper t i;
+        | X ->    fill_rect (60 +(800*i)) 560 30 30;
+                  fill_rect (60 +(800*i)) 530 30 30;
+                  fill_rect (60 +(800*i)) 500 30 30;
+                  fill_rect (30 +(800*i)) 530 30 30;
+                  fill_rect (90 +(800*i)) 530 30 30; draw_tiles_helper t i;
+        | Z ->    fill_rect (150+(800*i)) 560 30 30;
+                  fill_rect (180+(800*i)) 560 30 30;
+                  fill_rect (180+(800*i)) 530 30 30;
+                  fill_rect (180+(800*i)) 500 30 30;
+                  fill_rect (210+(800*i)) 500 30 30; draw_tiles_helper t i;
+        | Tree -> fill_rect (270+(800*i)) 560 30 30;
+                  fill_rect (300+(800*i)) 560 30 30;
+                  fill_rect (300+(800*i)) 530 30 30;
+                  fill_rect (300+(800*i)) 500 30 30;
+                  fill_rect (330+(800*i)) 530 30 30; draw_tiles_helper t i;
+        | Line -> fill_rect (150+(800*i)) 410 30 30;
+                  fill_rect (180+(800*i)) 410 30 30;
+          fill_rect (210+(800*i)) 410 30 30; draw_tiles_helper t i;
+        | _ -> set_color black;
+>>>>>>> 1c86ea2d12d07947663e0dd5a1a81e6d5e61ecc5
       end
 
 (* [draw_tiles playerlist] determines the right inventory set being searched through
