@@ -2,6 +2,8 @@
 CS 3110 (Spring 2018) Final Project
 Developed by Srishti Belwariar, Kati Hsu, Sahithi Kalvakota, and Devki Trivedi
 
+![alt text](/Users/sahithi/Desktop/bloKamlScreen.png)
+
 ## Table of Contents
 * About Game
 * System Setup and Installation
