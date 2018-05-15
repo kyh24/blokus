@@ -29,7 +29,7 @@ let init_state s =
 }
 
 let get_center_cell st (x,y) =
-  let brd_coord = (x - 400) / 40 , -(((y - 175) / 40) - 9) in
+  let brd_coord = (x - 400) / 25 , -(((y - 175) / 25) - 15) in
     let index = get_index brd_coord (brd_size st.board) in
     fst (Array.get st.board index)
 

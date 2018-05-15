@@ -133,7 +133,6 @@ let rec draw_tiles_helper tilelist i=
     if i=0 then set_color yellow else set_color blue;
     begin
         match h.name with
-<<<<<<< HEAD
         | One ->  fill_rect (20 +(800*i)) 680 20 20; draw_tiles_helper t i;
         | Tee ->  fill_rect (70+(800*i)) 680 20 20;
                   fill_rect (90+(800*i)) 680 20 20;
@@ -204,38 +203,6 @@ let rec draw_tiles_helper tilelist i=
                   fill_rect (300+(800*i)) 420 20 20;
                   fill_rect (300+(800*i)) 400 20 20; draw_tiles_helper t i;
 
-=======
-        | One ->  fill_rect (30 +(800*i)) 680 30 30; draw_tiles_helper t i;
-        | Tee ->  fill_rect (120+(800*i)) 680 30 30;
-                  fill_rect (150+(800*i)) 680 30 30;
-                  fill_rect (180+(800*i)) 680 30 30;
-                  fill_rect (150+(800*i)) 650 30 30;
-                  fill_rect (150+(800*i)) 620 30 30; draw_tiles_helper t i;
-        | L ->    fill_rect (270 +(800*i)) 680 30 30;
-                  fill_rect (270 +(800*i)) 650 30 30;
-                  fill_rect (270 +(800*i)) 620 30 30;
-                  fill_rect (300 +(800*i)) 620 30 30;
-                  fill_rect (330 +(800*i)) 620 30 30; draw_tiles_helper t i;
-        | X ->    fill_rect (60 +(800*i)) 560 30 30;
-                  fill_rect (60 +(800*i)) 530 30 30;
-                  fill_rect (60 +(800*i)) 500 30 30;
-                  fill_rect (30 +(800*i)) 530 30 30;
-                  fill_rect (90 +(800*i)) 530 30 30; draw_tiles_helper t i;
-        | Z ->    fill_rect (150+(800*i)) 560 30 30;
-                  fill_rect (180+(800*i)) 560 30 30;
-                  fill_rect (180+(800*i)) 530 30 30;
-                  fill_rect (180+(800*i)) 500 30 30;
-                  fill_rect (210+(800*i)) 500 30 30; draw_tiles_helper t i;
-        | Tree -> fill_rect (270+(800*i)) 560 30 30;
-                  fill_rect (300+(800*i)) 560 30 30;
-                  fill_rect (300+(800*i)) 530 30 30;
-                  fill_rect (300+(800*i)) 500 30 30;
-                  fill_rect (330+(800*i)) 530 30 30; draw_tiles_helper t i;
-        | Line -> fill_rect (150+(800*i)) 410 30 30;
-                  fill_rect (180+(800*i)) 410 30 30;
-          fill_rect (210+(800*i)) 410 30 30; draw_tiles_helper t i;
-        | _ -> set_color black;
->>>>>>> 1c86ea2d12d07947663e0dd5a1a81e6d5e61ecc5
       end
 
 (* [draw_tiles playerlist] determines the right inventory set being searched through
@@ -355,7 +322,9 @@ let rec click_inventory lst px py player_id=
     else if player_id=1
     then game.p2messages <- "Please select a tile."
     else (game.p1messages <- game.p1messages ;
-         game.p2messages <- game.p2messages)
+          game.p2messages <- game.p2messages);
+    game.canvas1tile <- game.canvas1tile;
+    game.canvas2tile <- game.canvas2tile
   | (n, (x,y,w,h))::t ->
     if (px>=x && px<=(x+w)) && (py>=y && py<=(y+h))
     then
@@ -563,7 +532,8 @@ let rec loop () =
     | ((x1,x2,y1,y2))::t ->
       if ((px>=10 && px<=390) && (py>=350 && py<=740)
           && (getcurrentplayer game.state) = 0 &&
-          game.state.curr_player.status != Stop)
+          game.state.curr_player.status != Stop
+          )
       then
         begin
           (* stor.message <- "You Clicked P1 Inv Reg.!"; *)
@@ -603,7 +573,6 @@ let rec loop () =
       else if ((px>=400 && px<=800) && (py>=175 && py<=575))
       then
         begin
-        (* stor.message <- "You Clicked BOARD.!"; *)
         (* game.p1messages <- "" ;
         game.p2messages <- "" ; *)
         (let playerindex= getcurrentplayer game.state.curr_player in
@@ -615,7 +584,6 @@ let rec loop () =
               game.p1messages <- "First select a tile!";
             | Some x ->
               begin
-                (* stor.message <- "Kasdfs!"; *)
                 let orig = ref game.state in
                 let returnedst = (do_command (PLACE ((px,py),x)) !orig) in
                 (if (returnedst != (game.state)) then
