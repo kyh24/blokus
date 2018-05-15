@@ -1,12 +1,13 @@
 open Tile
 
-
 type board= ((int * int) * color) array
 
+(*[init_row brd_size x y] intializes a row [y] of a board of size [brd_size] with the color white*)
 let rec init_row brd_size x (y:int) =
   if brd_size = 0 then []
   else ((x,y), White)::(init_row (brd_size - 1) (x+1) y)
 
+(*[init_board_lst brd_size iterx itery] initalizes a board as a list with all white cells*)
 let rec init_board_lst brd_size iterx itery =
   if  itery = brd_size then [] else (init_row (brd_size) 0 itery)@ (init_board_lst brd_size (itery+1) (iterx +1))
 
@@ -23,5 +24,5 @@ let rec place_tile_on_brd tile_colors brd =
   |((x,y), c)::t -> begin
       let size = brd |> brd_size in
       let i = size |> get_index (x,y) in
-      Array.set brd i ((x,y), c); place_tile_on_brd t brd 
+      Array.set brd i ((x,y), c); place_tile_on_brd t brd
     end

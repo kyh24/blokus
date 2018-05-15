@@ -33,19 +33,10 @@ val is_valid_move: player -> state -> tile -> (int*int) -> int -> ((int*int)*col
     -> ((int*int)*color) list -> ((int*int)*color) list -> bool
 
 
-(* val place_tile: state -> player-> tile -> (int * int) -> unit *)
-
-(* val p2_placed_tiles: tile list ref *)
-
-
-(* [do' c st t] is [st'] if doing command [c] in state [st] results
+(* [do_command c st] is [st'] if doing command [c] in state [st] results
  * in a new state [st'].
 *)
 val do_command : command -> state -> state
 
+    (**)
 val print_winner : state -> string
-
-
-
-(*[print_state s] prints a string representation of the state of the game*)
-val print_state: ((int*int) * color) array -> unit
